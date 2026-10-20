@@ -1,0 +1,93 @@
+/*
+ * Global styles and brand tokens (docs/brand-deck.md, "Visual").
+ *
+ * The default Tailwind palette is switched off, so only brand colours exist.
+ * Colour names say what they are for:
+ *   call     = red, for call buttons and the hotline only
+ *   whatsapp = green, for WhatsApp only
+ */
+
+/* Fonts: few weights to keep LCP low. Each file has unicode-range subsets,
+   so a browser downloads only the scripts a page uses. */
+@import '@fontsource/archivo/700.css';
+@import '@fontsource/hind-siliguri/400.css';
+@import '@fontsource/hind-siliguri/600.css';
+
+@import 'tailwindcss';
+
+@theme {
+  /* Brand palette only */
+  --color-*: initial;
+  --color-call: #c8102e;     /* Red: call only */
+  --color-navy: #13233f;
+  --color-paper: #faf7f2;    /* Warm White */
+  --color-mist: #f1ece4;
+  --color-whatsapp: #1f8a4c; /* WhatsApp Green: WhatsApp only */
+  --color-slate: #4a5568;
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Type */
+  --font-*: initial;
+  --font-heading: 'Archivo', system-ui, sans-serif;
+  --font-body: 'Hind Siliguri', system-ui, sans-serif;
+
+  /* Body text never below 17px */
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.1875rem;
+  --text-lg--line-height: 1.55;
+
+  /* Hotline: at least 32px on mobile */
+  --text-hotline: 2rem;
+  --text-hotline--line-height: 1.15;
+  --text-hotline--font-weight: 700;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper font-body text-base text-slate antialiased; /* Slate body, Navy headings */
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-heading text-navy;
+  }
+
+  /* Bangla: Hind Siliguri for everything, line-height 1.5 */
+  :lang(bn) {
+    line-height: 1.5;
+  }
+
+  :lang(bn) :is(h1, h2, h3) {
+    @apply font-body;
+    font-weight: 600;
+  }
+
+  /* Phone numbers stay Latin digits and never wrap */
+  .phone {
+    font-variant-numeric: lining-nums;
+    white-space: nowrap;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-navy);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

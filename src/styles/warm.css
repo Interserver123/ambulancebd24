@@ -1,0 +1,262 @@
+/*
+ * Website theme (brand deck v1.2, "Visual"): warm, humanised layout in black, logo blue and white. Scoped under .warm.
+ * Change colours in docs/brand-deck.md first, then here.
+ *
+ * Rules kept from the deck:
+ *   - Red #C8102E only for call buttons and the hotline
+ *   - Green #1F8A4C only for WhatsApp
+ *   - Blue is the brand accent (logo, headings accents, decoration), never a call button
+ */
+@import '@fontsource-variable/fraunces/soft.css';
+@import '@fontsource-variable/fraunces/soft-italic.css';
+
+.warm {
+  /* Brand deck v1.2: black, logo blue, white + red for calls */
+  --page: #ffffff;        /* page background */
+  --tint: #f2f5ff;        /* alternate sections (whisper of logo blue) */
+  --card: #ffffff;        /* cards */
+  --blue: #5070fc;        /* logo blue: logo, large accents, decoration */
+  --blue-ink: #3a55de;    /* blue for small text and links on white (5.8:1) */
+  --blue-soft: #e3e9ff;   /* blue tint for chips, icons, panels */
+  --gray: #9ca3af;        /* neutral decoration */
+  --gray-ink: #3f3f46;    /* neutral small text */
+  --gray-soft: #f1f2f5;   /* neutral tint */
+  --ink: #0b0b0f;         /* black: headings, dark sections */
+  --body: #45454f;        /* body text (9:1 on white) */
+  --line: rgb(11 11 15 / 0.09);
+
+  --shadow-soft: 0 30px 60px -24px rgb(28 40 110 / 0.2), 0 12px 24px -12px rgb(28 40 110 / 0.1);
+  --shadow-lift: 0 40px 80px -28px rgb(28 40 110 / 0.28), 0 16px 32px -14px rgb(28 40 110 / 0.14);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--body);
+}
+
+/* Paper grain over the whole page */
+.warm::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Headings: Fraunces with the soft axis, warm ink, italic terracotta accents */
+.warm :is(h1, h2, h3),
+.warm .serif {
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  font-optical-sizing: auto;
+  letter-spacing: -0.025em;
+  font-weight: 560;
+}
+
+/* Colour on headings only, so .serif text can take any colour utility (e.g. red hotline) */
+.warm :is(h1, h2, h3) {
+  color: var(--ink);
+}
+
+.warm :is(h1, h2) em,
+.warm .accent {
+  font-style: italic;
+  font-weight: 460;
+  color: var(--blue); /* logo blue: fine at heading sizes (large text 3:1) */
+}
+
+.warm h1 {
+  font-size: clamp(2.75rem, 7.2vw, 5.75rem);
+  line-height: 0.98;
+}
+
+.warm h2 {
+  font-size: clamp(2.25rem, 4.8vw, 3.75rem);
+  line-height: 1.02;
+}
+
+.warm h3 {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+/*
+ * Service pages: one fixed heading scale on every service page (main.svc).
+ * Components inside must not set their own heading sizes; this wins on purpose.
+ *   H1 36px -> 52px · H2 32px -> 44px · H3 22px -> 24px (phone -> desktop)
+ */
+.warm .svc h1 {
+  font-size: 2.25rem !important;
+  line-height: 1.08 !important;
+}
+.warm .svc h2 {
+  font-size: 2rem !important;
+  line-height: 1.1 !important;
+}
+.warm .svc h3 {
+  font-size: 1.375rem !important;
+  line-height: 1.25 !important;
+}
+@media (min-width: 1024px) {
+  .warm .svc h1 { font-size: 3.25rem !important; }
+  .warm .svc h2 { font-size: 2.75rem !important; }
+  .warm .svc h3 { font-size: 1.5rem !important; }
+}
+
+/* Service pages: two plain (page-background) sections in a row share one gap, not two. */
+.warm .svc > section:not([class*='bg-']) + section:not([class*='bg-']) {
+  padding-top: 0;
+}
+
+/* Bangla headings keep Hind Siliguri */
+.warm :lang(bn):is(h1, h2, h3, .serif, .eyebrow-warm) {
+  font-family: 'Hind Siliguri', system-ui, sans-serif;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+/* Bangla: no faux italics, and room for vowel signs above and below the line */
+.warm :lang(bn) :is(h1, h2) em,
+.warm :lang(bn).eyebrow-warm,
+.warm :lang(bn).serif,
+.warm :lang(bn).italic {
+  font-style: normal;
+}
+.warm .svc :lang(bn):is(h1, h2, h3) {
+  line-height: 1.35 !important;
+}
+
+/* Handwritten-feel eyebrow */
+.warm .eyebrow-warm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Fraunces Variable', Georgia, serif;
+  font-style: italic;
+  font-size: 1.125rem;
+  color: var(--gray-ink);
+}
+
+.warm .eyebrow-warm::before {
+  content: '';
+  width: 2.25rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Organic blob shapes */
+.blob-a { border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%; }
+.blob-b { border-radius: 42% 58% 62% 38% / 46% 58% 42% 54%; }
+.blob-c { border-radius: 36px 120px 36px 120px; }
+.blob-d { border-radius: 120px 36px 120px 36px; }
+
+.soft-shadow { box-shadow: var(--shadow-soft); }
+
+/* Cards that lift and tilt slightly on hover */
+.pebble {
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 320ms ease;
+  box-shadow: var(--shadow-soft);
+}
+.pebble:hover {
+  transform: translateY(-6px) rotate(-0.4deg);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Call button: phone rings, sheen sweeps, presses in */
+.cta-call {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms ease;
+  box-shadow: 0 18px 36px -14px rgb(200 16 46 / 0.55);
+  will-change: transform;
+}
+.cta-call::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.22) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+}
+.cta-call:hover::after { transform: translateX(120%); }
+.cta-call:hover { box-shadow: 0 24px 44px -14px rgb(200 16 46 / 0.65); }
+.cta-call:active { transform: scale(0.97); }
+.cta-call:hover .ringing { animation: ring 700ms ease-in-out; }
+.cta-call .go { transition: transform 220ms ease; }
+/* Freezer Van: the call button never animates (brand deck) */
+.cta-call.cta-calm::after { display: none; }
+.cta-call.cta-calm:active { transform: none; }
+.cta-call:hover .go { transform: translateX(4px); }
+
+@keyframes ring {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-14deg); }
+  30% { transform: rotate(12deg); }
+  45% { transform: rotate(-9deg); }
+  60% { transform: rotate(6deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+/* Gentle float for decorative shapes */
+.drift { animation: drift 14s ease-in-out infinite alternate; }
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(12px, -16px, 0) rotate(6deg); }
+}
+
+/* Hand-drawn underline under accent words */
+.scribble {
+  position: relative;
+  white-space: nowrap;
+}
+.scribble::after {
+  content: '';
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -0.08em;
+  height: 0.32em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 90 2 198 10' fill='none' stroke='%235070fc' stroke-width='4' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  z-index: -1;
+}
+
+/* Scroll reveal: large screens only, so phones never wait for content.
+   Visible without JS; a failsafe in the page script reveals everything after 2.5s. */
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .js .reveal.is-in { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift, .cta-call:hover .ringing { animation: none; }
+  .pebble:hover { transform: none; }
+}
+
+/* Photo placeholders pick up the page tint */
+.warm .photo-ph {
+  background-color: var(--tint);
+  color: var(--gray-ink);
+}
+
+/* Hand-drawn underline in white, for dark backgrounds */
+.scribble-light::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 90 2 198 10' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='.85'/%3E%3C/svg%3E");
+}
+
+/* Footer link columns: native <details> accordions on mobile, always open from md up
+   (the inline script in Footer.astro covers browsers without ::details-content). */
+@media (min-width: 768px) {
+  .site-footer details.ft-col::details-content {
+    content-visibility: visible;
+    display: contents;
+  }
+}

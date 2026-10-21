@@ -1,0 +1,98 @@
+---
+/**
+ * Base HTML shell: meta, canonical, hreflang, fonts, JSON-LD, click tracking.
+ * Every page passes its own title/description (linted: <=60 / <=155 chars).
+ */
+import '../styles/global.css';
+import archivo700 from '@fontsource/archivo/files/archivo-latin-700-normal.woff2?url';
+import hind400 from '@fontsource/hind-siliguri/files/hind-siliguri-latin-400-normal.woff2?url';
+import hind400bn from '@fontsource/hind-siliguri/files/hind-siliguri-bengali-400-normal.woff2?url';
+import { business } from '../data/business';
+
+interface Alternate {
+  hreflang: string;
+  path: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  /** Site path with trailing slash, e.g. "/" */
+  path: string;
+  lang: 'en' | 'bn';
+  jsonLd?: Record<string, unknown>;
+  /** Only pages that exist. Self is added automatically. */
+  alternates?: Alternate[];
+  /** Path used for hreflang="x-default" (English homepage by default). */
+  xDefault?: string;
+  /** Keep out of search (design previews). Also drops hreflang. */
+  noindex?: boolean;
+  /** Font files to preload instead of the defaults. */
+  preloads?: string[];
+}
+
+const { title, description, path, lang, jsonLd, alternates = [], xDefault = '/', noindex = false, preloads } = Astro.props;
+const fontPreloads = preloads ?? [lang === 'bn' ? hind400bn : archivo700, hind400];
+const abs = (p: string) => new URL(p, business.url).href;
+const hreflang = lang === 'bn' ? 'bn-BD' : 'en-BD';
+const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_BD';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- noindex pages (404, utility) still pass link value on, and get no canonical -->
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={abs(path)} />}
+    {
+      !noindex && (
+        <>
+          <link rel="alternate" hreflang={hreflang} href={abs(path)} />
+          {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={abs(a.path)} />)}
+          <link rel="alternate" hreflang="x-default" href={abs(xDefault)} />
+        </>
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={abs(path)} />
+    <meta property="og:locale" content={ogLocale} />
+    {alternates.map((a) => <meta property="og:locale:alternate" content={a.hreflang.replace('-', '_')} />)}
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Two font files per language, preloaded (spec: performance budget) -->
+    {fontPreloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+    <!--
+      GA4 runs through Cloudflare Zaraz. This sends one event per tel: / WhatsApp / data-event click.
+      Each CTA carries data-placement so reports show which button was used.
+    -->
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        // data-event names any other tracked link (e.g. directions_click, reviews_click).
+        var name = a.dataset.event || (href.indexOf('tel:') === 0 ? 'call_click' : href.indexOf('wa.me') > -1 ? 'whatsapp_click' : '');
+        if (!name) return;
+        var data = { placement: a.dataset.placement || 'unknown', page: location.pathname };
+        if (a.dataset.location) data.location = a.dataset.location;
+        if (window.zaraz && window.zaraz.track) window.zaraz.track(name, data);
+        else (window.dataLayer = window.dataLayer || []).push(Object.assign({ event: name }, data));
+      });
+    </script>
+  </head>
+  <body class="pb-[calc(64px+env(safe-area-inset-bottom))] md:pb-0">
+    <slot />
+  </body>
+</html>

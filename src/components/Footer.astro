@@ -1,0 +1,250 @@
+---
+/**
+ * Global footer (every page, EN + BN, from SiteLayout).
+ *
+ * Job: last call/WhatsApp prompt + the sitewide NAP that Google compares with our GBP.
+ *   1. Hotline row: number, one red Call, one green WhatsApp (prefilled message), trust line.
+ *   2. Brand + NAP (<address>, character for character from business.ts), then the link
+ *      columns inside <nav aria-label="Footer">. Columns are native <details> on mobile
+ *      (closed by default) and always open from md up.
+ *   3. Bottom bar: ©, legal pages, payment methods.
+ *
+ * Every link renders only if its page is published (no 404s, no "#"). Rating and payment
+ * methods render only when verified. No schema here: the Organization graph is in <head>.
+ * GA4 (BaseLayout click listener): call_click / whatsapp_click from tel: and wa.me links,
+ * directions_click / reviews_click from data-event; all with location="footer".
+ */
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { brandLogoLight } from '../lib/photos';
+import { publishedPaths } from '../lib/routes';
+import { business, copy, services, shown, type ServiceKey } from '../data/business';
+import { digits, ui, type Lang } from '../data/ui';
+interface Props {
+  lang?: Lang;
+}
+const { lang = 'en' } = Astro.props;
+const t = ui[lang].footer;
+const tr = ui[lang];
+const isBn = lang === 'bn';
+
+const pub = await publishedPaths(lang);
+const enPub = isBn ? await publishedPaths('en') : pub;
+const has = (p: string) => pub.all.has(p) || enPub.all.has(p);
+/** Bangla pages link to the Bangla version of a page when it exists, else the English one. */
+const localPath = (p: string) => (isBn && has(`/bn${p}`) ? `/bn${p}` : has(p) ? p : undefined);
+
+/* Contact facts */
+const wa = shown(business.whatsapp);
+const waHref = wa ? `${wa.url}?text=${encodeURIComponent(t.waMessage)}` : undefined;
+const email = shown(business.email);
+const street = shown(business.address.street);
+const rating = shown(business.gbp.rating);
+const payments = shown(business.pending.paymentMethods);
+const hotlineLabel = `${t.hotline}: ${business.claims.backupLineLive ? t.personAnswers : t.open247}`;
+
+/* b) Services: brief order. Non-confirmed services (status "verify") never show. */
+const serviceOrder: (keyof typeof t.serviceAnchors)[] = ['icu', 'nicu', 'ac', 'freezer', 'inter-district'];
+const serviceLinks = serviceOrder
+  .map((key) => {
+    const s = services.find((x) => x.key === (key as ServiceKey));
+    const href = s && s.status === 'fact' ? localPath(s.path) : undefined;
+    return href ? { key, href, label: t.serviceAnchors[key] } : undefined;
+  })
+  .filter((l) => l !== undefined);
+
+/* c) Dhaka areas: up to 8 published area pages. */
+const areaLinks = [...pub.areas].slice(0, 8).map(([name, href]) => ({ href, label: t.areaAnchor(name) }));
+const allAreas = localPath('/locations/');
+
+/* d) Districts: up to 8 published district pages, in priority order (CLAUDE.md list). */
+const DISTRICT_PRIORITY = ['Chittagong', 'Khulna', 'Barisal', 'Benapole', 'Noakhali', 'Jessore', 'Kushtia', 'Rajshahi', 'Gopalganj'];
+const rank = (d: string) => (DISTRICT_PRIORITY.includes(d) ? DISTRICT_PRIORITY.indexOf(d) : DISTRICT_PRIORITY.length);
+const districtLinks = [...pub.districts]
+  .sort(([a], [b]) => rank(a) - rank(b))
+  .slice(0, 8)
+  .map(([name, href]) => ({ href, label: t.districtAnchor(name) }));
+const allDistricts = localPath('/inter-district-ambulance-service/');
+
+/* e) Help. The language toggle goes to this page's other-language version, else that language's home. */
+const here = Astro.url.pathname;
+/** Freezer Van pages never say "fast" (brand deck voice): they get the Freezer line instead. */
+const tagline = here.includes('freezer') ? copy.freezerLine : copy.tagline;
+const hasBnHome = Object.keys(import.meta.glob('../pages/bn/index.astro')).length > 0;
+const otherLang = isBn
+  ? enPub.all.has(here.replace(/^\/bn/, '')) ? here.replace(/^\/bn/, '') : '/'
+  : pub.all.has(`/bn${here}`) ? `/bn${here}` : hasBnHome ? '/bn/' : undefined;
+const helpLinks = [
+  { href: localPath('/ambulance-fare-dhaka/'), label: t.help.fare },
+  { href: localPath('/blog/'), label: t.help.guides },
+  { href: localPath('/about/'), label: t.help.about },
+  { href: localPath('/contact/'), label: t.help.contact },
+].filter((l): l is { href: string; label: string } => Boolean(l.href));
+
+const columns = [
+  { id: 'services', title: t.headings.services, links: serviceLinks, more: undefined },
+  { id: 'areas', title: t.headings.areas, links: areaLinks, more: areaLinks.length && allAreas ? { href: allAreas, label: t.allAreas } : undefined },
+  { id: 'districts', title: t.headings.districts, links: districtLinks, more: districtLinks.length && allDistricts ? { href: allDistricts, label: t.allDistricts } : undefined },
+  { id: 'help', title: t.headings.help, links: helpLinks, more: undefined },
+].filter((c) => c.links.length > 0 || (c.id === 'help' && otherLang));
+
+const legal = [
+  { href: localPath('/privacy-policy/'), label: t.legal.privacy },
+  { href: localPath('/terms/'), label: t.legal.terms },
+  { href: localPath('/disclaimer/'), label: t.legal.disclaimer },
+].filter((l): l is { href: string; label: string } => Boolean(l.href));
+
+const social = [
+  { network: 'Facebook', href: business.sameAs[0], icon: 'facebook' },
+  { network: 'X', href: business.sameAs[1], icon: 'x' },
+  { network: 'YouTube', href: business.sameAs[2], icon: 'youtube' },
+] as const;
+
+const linkCls = 'flex min-h-12 items-center text-white/80 no-underline transition-colors hover:text-white hover:underline underline-offset-4';
+const font = isBn ? 'font-body' : 'font-heading';
+---
+
+<footer class="site-footer bg-(--ink) text-white/80">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <!-- 1. Hotline row -->
+    <div class="flex flex-col gap-6 border-b border-white/10 pt-12 pb-10 md:pt-16 lg:flex-row lg:items-end lg:justify-between">
+      <div class="min-w-0">
+        <p class="text-[15px] text-white/80">{hotlineLabel}</p>
+        <a href={business.phone.tel} class="phone font-heading mt-1 inline-flex min-h-12 items-center text-[2.5rem] leading-none font-bold tracking-tight text-white no-underline hover:underline md:text-6xl" data-placement="footer-hotline" data-location="footer">{business.phone.display}</a>
+        <ul class="mt-3 flex flex-wrap gap-x-2 text-[15px] text-white/80">
+          {t.trust.map((item, i) => <li class="w-full sm:w-auto">{i > 0 && <span aria-hidden="true" class="mr-2 hidden sm:inline">·</span>}{item}</li>)}
+        </ul>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <a href={business.phone.tel} class={`inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-call px-7 ${font} text-lg font-bold text-white no-underline transition hover:brightness-110`} data-placement="footer-call" data-location="footer">
+          <Icon name="phone" class="size-5" />
+          {t.callNow}
+        </a>
+        {
+          waHref && (
+            <a href={waHref} class={`inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-whatsapp px-7 ${font} text-lg font-bold text-white no-underline transition hover:brightness-110`} data-placement="footer-whatsapp" data-location="footer" rel="noopener" target="_blank">
+              <Icon name="whatsapp" class="size-5" />
+              {tr.cta.whatsapp}
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- 2. Brand + NAP, then link columns -->
+    <div class="grid gap-8 py-12 md:py-16 lg:grid-cols-5">
+      <div class="min-w-0 lg:col-span-1">
+        {brandLogoLight ? <Image src={brandLogoLight} alt={business.name} height={112} class="h-14 w-auto" /> : <p class="serif text-2xl text-white">{business.name}</p>}
+        <p class="mt-3 text-white">{isBn ? <span lang="bn">{tagline.bn}</span> : tagline.en}</p>
+        <address class="mt-6 space-y-1 not-italic">
+          <p class="font-semibold text-white">{business.name}</p>
+          <p>{street ? `${street}, ` : ''}{tr.address}</p>
+          <p><a href={business.phone.tel} class="phone inline-flex min-h-12 items-center text-white underline underline-offset-4" data-placement="footer-nap" data-location="footer">{business.phone.display}</a></p>
+          {email && <p><a href={`mailto:${email}`} class="inline-flex min-h-12 items-center break-all text-white underline underline-offset-4">{email}</a></p>}
+          <p>{tr.hoursDisplay}</p>
+        </address>
+        <ul class="mt-4">
+          <li>
+            <a href={business.gbp.directionsUrl} class={linkCls} data-event="directions_click" data-location="footer" rel="noopener" target="_blank">
+              <Icon name="navigation" class="mr-2 size-4" />{t.directions}
+            </a>
+          </li>
+          <li>
+            <a href={business.gbp.reviewsListUrl} class={linkCls} data-event="reviews_click" data-location="footer" rel="noopener" target="_blank">
+              <Icon name="star" class="mr-2 size-4" />{t.reviews}
+              {rating && <span class="ml-2 text-white">({t.rating(digits(lang, rating.rating), digits(lang, rating.count))})</span>}
+            </a>
+          </li>
+        </ul>
+        <ul class="mt-4 flex gap-2">
+          {
+            social.map((s) => (
+              <li>
+                <a href={s.href} class="flex size-12 items-center justify-center rounded-full border border-white/20 text-white transition hover:bg-white hover:text-(--ink)" rel="me noopener" target="_blank" aria-label={t.socialLabel(s.network)}>
+                  <Icon name={s.icon} class="size-5" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <nav aria-label="Footer" class="min-w-0 lg:col-span-4">
+        <div class="grid md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          {
+            columns.map((c) => (
+              <details class="ft-col group min-w-0 border-b border-white/10 md:border-0" data-ft-col>
+                <summary class={`flex min-h-12 cursor-pointer list-none items-center justify-between ${isBn ? 'font-body text-[15px]' : 'font-heading text-[13px]'} font-bold tracking-[0.08em] text-white uppercase md:pointer-events-none md:cursor-default [&::-webkit-details-marker]:hidden`}>
+                  {c.title}
+                  <Icon name="chevron-down" class="size-4 transition-transform group-open:rotate-180 md:hidden" />
+                </summary>
+                <ul class="pb-4 md:pb-0">
+                  {c.links.map((l) => (
+                    <li>
+                      <a href={l.href} class={linkCls}>
+                        <span>
+                          {l.label}
+                          {'key' in l && l.key === 'freezer' && t.freezerBn && <span lang="bn"> ({t.freezerBn})</span>}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                  {c.more && (
+                    <li>
+                      <a href={c.more.href} class={`${linkCls} font-semibold text-white`}>
+                        {c.more.label}
+                        <Icon name="arrow-right" class="ml-1.5 size-4" />
+                      </a>
+                    </li>
+                  )}
+                  {c.id === 'help' && otherLang && (
+                    <li>
+                      <a href={otherLang} class={linkCls} lang={isBn ? 'en' : 'bn'} hreflang={isBn ? 'en-BD' : 'bn-BD'}>
+                        {t.otherLang}
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </details>
+            ))
+          }
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- 3. Bottom bar -->
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-[1240px] flex-col gap-2 px-4 py-6 text-sm text-white/80 md:flex-row md:flex-wrap md:items-center md:justify-between md:px-6">
+      <p>© {digits(lang, new Date().getFullYear())} {business.name}</p>
+      {
+        legal.length > 0 && (
+          <ul class="flex flex-wrap gap-x-5">
+            {legal.map((l) => (
+              <li>
+                <a href={l.href} class={linkCls}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      {payments && payments.length > 0 && <p>{payments.join(' · ')}</p>}
+    </div>
+  </div>
+</footer>
+
+<script is:inline>
+  // From md up the link columns are always open. CSS (::details-content) covers new browsers;
+  // this covers the rest. Mobile keeps native, closed-by-default <details> (no JS needed).
+  (function () {
+    var mq = window.matchMedia('(min-width: 768px)');
+    var sync = function () {
+      document.querySelectorAll('[data-ft-col]').forEach(function (d) {
+        if (mq.matches) d.setAttribute('open', '');
+        else d.removeAttribute('open');
+      });
+    };
+    sync();
+    mq.addEventListener('change', sync);
+  })();
+</script>

@@ -12,7 +12,7 @@ import { business, copy, shown, services } from '../../data/business';
 import { homeEn as t } from '../../data/home';
 import { hp } from '../../data/homepage';
 import { warm as w } from '../../data/home-warm';
-import { getPhoto, photoSlots } from '../../lib/photos';
+import { getPhoto } from '../../lib/photos';
 interface Props {
   published: Set<string>;
 }
@@ -46,6 +46,7 @@ const [avif, webp] = photo
       getImage({ src: photo, widths: [1280, 1920], format: 'webp' }),
     ])
   : [];
+// Decorative backdrop under a dark veil: empty alt, so no text flashes while it loads.
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
 ---
 
@@ -56,7 +57,7 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
         <picture class="absolute inset-0 -z-30">
           <source media="(min-width: 768px)" type="image/avif" srcset={avif.srcSet.attribute} sizes="100vw" />
           <source media="(min-width: 768px)" type="image/webp" srcset={webp.srcSet.attribute} sizes="100vw" />
-          <img src={BLANK} alt={photoSlots.hero.alt} width={photo!.width} height={photo!.height} class="h-full w-full object-cover" fetchpriority="high" />
+          <img src={BLANK} alt="" decoding="async" width={photo!.width} height={photo!.height} class="h-full w-full object-cover" fetchpriority="high" />
         </picture>
       )
     }

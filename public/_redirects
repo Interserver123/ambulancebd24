@@ -13,3 +13,5 @@
 /sitemap_index.xml /sitemap-index.xml 301
 /post-sitemap.xml /sitemap-index.xml 301
 /page-sitemap.xml /sitemap-index.xml 301
+# Old single child sitemap (before the split into pages/services/locations/blog)
+/sitemap-0.xml /sitemap-index.xml 301

@@ -214,7 +214,14 @@ else {
   for (const p of indexable) if (!smUrls.has(p.canonical)) err(p.url, 'sitemap', 'indexable page missing from sitemap');
 }
 
-// robots.txt
+// robots.txt (public/robots.txt). Kept to rules only; the reasoning lives here:
+// - Everything else is crawlable, CSS/JS/fonts/images included: Google needs them to render pages.
+// - Noindex pages (404) stay crawlable so crawlers can see the noindex tag.
+// - ?utm_ URLs are not blocked: self-referencing canonicals consolidate them.
+// - AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended...) are allowed on purpose;
+//   their summary is /llms.txt.
+// - /cdn-cgi/ is Cloudflare internals (email obfuscation, Zaraz, challenges).
+// - Cloudflare "Managed robots.txt" and "Block AI bots" must stay OFF or they override this file.
 const robotsFile = join(DIST, 'robots.txt');
 if (!existsSync(robotsFile)) err('/robots.txt', 'robots', 'missing');
 else {

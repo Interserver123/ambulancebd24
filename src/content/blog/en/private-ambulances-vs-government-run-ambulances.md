@@ -2,8 +2,8 @@
 lang: en
 translationKey: private-ambulances-vs-government-run-ambulances
 slug: /private-ambulances-vs-government-run-ambulances/
-metaTitle: "Private Ambulances Vs. Government-Run Ambulances"
-metaDescription: "In Bangladesh, there is a debate about what kind of ambulance service provides better care for patients."
+metaTitle: "Private vs Government Ambulances in Bangladesh"
+metaDescription: "The pros and cons of private and government-run ambulance services in Bangladesh, and how to decide which one fits your patient's trip."
 h1: "Private Ambulances Vs. Government-Run Ambulances: Which Is Better?"
 author: "Ambulance BD 24 team"
 published: 2022-12-20

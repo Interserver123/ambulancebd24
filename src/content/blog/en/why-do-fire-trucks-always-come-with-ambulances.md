@@ -2,8 +2,8 @@
 lang: en
 translationKey: why-do-fire-trucks-always-come-with-ambulances
 slug: /why-do-fire-trucks-always-come-with-ambulances/
-metaTitle: "Why do fire trucks always come with ambulances?"
-metaDescription: "Fire trucks and ambulances are two of the most important vehicles used by emergency services."
+metaTitle: "Why Do Fire Trucks Come With Ambulances?"
+metaDescription: "Why fire trucks often arrive alongside ambulances at emergencies: shared training, extra hands, rescue equipment and how the crews work together."
 h1: "Why do fire trucks always come with ambulances?"
 author: "Ambulance BD 24 team"
 published: 2023-01-04

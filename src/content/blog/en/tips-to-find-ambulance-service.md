@@ -2,8 +2,8 @@
 lang: en
 translationKey: tips-to-find-ambulance-service
 slug: /tips-to-find-ambulance-service/
-metaTitle: "Tips to find Ambulance Service | Ambulance BD 24"
-metaDescription: "Emergency medical services (EMS) provide out-of-hospital acute care and transport to definitive care for seriously ill and injured patients."
+metaTitle: "Tips for Finding a Reliable Ambulance Service"
+metaDescription: "What to do when you need an ambulance, how to choose a service, what to expect on the day, and how ambulance fares are usually worked out."
 h1: "Tips to find Ambulance Service"
 author: "Ambulance BD 24 team"
 published: 2022-11-24

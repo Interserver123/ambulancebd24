@@ -2,8 +2,8 @@
 lang: en
 translationKey: understanding-the-role-of-intensive-care-units
 slug: /understanding-the-role-of-intensive-care-units/
-metaTitle: "Understanding the Role of Intensive Care Units"
-metaDescription: "Understanding the Role of Intensive Care Units Intensive Care Units (ICUs) are specialized hospital wards that provide treatment and monitoring for…"
+metaTitle: "What Is an ICU? The Role of Intensive Care Units"
+metaDescription: "What intensive care units do, the main ICU types, what happens inside one, how CCU differs from ICU, and when a patient needs intensive care."
 h1: "Understanding the Role of Intensive Care Units"
 author: "Ambulance BD 24 team"
 published: 2025-07-06

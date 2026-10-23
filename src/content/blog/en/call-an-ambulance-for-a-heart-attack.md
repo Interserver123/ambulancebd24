@@ -2,8 +2,8 @@
 lang: en
 translationKey: call-an-ambulance-for-a-heart-attack
 slug: /call-an-ambulance-for-a-heart-attack/
-metaTitle: "When Should You Call an Ambulance for a Heart Attack"
-metaDescription: "Call an ambulance immediately if someone experiences chest pain, discomfort, or other heart attack symptoms. Do not wait to see if symptoms dissipate."
+metaTitle: "When to Call an Ambulance for a Heart Attack"
+metaDescription: "Common heart attack warning signs and why you should call an ambulance at once instead of waiting. In Dhaka, call 999 or our 24/7 line."
 h1: "When Should You Call an Ambulance for a Heart Attack: Act Fast!"
 author: "Ambulance BD 24 team"
 published: 2023-12-08

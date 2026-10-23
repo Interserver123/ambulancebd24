@@ -2,8 +2,8 @@
 lang: en
 translationKey: does-medicare-cover-ambulance-services
 slug: /does-medicare-cover-ambulance-services/
-metaTitle: "Does Medicare Cover Ambulance Services? | Ambulance BD 24"
-metaDescription: "Introduction Medicare is a program that helps older adults and people with disabilities pay for health care services."
+metaTitle: "Does Medicare Cover Ambulance Rides? Part A vs Part B"
+metaDescription: "A plain guide to how US Medicare Part A and Part B treat emergency and non-emergency ambulance rides, and which plan pays in each case."
 h1: "Does Medicare Cover Ambulance Services?"
 author: "Ambulance BD 24 team"
 published: 2022-11-15

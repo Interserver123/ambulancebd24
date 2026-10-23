@@ -2,8 +2,8 @@
 lang: en
 translationKey: what-constitutes-a-medical-necessity
 slug: /what-constitutes-a-medical-necessity/
-metaTitle: "What constitutes a medical necessity for ambulance transport"
-metaDescription: "Hey there! Have you ever found yourself in a situation where you or a loved one suddenly needed urgent medical attention? It's a scary thought, right?"
+metaTitle: "When Is Ambulance Transport Medically Necessary?"
+metaDescription: "How doctors decide whether ambulance transport is medically necessary in Bangladesh, who pays, common myths, and how to prepare for the ambulance."
 h1: "What constitutes a medical necessity for ambulance transport"
 author: "Ambulance BD 24 team"
 published: 2025-07-22

@@ -2,8 +2,8 @@
 lang: en
 translationKey: list-of-ambulance-service-in-dhaka
 slug: /list-of-ambulance-service-in-dhaka/
-metaTitle: "List of ambulance service in dhaka, Bangladesh"
-metaDescription: "Types Of Ambulances In Bangladesh Ambulances are the most common and important vehicles used to transport patients."
+metaTitle: "Types of Ambulance Service in Dhaka, Bangladesh"
+metaDescription: "BLS, ALS, ICU (MICU), AC and other ambulance types used in Dhaka and Bangladesh, and which kind of patient trip each one is meant for."
 h1: "List of ambulance service in dhaka, Bangladesh"
 author: "Ambulance BD 24 team"
 published: 2022-11-02

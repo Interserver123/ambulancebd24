@@ -2,8 +2,8 @@
 lang: en
 translationKey: nicu-ambulances-available-247-in-dhaka
 slug: /nicu-ambulances-available-247-in-dhaka/
-metaTitle: "Are NICU Ambulances 24/7 Available in Dhaka?"
-metaDescription: "Yes, NICU ambulances are available 24/7 in Dhaka to transport critically ill neonates."
+metaTitle: "Are NICU Ambulances Available 24/7 in Dhaka?"
+metaDescription: "How round-the-clock NICU ambulance cover works in Dhaka, why night transfers are harder, and what parents can do to arrange one at any hour."
 h1: "Are NICU Ambulances 24/7 Available in Dhaka?"
 author: "Ambulance BD 24 team"
 published: 2025-07-27

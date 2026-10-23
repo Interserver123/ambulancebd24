@@ -2,8 +2,8 @@
 lang: en
 translationKey: essential-equipment-is-carried-by-ambulance-crews
 slug: /essential-equipment-is-carried-by-ambulance-crews/
-metaTitle: "What Essential Equipment Is Carried By Ambulance Crews To…"
-metaDescription: "Ambulance crews carry essential equipment, including medical kits, heart rhythm devices, oxygen and stretchers, to provide effective medical care."
+metaTitle: "Essential Equipment Carried by Ambulance Crews"
+metaDescription: "From oxygen and stretchers to airway, trauma and monitoring kits: the main equipment groups ambulance crews carry and what each one is for."
 h1: "What Essential Equipment Is Carried By Ambulance Crews To Provide Effective Medical Care?"
 author: "Ambulance BD 24 team"
 published: 2025-07-30

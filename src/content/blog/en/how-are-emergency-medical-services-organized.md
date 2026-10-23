@@ -2,8 +2,8 @@
 lang: en
 translationKey: how-are-emergency-medical-services-organized
 slug: /how-are-emergency-medical-services-organized/
-metaTitle: "How Are Emergency Medical Services Organized And Managed…"
-metaDescription: "Emergency medical services in Khulna are organized and managed by the Khulna district civil surgeon's office."
+metaTitle: "How Emergency Medical Services Work in Khulna"
+metaDescription: "Who runs emergency medical services in Khulna, how ambulances and hospitals coordinate, the main challenges, and ideas for improving response."
 h1: "How Are Emergency Medical Services Organized And Managed In Khulna?"
 author: "Ambulance BD 24 team"
 published: 2023-07-18

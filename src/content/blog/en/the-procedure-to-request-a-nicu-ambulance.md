@@ -2,8 +2,8 @@
 lang: en
 translationKey: the-procedure-to-request-a-nicu-ambulance
 slug: /the-procedure-to-request-a-nicu-ambulance/
-metaTitle: "Can You Provide Information on the Procedure to Request a…"
-metaDescription: "To request a NICU ambulance in Dhaka, you can contact the hospital where the infant is being treated."
+metaTitle: "How to Request a NICU Ambulance in Dhaka, Step by Step"
+metaDescription: "The steps to request a NICU ambulance in Dhaka: who to contact, the documents and details needed, and how to coordinate with the baby's doctors."
 h1: "Can You Provide Information on the Procedure to Request a NICU Ambulance in Dhaka? How to Get Help Fast"
 author: "Ambulance BD 24 team"
 published: 2023-12-24

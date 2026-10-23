@@ -2,8 +2,8 @@
 lang: en
 translationKey: why-you-need-air-ambulance-service
 slug: /why-you-need-air-ambulance-service/
-metaTitle: "10 Reasons that's why you need Air Ambulance service?"
-metaDescription: "When do you need an air ambulance? The answer is simple: when you need medical care quickly."
+metaTitle: "10 Reasons You May Need an Air Ambulance Service"
+metaDescription: "When an air ambulance makes sense, its benefits over a long road trip, and 10 situations where families in Bangladesh consider one."
 h1: "10 Reasons that's why you need Air Ambulance service?"
 author: "Ambulance BD 24 team"
 published: 2022-11-11

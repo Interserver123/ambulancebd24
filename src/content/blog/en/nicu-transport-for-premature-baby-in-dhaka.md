@@ -2,8 +2,8 @@
 lang: en
 translationKey: nicu-transport-for-premature-baby-in-dhaka
 slug: /nicu-transport-for-premature-baby-in-dhaka/
-metaTitle: "How Can I Access NICU Transport for Premature Baby in Dhaka?"
-metaDescription: "To access NICU transport for your premature baby in Dhaka, contact a local hospital with neonatal intensive care unit facilities."
+metaTitle: "NICU Transport for a Premature Baby in Dhaka: Guide"
+metaDescription: "Step-by-step guide for parents arranging NICU transport for a premature baby in Dhaka: options, what to check, and how to work with the hospital."
 h1: "How Can I Access NICU Transport for Premature Baby in Dhaka? A Complete Guide"
 author: "Ambulance BD 24 team"
 published: 2025-07-28

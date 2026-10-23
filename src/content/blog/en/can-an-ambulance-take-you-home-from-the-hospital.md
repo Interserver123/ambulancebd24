@@ -2,8 +2,8 @@
 lang: en
 translationKey: can-an-ambulance-take-you-home-from-the-hospital
 slug: /can-an-ambulance-take-you-home-from-the-hospital/
-metaTitle: "Can an ambulance take you home from the hospital?"
-metaDescription: "If you are injured or have a medical emergency, you may be able to get help from an ambulance."
+metaTitle: "Can an Ambulance Take You Home From the Hospital?"
+metaDescription: "When an ambulance is the right way home after discharge, who needs a stretcher on the journey, and how to arrange a hospital-to-home trip."
 h1: "Can an ambulance take you home from the hospital?"
 author: "Ambulance BD 24 team"
 published: 2023-01-21

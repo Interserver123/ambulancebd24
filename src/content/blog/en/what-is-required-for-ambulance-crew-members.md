@@ -2,8 +2,8 @@
 lang: en
 translationKey: what-is-required-for-ambulance-crew-members
 slug: /what-is-required-for-ambulance-crew-members/
-metaTitle: "What Training And Qualifications Are Required For…"
-metaDescription: "Ambulance crew members are required to have training and qualifications in emergency medical services."
+metaTitle: "Ambulance Crew Training and Qualifications Explained"
+metaDescription: "Education, BLS, ALS and trauma training, hands-on experience and fitness: what is generally required to work as an ambulance crew member."
 h1: "What Training And Qualifications Are Required For Ambulance Crew Members?"
 author: "Ambulance BD 24 team"
 published: 2023-12-10

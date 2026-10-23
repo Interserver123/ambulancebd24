@@ -2,8 +2,8 @@
 lang: en
 translationKey: what-certifications-are-required-for-ambulance-crew-members
 slug: /what-certifications-are-required-for-ambulance-crew-members/
-metaTitle: "What Certifications Are Essential for Ambulance Crews?"
-metaDescription: "Certifications Required for Ambulance Crew Members Ensuring the safety and well-being of patients during emergencies is a significant responsibility held…"
+metaTitle: "Certifications Ambulance Crews Need: A Clear Guide"
+metaDescription: "The core certifications ambulance crew members hold, specialty training on top, and why recertification and continuing education matter."
 h1: "What Certifications Are Essential for Ambulance Crews?"
 author: "Ambulance BD 24 team"
 published: 2023-12-08

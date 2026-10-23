@@ -2,8 +2,8 @@
 lang: en
 translationKey: ambulance-services-in-dhaka
 slug: /ambulance-services-in-dhaka/
-metaTitle: "Where Can I Find NICU Ambulance Services in Dhaka?"
-metaDescription: "NICU ambulance services in Dhaka can be found through hospitals or ambulance service providers in the city."
+metaTitle: "Where to Find a NICU Ambulance in Dhaka: Parents' Guide"
+metaDescription: "How parents in Dhaka find a NICU ambulance for a newborn: through the treating hospital or a provider, what to ask, and what to check before the transfer."
 h1: "Where Can I Find NICU Ambulance Services in Dhaka? : Expert Guide for Parents"
 author: "Ambulance BD 24 team"
 published: 2025-07-27

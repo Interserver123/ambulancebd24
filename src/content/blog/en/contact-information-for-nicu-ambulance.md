@@ -2,8 +2,8 @@
 lang: en
 translationKey: contact-information-for-nicu-ambulance
 slug: /contact-information-for-nicu-ambulance/
-metaTitle: "What is the Contact Information for NICU Ambulance…"
-metaDescription: "The contact information for NICU Ambulance Services in Dhaka is 01919-339689."
+metaTitle: "NICU Ambulance Dhaka: Contact Number and How to Book"
+metaDescription: "The number to call for a NICU ambulance in Dhaka, what the dispatcher will ask about your baby, and how the transfer is planned. 24/7: 01919-339689."
 h1: "What is the Contact Information for NICU Ambulance Services in Dhaka? : Fast and Reliable NICU Ambulance Services in Dhaka"
 author: "Ambulance BD 24 team"
 published: 2025-07-26

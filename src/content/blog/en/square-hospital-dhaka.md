@@ -2,8 +2,8 @@
 lang: en
 translationKey: square-hospital-dhaka
 slug: /square-hospital-dhaka/
-metaTitle: "Square Hospital Dhaka, Bangladesh | Ambulance BD 24"
-metaDescription: "All About Square Hospital The square hospital Dhaka is regarded as one of Dhaka's top ten private hospitals."
+metaTitle: "Square Hospital Dhaka: Location, Services and History"
+metaDescription: "An overview of Square Hospital in Panthapath, Dhaka: its history since 2006, main departments and services, and how to get a patient there."
 h1: "Square Hospital Dhaka, Bangladesh"
 author: "Ambulance BD 24 team"
 published: 2021-10-18

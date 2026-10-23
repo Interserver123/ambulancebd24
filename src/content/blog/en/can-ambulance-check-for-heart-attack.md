@@ -2,8 +2,8 @@
 lang: en
 translationKey: can-ambulance-check-for-heart-attack
 slug: /can-ambulance-check-for-heart-attack/
-metaTitle: "Can Ambulance Check for Heart Attack: Lifesaving Insights"
-metaDescription: "Ambulances are equipped to run initial diagnostics for a heart attack. Paramedics can perform an electrocardiogram (ECG) en route to the hospital."
+metaTitle: "Can an Ambulance Check for a Heart Attack? ECG Explained"
+metaDescription: "How ambulance crews assess a suspected heart attack: monitoring, the ECG and what can be done on the way to hospital, explained in plain words."
 h1: "Can Ambulance Check for Heart Attack: Lifesaving Insights"
 author: "Ambulance BD 24 team"
 published: 2025-07-22

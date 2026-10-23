@@ -2,8 +2,8 @@
 lang: en
 translationKey: how-much-does-an-ambulance-ride-cost-without-insurance
 slug: /how-much-does-an-ambulance-ride-cost-without-insurance/
-metaTitle: "How Much Does An Ambulance Ride Cost Without Insurance?"
-metaDescription: "The cost of medical care is one of the biggest health concerns in the United States today."
+metaTitle: "Ambulance Ride Cost Without Insurance in the US"
+metaDescription: "What drives the cost of an ambulance ride without insurance in the United States, how bills are worked out, and options if you have no cover."
 h1: "How Much Does An Ambulance Ride Cost Without Insurance?"
 author: "Ambulance BD 24 team"
 published: 2022-10-18

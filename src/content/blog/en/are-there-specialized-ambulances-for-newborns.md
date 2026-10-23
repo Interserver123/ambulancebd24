@@ -2,8 +2,8 @@
 lang: en
 translationKey: are-there-specialized-ambulances-for-newborns
 slug: /are-there-specialized-ambulances-for-newborns/
-metaTitle: "Are There Specialized Ambulances for Newborns in Dhaka?"
-metaDescription: "Yes, there are specialized ambulances for newborns in Dhaka, equipped with neonatal medical equipment and staffed by trained professionals."
+metaTitle: "Specialised Ambulances for Newborns in Dhaka Explained"
+metaDescription: "What makes a newborn ambulance different, the features parents should ask about, and how neonatal transport works in Dhaka today."
 h1: "Are There Specialized Ambulances for Newborns in Dhaka? Discover the Lifesaving Services!"
 author: "Ambulance BD 24 team"
 published: 2025-07-25

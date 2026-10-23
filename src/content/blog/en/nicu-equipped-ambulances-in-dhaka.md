@@ -2,8 +2,8 @@
 lang: en
 translationKey: nicu-equipped-ambulances-in-dhaka
 slug: /nicu-equipped-ambulances-in-dhaka/
-metaTitle: "What Equipment is Available in NICU-Equipped Ambulances in…"
-metaDescription: "Nicu-equipped ambulances in Dhaka are equipped with essential medical equipment such as breathing support, warming units, monitors, and portable oxygen."
+metaTitle: "What Equipment Is in a NICU Ambulance in Dhaka?"
+metaDescription: "Breathing support, warming, monitoring and oxygen: the equipment parents should ask about in a NICU ambulance, and why each item matters."
 h1: "What Equipment is Available in NICU-Equipped Ambulances in Dhaka? : Enhancing Neonatal Emergency Care"
 author: "Ambulance BD 24 team"
 published: 2025-07-24

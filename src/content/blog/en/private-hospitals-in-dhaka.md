@@ -2,8 +2,8 @@
 lang: en
 translationKey: private-hospitals-in-dhaka
 slug: /private-hospitals-in-dhaka/
-metaTitle: "Top 10 private hospitals in Dhaka, Bangladesh"
-metaDescription: "Medical science has improved with time. Many private hospitals have been founded in Dhaka."
+metaTitle: "10 Well-Known Private Hospitals in Dhaka, Bangladesh"
+metaDescription: "A short guide to 10 well-known private hospitals in Dhaka, including Square, Evercare, United, LABAID and BIRDEM, with what each one is known for."
 h1: "Top 10 private hospitals in Dhaka, Bangladesh"
 author: "Ambulance BD 24 team"
 published: 2021-10-07

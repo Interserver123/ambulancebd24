@@ -2,8 +2,8 @@
 lang: en
 translationKey: technology-used-for-ambulance-in-bangladesh
 slug: /technology-used-for-ambulance-in-bangladesh/
-metaTitle: "Technology Used for Ambulance in Bangladesh"
-metaDescription: "Introduction Technology has become an integral part of everyday life, providing us with the tools to make life easier, faster, and more efficient."
+metaTitle: "Technology Used in Ambulance Services in Bangladesh"
+metaDescription: "GPS, phone dispatch, monitoring devices and more: the technology used by ambulance services in Bangladesh, its benefits and its challenges."
 h1: "Technology Used for Ambulance in Bangladesh"
 author: "Ambulance BD 24 team"
 published: 2023-02-19

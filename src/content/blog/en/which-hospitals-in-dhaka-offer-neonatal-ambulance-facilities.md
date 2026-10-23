@@ -2,8 +2,8 @@
 lang: en
 translationKey: which-hospitals-in-dhaka-offer-neonatal-ambulance-facilities
 slug: /which-hospitals-in-dhaka-offer-neonatal-ambulance-facilities/
-metaTitle: "Which Hospitals in Dhaka Offer Neonatal Ambulance…"
-metaDescription: "Some hospitals in Dhaka that provide neonatal ambulance facilities include Apollo Hospitals, Square Hospitals, and United Hospital."
+metaTitle: "Hospitals in Dhaka With Neonatal Ambulance Facilities"
+metaDescription: "Dhaka hospitals known for neonatal ambulance facilities, how to judge a newborn transport service, and how families can get access to one."
 h1: "Which Hospitals in Dhaka Offer Neonatal Ambulance Facilities? Top Picks!"
 author: "Ambulance BD 24 team"
 published: 2025-07-25

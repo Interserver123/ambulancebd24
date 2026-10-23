@@ -2,8 +2,8 @@
 lang: en
 translationKey: are-there-any-emergency-medical-services
 slug: /are-there-any-emergency-medical-services/
-metaTitle: "Are There Any Emergency Medical Services Specifically for…"
-metaDescription: "Yes, Dhaka has specialized emergency medical services for newborns, including neonatal units and pediatric hospitals."
+metaTitle: "Emergency Medical Services for Newborns in Dhaka"
+metaDescription: "Neonatal units, pediatric emergency departments and newborn transport in Dhaka: what exists, the gaps families face, and where support comes from."
 h1: "Are There Any Emergency Medical Services Specifically for Newborns in Dhaka? : Expert Care for Newborns in Dhaka"
 author: "Ambulance BD 24 team"
 published: 2025-07-26

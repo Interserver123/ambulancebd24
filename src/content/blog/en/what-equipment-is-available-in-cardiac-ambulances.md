@@ -2,8 +2,8 @@
 lang: en
 translationKey: what-equipment-is-available-in-cardiac-ambulances
 slug: /what-equipment-is-available-in-cardiac-ambulances/
-metaTitle: "What Equipment is Available in Cardiac Ambulances?"
-metaDescription: "Cardiac ambulances come equipped with heart rhythm devices and ECG machines."
+metaTitle: "Cardiac Ambulance Equipment: What's on Board?"
+metaDescription: "Heart monitoring, ECG and cardiac life-support kit: the equipment groups a cardiac ambulance usually carries and what each one is used for."
 h1: "What Equipment is Available in Cardiac Ambulances? Vital Lifesavers Unveiled"
 author: "Ambulance BD 24 team"
 published: 2025-07-24

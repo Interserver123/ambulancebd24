@@ -2,8 +2,8 @@
 lang: en
 translationKey: about-ad-din-hospitals-ambulance-service-khulna
 slug: /about-ad-din-hospitals-ambulance-service-khulna/
-metaTitle: "All about ad din hospital's ambulance service Khulna"
-metaDescription: "Ad Din Hospital's ambulance service in Khulna is an essential component of their healthcare offerings, providing a rapid and reliable response in…"
+metaTitle: "Ad-din Hospital Khulna Ambulance Service: A Guide"
+metaDescription: "What Ad-din Hospital in Khulna offers by ambulance, how families request it, and how to arrange a road transfer from Khulna to a Dhaka hospital."
 h1: "All about ad din hospital's ambulance service Khulna"
 author: "Ambulance BD 24 team"
 published: 2023-04-20

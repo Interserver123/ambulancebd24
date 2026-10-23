@@ -2,8 +2,8 @@
 lang: en
 translationKey: importance-of-icu-ambulance
 slug: /importance-of-icu-ambulance/
-metaTitle: "The Importance & Necessity Of ICU Ambulance"
-metaDescription: "Nowadays, there are an increasing number of accidents and injuries that take place in Dhaka, the most prominent city in Bangladesh."
+metaTitle: "Why ICU Ambulances Matter in Dhaka"
+metaDescription: "What an ICU ambulance is, when a patient needs one for a transfer in Dhaka, its benefits, and the challenges in keeping care consistent on the road."
 h1: "The Importance & Necessity Of ICU Ambulance"
 author: "Ambulance BD 24 team"
 published: 2023-01-26

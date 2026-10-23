@@ -199,7 +199,11 @@ else {
   for (const m of readFileSync(smIndex, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)) {
     const file = join(DIST, new URL(m[1]).pathname);
     if (!existsSync(file)) err('/sitemap-index.xml', 'sitemap', `child sitemap missing: ${m[1]}`);
-    else for (const u of readFileSync(file, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)) smUrls.add(u[1]);
+    else
+      for (const u of readFileSync(file, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)) {
+        if (smUrls.has(u[1])) err(u[1], 'sitemap', 'listed more than once');
+        smUrls.add(u[1]);
+      }
   }
   for (const u of smUrls) {
     const page = byUrl.get(new URL(u).pathname);

@@ -17,6 +17,8 @@ interface Props {
   widths?: number[];
   /** true for an above-the-fold image */
   priority?: boolean;
+  /** Just below the fold: load right away (slow first visits), without fetchpriority=high */
+  eager?: boolean;
   /** Placeholder on a dark background */
   dark?: boolean;
   /** Language of the page (infographic text). */
@@ -24,7 +26,7 @@ interface Props {
   /** Freezer Van voice: the infographic avoids "patient" wording and the red hotline. */
   calm?: boolean;
 }
-const { slot, class: cls = '', sizes = '100vw', widths = [480, 800, 1200], priority = false, dark = false, lang = 'en', calm = false } = Astro.props;
+const { slot, class: cls = '', sizes = '100vw', widths = [480, 800, 1200], priority = false, eager = false, dark = false, lang = 'en', calm = false } = Astro.props;
 const img = getPhoto(slot);
 const meta = photoSlots[slot];
 const isDev = import.meta.env.DEV;
@@ -38,9 +40,10 @@ const isDev = import.meta.env.DEV;
       formats={['avif', 'webp']}
       widths={widths}
       sizes={sizes}
-      loading={priority ? 'eager' : 'lazy'}
+      loading={priority || eager ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
-      class={`h-full w-full object-cover ${cls}`}
+      decoding="async"
+      class={`h-full w-full bg-(--tint) object-cover ${cls}`}
       pictureAttributes={{ class: 'contents' }}
     />
   ) : hasInfographic(slot) && (lang === 'en' || bnInfographicSlots.includes(slot)) ? (

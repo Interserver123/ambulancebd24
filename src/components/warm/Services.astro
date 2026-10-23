@@ -37,7 +37,7 @@ const sizes = '(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw';
         cards.map((c, i) => (
           <li id={`ambulance-${c.key}`} class={`reveal group scroll-mt-32 ${shift[i % shift.length]}`}>
             <div class={`${frames[i % frames.length]} relative aspect-[4/3] overflow-hidden soft-shadow`}>
-              <PhotoSlot slot={c.key as PhotoSlotKey} sizes={sizes} class="transition-transform duration-700 group-hover:scale-105 motion-reduce:transform-none" />
+              <PhotoSlot slot={c.key as PhotoSlotKey} sizes={sizes} eager={i < 2} class="transition-transform duration-700 group-hover:scale-105 motion-reduce:transform-none" />
             </div>
             <div class="px-2 pt-6">
               <h3>{c.title}</h3>

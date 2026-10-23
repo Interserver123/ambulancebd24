@@ -12,6 +12,7 @@ export const panchagarhPage = buildDistrictPage({
     upazilas: [{ name: 'Panchagarh Sadar' }, { name: 'Boda' }, { name: 'Debiganj' }, { name: 'Atwari' }, { name: 'Tetulia' }],
   }),
   mentions: [{ type: 'Place', name: 'Panchagarh District', sameAs: 'https://en.wikipedia.org/wiki/Panchagarh_District' }],
+  metaDescription: 'Ambulance from Panchagarh, Tetulia, Boda or Debiganj to Dhaka, planned with you for the long road south. 24/7, fare agreed first: {phone}.',
   lede: 'Need an ambulance from Panchagarh to a Dhaka hospital? Panchagarh is at the northern tip of Bangladesh, one of the longest routes from Dhaka. We plan the trip with you, pick up in town, Tetulia, Boda or Debiganj, and agree the full fare first.',
   serviceFact: 'Panchagarh town, Tetulia, Boda, Debiganj and Atwari to Dhaka or any district, and the long road home after treatment.',
   routeFact: 'South through Rangpur and Bogura on the northern highway, over the Jamuna Bridge.',

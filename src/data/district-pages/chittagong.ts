@@ -30,6 +30,7 @@ export const chittagongPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Chittagong', sameAs: 'https://en.wikipedia.org/wiki/Chittagong' }],
+  metaDescription: 'Ambulance from Chittagong (Chattogram) to Dhaka on the N1 highway, or to any district. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Chittagong (Chattogram) to a Dhaka hospital, or to another district? We collect from any part of the port city or the upazilas around it, drive the Dhaka–Chattogram highway, and tell you the full fare before we leave.',
   serviceFact: 'Chattogram city and its upazilas to Dhaka or any district; patients returning from Dhaka to Chattogram; loved ones taken home.',
   routeFact: 'The Dhaka–Chattogram highway (N1), through Feni, Cumilla and over the Meghna Bridge.',

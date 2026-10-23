@@ -13,6 +13,7 @@ export const benapolePage = buildDistrictPage({
     upazilas: [{ name: 'Benapole town' }, { name: 'Sharsha' }, { name: 'Jhikargachha' }, { name: 'Jashore Sadar' }],
   }),
   mentions: [{ type: 'City', name: 'Benapole', sameAs: 'https://en.wikipedia.org/wiki/Benapole' }],
+  metaDescription: 'Ambulance at Benapole land port for patients returning from India, to Dhaka or any district. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Crossing back from India at Benapole with a patient, or bringing a loved one home through the land port? We meet you on the Bangladesh side of the Benapole border and drive to Dhaka or any district, with the full fare agreed before we leave.',
   serviceFact: 'Patients arriving from India through the Benapole land port, taken to a hospital in Dhaka or home to any district.',
   routeFact: 'From Benapole to Jashore, then through Narail, the Kalna bridge, Bhanga and the Padma Bridge.',

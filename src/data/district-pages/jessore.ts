@@ -23,6 +23,7 @@ export const jessorePage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Jessore', sameAs: 'https://en.wikipedia.org/wiki/Jessore' }],
+  metaDescription: 'Ambulance from Jessore (Jashore) to Dhaka via the Kalna and Padma bridges, or any district. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Jessore (Jashore) to a Dhaka hospital, or to another district? We pick up in Jashore town and every upazila, drive to Dhaka over the Padma Bridge, and tell you the full fare before we leave.',
   serviceFact: 'Jashore town and its eight upazilas to Dhaka or any district, including patients coming back from India via Benapole.',
   routeFact: 'Through Narail and the Kalna bridge over the Madhumati, then Bhanga and the Padma Bridge.',

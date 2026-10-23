@@ -28,6 +28,7 @@ export const barisalPage = buildDistrictPage({
     { type: 'City', name: 'Barisal', sameAs: 'https://en.wikipedia.org/wiki/Barisal' },
     { type: 'Place', name: 'Padma Bridge', sameAs: 'https://en.wikipedia.org/wiki/Padma_Bridge' },
   ],
+  metaDescription: 'Ambulance from Barisal (Barishal) to Dhaka over the Padma Bridge, or to any district. {vehicles}, 24/7. Fare told first. Call {phone}.',
   lede: 'Need an ambulance from Barisal (Barishal) to a Dhaka hospital, or to another district? Since the Padma Bridge opened, the road is the usual way to move a patient. We collect from the hospital or home in Barisal and tell you the full fare before we leave.',
   serviceFact: "Referrals from Barishal city and the river upazilas to Dhaka hospitals, transfers to other districts, and trips home to Barisal after treatment.",
   routeFact: 'By road over the Padma Bridge, through Bhanga and Gournadi. No launch or ferry needed for most of the district.',

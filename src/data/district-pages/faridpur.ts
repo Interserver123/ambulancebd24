@@ -23,6 +23,7 @@ export const faridpurPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Faridpur', sameAs: 'https://en.wikipedia.org/wiki/Faridpur' }],
+  metaDescription: 'Ambulance from Faridpur or Bhanga to Dhaka via the expressway and Padma Bridge. {vehicles}, 24/7. Fare told first. Call {phone}.',
   lede: 'Need an ambulance from Faridpur to a Dhaka hospital? With the Padma Bridge and the Bhanga expressway, Faridpur is now a short road trip from Dhaka. We pick up in Faridpur town or any upazila and agree the full fare first.',
   serviceFact: "Faridpur town, Bhanga and the eastern upazilas to Dhaka or any district, and home to Faridpur after discharge.",
   routeFact: 'From Faridpur town to Bhanga, then the expressway and the Padma Bridge into Dhaka.',

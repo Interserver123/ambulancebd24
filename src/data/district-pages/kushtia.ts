@@ -13,6 +13,7 @@ export const kushtiaPage = buildDistrictPage({
     upazilas: [{ name: 'Kushtia Sadar' }, { name: 'Kumarkhali' }, { name: 'Khoksa' }, { name: 'Mirpur' }, { name: 'Bheramara' }, { name: 'Daulatpur' }],
   }),
   mentions: [{ type: 'City', name: 'Kushtia', sameAs: 'https://en.wikipedia.org/wiki/Kushtia' }],
+  metaDescription: 'Ambulance from Kushtia, Kumarkhali or Bheramara to Dhaka via the Padma or Jamuna crossing. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Kushtia to a Dhaka hospital? We pick up in Kushtia town, Kumarkhali, Bheramara or anywhere in the district, take the road the dispatcher plans for the day, and agree the full fare first.',
   serviceFact: 'Kushtia town and its six upazilas to Dhaka or any district, and the trip home after treatment in Dhaka.',
   routeFact: 'Kushtia has more than one road to Dhaka: via Rajbari and the Padma crossing, or north via the Lalon Shah bridge and the Jamuna Bridge.',

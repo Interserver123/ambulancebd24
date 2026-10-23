@@ -26,6 +26,7 @@ export const rajshahiPage = buildDistrictPage({
     { type: 'City', name: 'Rajshahi', sameAs: 'https://en.wikipedia.org/wiki/Rajshahi' },
     { type: 'Place', name: 'Jamuna Bridge', sameAs: 'https://en.wikipedia.org/wiki/Bangabandhu_Bridge' },
   ],
+  metaDescription: 'Ambulance from Rajshahi city or any upazila to Dhaka via Natore and the Jamuna Bridge. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Rajshahi to a Dhaka hospital? We collect patients from the medical college area, the city or any upazila, cross the Jamuna Bridge to Dhaka, and tell you the full fare before the ambulance leaves.',
   serviceFact: 'Rajshahi city and its nine upazilas to Dhaka or any district, and the journey home after treatment.',
   routeFact: 'East through Natore and Sirajganj, over the Jamuna Bridge, then through Tangail into Dhaka.',

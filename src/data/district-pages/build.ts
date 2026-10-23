@@ -46,6 +46,12 @@ export interface DistrictInput {
   admin: string;
   /** Wikipedia places mentioned on the page. */
   mentions: { type: 'City' | 'Place'; name: string; sameAs: string }[];
+  /**
+   * Unique meta description with a local detail (route, towns), used once pickup in the district
+   * is verified. Placeholders: {vehicles} (follows the ICU flag) and {phone} (from business.ts).
+   * Falls back to the shared template if it does not fit 155 characters.
+   */
+  metaDescription?: string;
   lede: string;
   /** Key-facts "Service" line, in the district's own words (who calls, where they go). */
   serviceFact: string;
@@ -105,6 +111,7 @@ export function buildDistrictPage(d: DistrictInput): DistrictPage {
         : fitTitle([`${kwTitle} from Dhaka${brand}`, `${kwTitle}${brand}`]),
     metaDescription: fromDistrict
       ? fitDescription([
+          ...(d.metaDescription ? [d.metaDescription.replaceAll('{vehicles}', cap(short)).replaceAll('{phone}', phone)] : []),
           `${keyword}: pickup from hospital or home, to Dhaka or any district, 24/7. ${short}. Fare told first. Call ${phone}.`,
           `${keyword}: pickup to Dhaka or any district, 24/7. ${short}. Fare told first. Call ${phone}.`,
         ])

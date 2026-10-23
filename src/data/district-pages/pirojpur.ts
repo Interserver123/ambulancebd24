@@ -20,6 +20,7 @@ export const pirojpurPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'Place', name: 'Pirojpur District', sameAs: 'https://en.wikipedia.org/wiki/Pirojpur_District' }],
+  metaDescription: 'Ambulance from Pirojpur, Swarupkathi, Nazirpur or Bhandaria to Dhaka via the Padma Bridge. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Pirojpur to a Dhaka hospital, or from Swarupkathi, Nazirpur or Bhandaria? We pick up in Pirojpur, drive to Dhaka or any district, and tell you the full fare before the ambulance leaves.',
   serviceFact: "Pickups across Pirojpur, from Swarupkathi to Bhandaria, to Dhaka or any district, and trips home after discharge.",
   routeFact: 'Through Bhanga and over the Padma Bridge. The road inside the district depends on the upazila.',

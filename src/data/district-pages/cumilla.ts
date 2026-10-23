@@ -28,6 +28,7 @@ export const cumillaPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Comilla', sameAs: 'https://en.wikipedia.org/wiki/Comilla' }],
+  metaDescription: 'Ambulance from Cumilla (Comilla), Daudkandi or Laksam to Dhaka over the Meghna Bridge. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Cumilla (Comilla) to a Dhaka hospital? Cumilla is on the Dhaka–Chattogram highway, one of the nearer district routes. We pick up in the city or any upazila and tell you the full fare before we leave.',
   serviceFact: 'Cumilla city, Daudkandi, Laksam and the other upazilas to Dhaka or any district, and the trip home after treatment.',
   routeFact: 'North on the Dhaka–Chattogram highway (N1), through Daudkandi and over the Meghna Bridge.',

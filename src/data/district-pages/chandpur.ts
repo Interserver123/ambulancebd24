@@ -22,6 +22,7 @@ export const chandpurPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Chandpur', sameAs: 'https://en.wikipedia.org/wiki/Chandpur' }],
+  metaDescription: 'Chandpur ambulance by road to Dhaka from Chandpur town, Hajiganj, Matlab or Kachua. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Chandpur to a Dhaka hospital? Many people still think of Chandpur as a launch journey, but a patient on a stretcher travels better by road. We pick up in Chandpur town, Hajiganj, Matlab or Kachua, and agree the full fare first.',
   serviceFact: 'Chandpur town and its upazilas to Dhaka or any district by road, and home to Chandpur after treatment.',
   routeFact: 'By road through Cumilla district to the Dhaka–Chattogram highway. The dispatcher confirms the road for your upazila.',

@@ -22,6 +22,7 @@ export const rangpurPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Rangpur', sameAs: 'https://en.wikipedia.org/wiki/Rangpur_City' }],
+  metaDescription: 'Ambulance from Rangpur city or any upazila to Dhaka via Bogura and the Jamuna Bridge. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Rangpur to a Dhaka hospital? It is a long road south over the Jamuna, and the patient deserves to lie down the whole way. We pick up in Rangpur city or any upazila and agree the full fare first.',
   serviceFact: 'Rangpur city and its eight upazilas to Dhaka or any district, and the long trip home after treatment.',
   routeFact: 'South on the Dhaka–Rangpur highway through Pirganj and Bogura, over the Jamuna Bridge.',

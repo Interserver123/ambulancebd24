@@ -15,6 +15,7 @@ export const madaripurPage = buildDistrictPage({
     { type: 'Place', name: 'Madaripur District', sameAs: 'https://en.wikipedia.org/wiki/Madaripur_District' },
     { type: 'Place', name: 'Padma Bridge', sameAs: 'https://en.wikipedia.org/wiki/Padma_Bridge' },
   ],
+  metaDescription: 'Ambulance from Madaripur, Shibchar, Kalkini or Rajoir to Dhaka over the Padma Bridge. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Madaripur to a Dhaka hospital? Madaripur sits just across the Padma Bridge, one of the shortest district routes from Dhaka. We pick up in Shibchar, Madaripur town, Kalkini or Rajoir, and tell you the full fare first.',
   serviceFact: "Referrals and same-day treatment trips from Madaripur to Dhaka, transfers to other districts, and trips home.",
   routeFact: 'Over the Padma Bridge and along the expressway through Shibchar.',

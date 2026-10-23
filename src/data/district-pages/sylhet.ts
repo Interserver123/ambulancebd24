@@ -32,6 +32,7 @@ export const sylhetPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Sylhet', sameAs: 'https://en.wikipedia.org/wiki/Sylhet' }],
+  metaDescription: 'Ambulance from Sylhet city or any upazila to Dhaka via Moulvibazar and Bhairab. {vehicles}, 24/7. Fare told first. Call {phone}.',
   lede: 'Need an ambulance from Sylhet to a Dhaka hospital, or for a parent in Sylhet while you live abroad? We pick up in Sylhet city or any upazila, drive the Dhaka–Sylhet highway, and tell you the full fare before we leave.',
   serviceFact: 'Sylhet city and its upazilas to Dhaka or any district, and the trip home to Sylhet after treatment.',
   routeFact: 'The Dhaka–Sylhet highway, through Moulvibazar and Habiganj districts, over the Meghna at Bhairab and through Narsingdi.',

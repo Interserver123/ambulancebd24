@@ -23,6 +23,7 @@ export const noakhaliPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'Place', name: 'Noakhali District', sameAs: 'https://en.wikipedia.org/wiki/Noakhali_District' }],
+  metaDescription: 'Ambulance from Maijdee, Chowmuhani or Begumganj in Noakhali to Dhaka or any district. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Noakhali to a Dhaka hospital? We collect patients in Maijdee, Chowmuhani, Begumganj and across the district, drive to Dhaka or any other district, and agree the full fare before the ambulance leaves.',
   serviceFact: 'Maijdee, Chowmuhani and the Noakhali upazilas to Dhaka or any district, and the trip home after treatment.',
   routeFact: 'Through Chowmuhani to the Dhaka–Chattogram highway, then north via Cumilla.',

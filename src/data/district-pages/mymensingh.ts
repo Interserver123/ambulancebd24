@@ -27,6 +27,7 @@ export const mymensinghPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Mymensingh', sameAs: 'https://en.wikipedia.org/wiki/Mymensingh' }],
+  metaDescription: 'Ambulance from Mymensingh, Trishal or Bhaluka to Dhaka on the four-lane highway. {vehicles}, 24/7. Fare told first. Call {phone}.',
   lede: 'Need an ambulance from Mymensingh to a Dhaka hospital? Mymensingh is one of the closer district routes, straight down the four-lane highway through Bhaluka and Gazipur. We pick up in the city or any upazila and agree the full fare first.',
   serviceFact: 'Mymensingh city and its upazilas, from Bhaluka to Haluaghat, to Dhaka or any district; and home after treatment.',
   routeFact: 'The Dhaka–Mymensingh highway, through Trishal, Bhaluka and Gazipur.',

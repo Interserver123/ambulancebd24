@@ -12,6 +12,7 @@ export const gopalganjPage = buildDistrictPage({
     upazilas: [{ name: 'Gopalganj Sadar' }, { name: 'Kashiani' }, { name: 'Muksudpur' }, { name: 'Kotalipara' }, { name: 'Tungipara' }],
   }),
   mentions: [{ type: 'Place', name: 'Gopalganj District', sameAs: 'https://en.wikipedia.org/wiki/Gopalganj_District,_Bangladesh' }],
+  metaDescription: 'Ambulance from Gopalganj, Kashiani, Muksudpur or Tungipara to Dhaka or Khulna. {vehicles}, 24/7. Fare told first: {phone}.',
   lede: 'Need an ambulance from Gopalganj to a Dhaka hospital? Gopalganj sits on the Dhaka–Khulna highway, past Bhanga. We collect the patient in Gopalganj town, Kashiani, Muksudpur, Kotalipara or Tungipara, and agree the full fare first.',
   serviceFact: "Gopalganj to Dhaka, to Khulna along the same highway, or to any district; and home to Gopalganj after treatment.",
   routeFact: 'Along the Dhaka–Khulna highway through Bhanga, then over the Padma Bridge.',

@@ -13,6 +13,7 @@ export const jhalokatiPage = buildDistrictPage({
     upazilas: [{ name: 'Jhalokati Sadar' }, { name: 'Nalchity' }, { name: 'Rajapur' }, { name: 'Kathalia' }],
   }),
   mentions: [{ type: 'Place', name: 'Jhalokati District', sameAs: 'https://en.wikipedia.org/wiki/Jhalokati_District' }],
+  metaDescription: 'Ambulance from Jhalokati, Nalchity, Rajapur or Kathalia to Dhaka via Barishal and the Padma Bridge. 24/7, fare told first: {phone}.',
   lede: 'Need an ambulance from Jhalokati to a Dhaka hospital, or to Barishal on the way? We collect the patient in Jhalokati town, Nalchity, Rajapur or Kathalia, drive to Dhaka or any district, and agree the full fare before we leave.',
   serviceFact: "Jhalokati town, Nalchity, Rajapur and Kathalia to Dhaka or any district, plus the journey home after treatment.",
   routeFact: 'Through Barishal and Bhanga, then over the Padma Bridge into Dhaka.',

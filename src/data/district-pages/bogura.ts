@@ -27,6 +27,7 @@ export const boguraPage = buildDistrictPage({
     ],
   }),
   mentions: [{ type: 'City', name: 'Bogra', sameAs: 'https://en.wikipedia.org/wiki/Bogra' }],
+  metaDescription: 'Ambulance from Bogura (Bogra) to Dhaka via the Jamuna Bridge, from town or any upazila. {vehicles}, 24/7. Fare first: {phone}.',
   lede: 'Need an ambulance from Bogura (Bogra) to a Dhaka hospital, or further north? Bogura is the gateway to the north on the Dhaka–Rangpur highway. We pick up in town or any upazila and tell you the full fare first.',
   serviceFact: 'Bogura town and its twelve upazilas to Dhaka or any district, and patients coming home to Bogura after treatment.',
   routeFact: 'South on the Dhaka–Rangpur highway through Sherpur, over the Jamuna Bridge, then through Tangail.',

@@ -119,8 +119,8 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
         <CallButton placement="hero" size="lg" class="w-full justify-center sm:w-auto" />
         {
           wa && (
-            <a href={wa.url} class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-whatsapp py-2.5 pr-6 pl-2.5 font-heading text-[19px] font-bold tracking-tight sm:w-auto sm:pr-8 sm:text-xl whitespace-nowrap text-white no-underline shadow-[0_18px_40px_-18px_rgb(31_138_76/0.9)] transition hover:-translate-y-0.5 hover:brightness-95" data-placement="hero" rel="noopener">
-              <span class="flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-whatsapp"><Icon name="whatsapp" class="size-7" /></span>
+            <a href={wa.url} class="inline-flex w-full max-w-full items-center justify-center gap-3 rounded-full bg-whatsapp py-2.5 pr-5 pl-2.5 font-heading text-[17px] font-bold tracking-tight sm:w-auto sm:pr-8 sm:text-xl sm:whitespace-nowrap text-white no-underline shadow-[0_18px_40px_-18px_rgb(31_138_76/0.9)] transition hover:-translate-y-0.5 hover:brightness-95" data-placement="hero" rel="noopener">
+              <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-whatsapp sm:size-14"><Icon name="whatsapp" class="size-5 sm:size-7" /></span>
               {copy.cta.whatsapp.en}
             </a>
           )

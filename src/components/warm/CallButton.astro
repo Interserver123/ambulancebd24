@@ -18,13 +18,13 @@ const big = size === 'lg';
 <a
   href={business.phone.tel}
   lang={lang}
-  class={`cta-call ${calm ? 'cta-calm' : ''} group inline-flex max-w-full items-center gap-3 rounded-full bg-call text-white no-underline ${big ? 'py-2.5 pr-6 pl-2.5 text-lg sm:pr-8 sm:text-xl' : 'py-2 pr-5 pl-2 text-base sm:pr-6 sm:text-lg'} ${cls}`}
+  class={`cta-call ${calm ? 'cta-calm' : ''} group inline-flex max-w-full items-center gap-3 rounded-full bg-call text-white no-underline ${big ? 'py-2.5 pr-5 pl-2.5 text-[17px] sm:pr-8 sm:text-xl' : 'py-2 pr-5 pl-2 text-base sm:pr-6 sm:text-lg'} ${cls}`}
   data-placement={placement}
   data-magnetic={calm ? undefined : ''}
 >
-  <span class={`flex shrink-0 items-center justify-center rounded-full bg-white text-call ${big ? 'size-14' : 'size-11'}`}>
-    <Icon name="phone" class={`${calm ? '' : 'ringing'} ${big ? 'size-7' : 'size-5'}`} />
+  <span class={`flex shrink-0 items-center justify-center rounded-full bg-white text-call ${big ? 'size-11 sm:size-14' : 'size-11'}`}>
+    <Icon name="phone" class={`${calm ? '' : 'ringing'} ${big ? 'size-5 sm:size-7' : 'size-5'}`} />
   </span>
   <span class={`font-semibold tracking-tight ${lang === 'bn' ? 'font-body' : 'font-heading sm:whitespace-nowrap'}`}>{label}</span>
-  {!calm && <Icon name="arrow-right" class="go size-5 opacity-80" />}
+  {!calm && <Icon name="arrow-right" class="go hidden size-5 opacity-80 sm:block" />}
 </a>

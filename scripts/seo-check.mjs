@@ -244,7 +244,8 @@ if (existsSync(redirFile)) {
     if (!['301', '308'].includes(code)) warn(from, 'redirect', `status ${code} (permanent moves should be 301)`);
     if (exists.has(from)) err(from, 'redirect', 'source is also a live page');
     if (map.has(to)) err(from, 'redirect', `chain: ${from} -> ${to} -> ${map.get(to)}`);
-    if (to.startsWith('/') && !exists.has(to.split(/[?#]/)[0])) err(from, 'redirect', `target ${to} does not exist`);
+    const target = to.split(/[?#]/)[0];
+    if (to.startsWith('/') && !exists.has(target) && !assetPaths.has(target)) err(from, 'redirect', `target ${to} does not exist`);
     if (from === to) err(from, 'redirect', 'loop');
   }
 }

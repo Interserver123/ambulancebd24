@@ -70,6 +70,11 @@ export const GET: APIRoute = async () => {
     '## Profiles',
     '',
     ...business.sameAs.map((u) => `- ${u}`),
+    `- Google Maps: ${business.gbp.mapsUrl}`,
+    '',
+    '## Site index',
+    '',
+    `- Sitemap (every indexable page): ${abs('/sitemap-index.xml')}`,
     '',
   ].join('\n');
 

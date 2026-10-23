@@ -1,0 +1,37 @@
+---
+/**
+ * Visible breadcrumbs for every non-home page. Same items feed BreadcrumbList schema
+ * (pass them to breadcrumbLd), so the two always match.
+ */
+import Icon from '../Icon.astro';
+export interface Crumb {
+  name: string;
+  /** Site path with trailing slash. */
+  path: string;
+}
+interface Props {
+  items: Crumb[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-8">
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px]">
+    {
+      items.map((c, i) => (
+        <li class="flex items-center gap-2">
+          {i > 0 && <Icon name="arrow-right" class="size-3.5 text-(--gray)" />}
+          {i < items.length - 1 ? (
+            <a href={c.path} class="text-(--blue-ink) underline decoration-(--blue)/30 underline-offset-4 hover:decoration-(--blue)">
+              {c.name}
+            </a>
+          ) : (
+            <span aria-current="page" class="text-(--gray-ink)">
+              {c.name}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

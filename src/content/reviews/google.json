@@ -1,0 +1,47 @@
+[
+  {
+    "id": "sumon-babu",
+    "author": "Sumon Babu",
+    "text": "Their team was professional and prompt during a critical situation. They ensured a smooth transport to the hospital.",
+    "stars": 5,
+    "source": "Google",
+    "tags": ["emergency"],
+    "approved": false
+  },
+  {
+    "id": "md-ali-hossain",
+    "author": "Md. Ali Hossain",
+    "text": "Last week I got a road accident when I call them they give fast service in mirpur Dhaka.",
+    "stars": 5,
+    "source": "Google",
+    "tags": ["emergency", "mirpur"],
+    "approved": false
+  },
+  {
+    "id": "mushfiq-sajid",
+    "author": "Mushfiq Sajid",
+    "text": "Ambulance BD is fast and its available in 24 hours.",
+    "stars": 5,
+    "source": "Google",
+    "tags": ["emergency"],
+    "approved": false
+  },
+  {
+    "id": "shaik-mohammad-ajijul-islam",
+    "author": "Shaik Mohammad Ajijul Islam",
+    "text": "They assisted me in reaching the nearest hospital in Mirpur promptly.",
+    "stars": 5,
+    "source": "Google",
+    "tags": ["emergency", "mirpur"],
+    "approved": false
+  },
+  {
+    "id": "md-showkat",
+    "author": "Md Showkat",
+    "text": "Best icu ambulance service Ambulance bd24",
+    "stars": 5,
+    "source": "Google",
+    "tags": ["icu"],
+    "approved": false
+  }
+]

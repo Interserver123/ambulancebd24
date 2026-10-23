@@ -1,0 +1,35 @@
+---
+/** Quiet block. Bangla first, condolence first, no "fast", no emojis, no motion. */
+import PhotoSlot from '../PhotoSlot.astro';
+import CallButton from './CallButton.astro';
+import { getService } from '../../data/business';
+import { homeEn as t } from '../../data/home';
+interface Props {
+  published: Set<string>;
+}
+const { published } = Astro.props;
+// The Bangla link goes to the Bangla page once it exists, otherwise to the English page.
+const enPath = getService('freezer').path;
+const bnPath = `/bn${enPath}`;
+const path = published.has(bnPath) ? bnPath : enPath;
+const linkable = published.has(path);
+---
+
+<section class="py-20 md:py-24">
+  <div class="mx-auto grid max-w-[1140px] items-center gap-10 px-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-5 lg:self-stretch">
+      <div class="blob-c aspect-[4/3] h-full overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[300px]">
+        <PhotoSlot slot="freezer" sizes="(min-width: 1024px) 440px, 100vw" />
+      </div>
+    </div>
+    <div class="rounded-[40px] bg-(--card) p-8 soft-shadow md:p-12 lg:col-span-7 lg:-ml-16">
+      <h2 lang="bn" class="text-[1.75rem]! leading-snug! md:text-4xl!">{t.freezer.h2Bn}</h2>
+      <p lang="bn" class="mt-5 text-lg text-(--ink)">{t.freezer.bodyBn}</p>
+      <p class="mt-4">{t.freezer.bodyEn}</p>
+      <div class="mt-8 flex flex-col items-start gap-5">
+        <CallButton placement="freezer-block" label={t.freezer.cta} lang="bn" calm />
+        {linkable && <a href={path} lang="bn" class="font-body font-medium text-(--blue-ink) underline underline-offset-4">{t.freezer.link}</a>}
+      </div>
+    </div>
+  </div>
+</section>

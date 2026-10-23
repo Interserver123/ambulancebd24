@@ -1,0 +1,96 @@
+---
+/**
+ * Infographic stand-ins for photo slots that have no real photo yet (PhotoSlot falls back to these).
+ * Inline SVG in brand tokens: text stays real text, nothing to download, no stock or AI images.
+ * A real photo in src/assets/photos/ always wins over the infographic.
+ * Every line here must pass the content rules: no prices, times, equipment or crew claims.
+ */
+import RouteMap from './RouteMap.astro';
+import BaseMap from './BaseMap.astro';
+import IcuDecision from './IcuDecision.astro';
+import StepsGraphic, { type Step } from './StepsGraphic.astro';
+import { business } from '../../data/business';
+import { hasInfographic, type InfographicSlot } from '../../lib/infographics';
+
+interface Props {
+  slot: InfographicSlot;
+  lang?: 'en' | 'bn';
+  /** Freezer Van voice: no "patient" wording, hotline in ink. */
+  calm?: boolean;
+}
+const { slot, lang = 'en', calm = false } = Astro.props;
+const phone = business.phone.display;
+
+/** "When you call us" (cta slot), per language and voice. Bangla: Bangla digits except the phone. */
+const callSteps: Record<'en' | 'bn', { title: string; steps: Step[] }> = {
+  en: {
+    title: 'When you call us',
+    steps: [
+      { icon: 'phone', lines: ['Call any time,', 'day or night'] },
+      calm
+        ? { icon: 'pin', lines: ['Tell us the pickup', 'and the destination'] }
+        : { icon: 'pin', lines: ['Share the location and', "the patient's condition"] },
+      { icon: 'receipt', lines: ['We tell you the fare', calm ? 'before we leave' : 'before we dispatch'] },
+    ],
+  },
+  bn: {
+    title: 'কল করলে যা হয়',
+    steps: [
+      { icon: 'phone', lines: ['দিনে বা রাতে,', 'যেকোনো সময় কল করুন'] },
+      calm
+        ? { icon: 'pin', lines: ['কোথা থেকে, কোথায় যাবেন', 'জানান'] }
+        : { icon: 'pin', lines: ['লোকেশন আর রোগীর', 'অবস্থা জানান'] },
+      { icon: 'receipt', lines: ['রওনার আগেই', 'ভাড়া জানিয়ে দিই'] },
+    ],
+  },
+};
+const call = callSteps[lang];
+const callLabel = `${call.title}: ${call.steps.map((st) => st.lines.join(' ')).join('; ')}. ${phone}`;
+---
+
+<div class="h-full w-full bg-(--tint)" data-infographic={hasInfographic(slot) ? slot : undefined}>
+  {slot === 'inter-district' && <RouteMap />}
+  {slot === 'base' && <BaseMap lang={lang} />}
+  {slot === 'icu-interior' && <IcuDecision />}
+  {
+    slot === 'cta' && (
+      <StepsGraphic
+        title={[call.title]}
+        steps={call.steps}
+        hotline={phone}
+        label={callLabel}
+        lang={lang}
+        calm={calm}
+      />
+    )
+  }
+  {
+    slot === 'air' && (
+      <StepsGraphic
+        layout="row"
+        title={['How an air ambulance', 'transfer works']}
+        steps={[
+          { icon: 'ambulance', lines: ['Ground ambulance', 'to the airport'] },
+          { icon: 'plane', lines: ['Flight arranged through', 'an aviation operator'] },
+          { icon: 'building', lines: ['Ground ambulance', 'to the hospital'] },
+        ]}
+        note="Our ground ambulance at both ends."
+        label="How an air ambulance transfer works: a ground ambulance to the airport, a flight arranged through an aviation operator, then a ground ambulance to the hospital. Our ground ambulance at both ends."
+      />
+    )
+  }
+  {
+    slot === 'icu-equipment' && (
+      <StepsGraphic
+        title={['How an ICU transfer works']}
+        steps={[
+          { icon: 'heart-pulse', lines: ['The treating doctor', 'advises ICU support'] },
+          { icon: 'phone', lines: ['Call with the hospital,', 'the ward and the destination'] },
+          { icon: 'receipt', lines: ['We confirm the vehicle', 'and the fare first'] },
+          { icon: 'route', lines: ['Hospital to hospital'] },
+        ]}
+        label="How an ICU transfer works: the treating doctor advises ICU support; call with the hospital, the ward and the destination; we confirm the vehicle and the fare first; then hospital to hospital."
+      />
+    )
+  }
+</div>

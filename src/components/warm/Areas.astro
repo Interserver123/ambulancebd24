@@ -1,0 +1,99 @@
+---
+/** Pebble chips + a hand-drawn style map of Dhaka around the Mohakhali base (illustrative, no third-party request). */
+import Icon from '../Icon.astro';
+import { business } from '../../data/business';
+import { homeEn as t } from '../../data/home';
+import { hp } from '../../data/homepage';
+import { warm as w } from '../../data/home-warm';
+interface Props {
+  areaPages: Map<string, string>;
+  districtPages: Map<string, string>;
+}
+const { areaPages, districtPages } = Astro.props;
+const c = hp.coverage;
+const hints = new Map(c.areas.map((a) => [a.name, a.hint]));
+const areas = t.areas.dhaka.map((name) => ({ name, hint: hints.get(name), href: areaPages.get(name), anchor: t.areas.areaAnchor(name) }));
+const districts = t.areas.districts.map((name) => ({ name, href: districtPages.get(name), anchor: t.areas.districtAnchor(name) }));
+const tints = ['bg-(--card)', 'bg-(--gray-soft)', 'bg-(--card)', 'bg-(--blue-soft)', 'bg-(--card)', 'bg-(--tint)'];
+---
+
+<section id="areas" class="relative scroll-mt-28 py-20 md:py-28">
+  <div class="mx-auto grid max-w-[1240px] gap-14 px-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-7">
+      <p class="eyebrow-warm">{w.areas.eyebrow}</p>
+      <h2 class="mt-4">{w.areas.h2Lead} <em>{w.areas.h2Accent}</em></h2>
+      <p class="mt-6 max-w-2xl text-lg">{t.areas.body}</p>
+
+      <h3 class="mt-12">{t.areas.dhakaH3}</h3>
+      <ul class="mt-5 flex flex-wrap gap-2.5">
+        {
+          areas.map((a, i) => (
+            <li>
+              {a.href ? (
+                <a href={a.href} class={`inline-flex min-h-12 items-center gap-2 rounded-full ${tints[i % tints.length]} border border-(--line) px-5 font-medium text-(--ink) no-underline transition hover:-translate-y-0.5`}>
+                  {a.anchor}
+                </a>
+              ) : (
+                <span class={`inline-flex min-h-12 items-center gap-2 rounded-full ${tints[i % tints.length]} border border-(--line) px-5 py-2 text-(--ink)`} title={a.hint}>
+                  <Icon name="pin" class="size-4 shrink-0 text-(--blue-ink)" />
+                  <span>
+                    {a.name}
+                    {a.hint && <span class="hidden text-xs text-(--body) sm:inline"> · {a.hint}</span>}
+                  </span>
+                </span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3 id="districts" class="mt-10 scroll-mt-32">{t.areas.districtsH3}</h3>
+      <ul class="mt-5 flex flex-wrap gap-2.5">
+        {
+          districts.map((d) =>
+            d.href ? (
+              <li>
+                <a href={d.href} class="inline-flex min-h-12 items-center gap-2 rounded-full border border-(--line) bg-(--card) px-5 font-medium text-(--ink) no-underline">
+                  {d.anchor}
+                </a>
+              </li>
+            ) : (
+              <li class="inline-flex min-h-12 items-center gap-2 rounded-full border border-dashed border-(--ink)/20 px-5 text-(--ink)">
+                <Icon name="route" class="size-4 text-(--gray-ink)" />
+                {d.name}
+              </li>
+            ),
+          )
+        }
+      </ul>
+      <p class="serif mt-6 text-xl text-(--blue-ink) italic">{t.areas.anyDistrict}</p>
+    </div>
+
+    <figure class="lg:col-span-5 lg:pt-24">
+      <div class="blob-d relative aspect-[4/5] overflow-hidden bg-(--gray-soft) soft-shadow" role="img" aria-label="Illustrated map of Dhaka areas around the Mohakhali dispatch base">
+        <svg class="absolute inset-0 h-full w-full text-(--gray-ink) opacity-25" viewBox="0 0 400 500" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M-20 140C80 80 160 200 260 140s140-40 180 0M-20 300c90-50 170 60 260 10s130-60 180-20M60 -10c-20 110 50 200 20 300s20 160 0 220M300 -10c30 120-40 210 0 300s-10 140 10 220" fill="none" stroke="currentColor" stroke-width="2"></path>
+        </svg>
+        {
+          c.mapLabels.map((l) => (
+            <span class="absolute -translate-x-1/2 -translate-y-1/2 text-xs whitespace-nowrap text-(--ink)/75 md:text-sm" style={`left:${l.x}%;top:${l.y}%`}>
+              {l.name}
+            </span>
+          ))
+        }
+        <span class="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center" style={`left:${c.basePos.x}%;top:${c.basePos.y}%`}>
+          <span class="blob-a flex size-12 items-center justify-center bg-(--card) text-(--blue-ink) soft-shadow"><Icon name="pin" class="size-6" /></span>
+          <span class="serif mt-1.5 text-base text-(--ink)">Mohakhali</span>
+          <span class="text-[11px] text-(--gray-ink) italic">{c.base}</span>
+        </span>
+      </div>
+      <figcaption class="mt-4 flex flex-wrap items-center justify-between gap-2">
+        <span class="text-xs text-(--body) italic">{c.mapNote}</span>
+        <a href={business.gbp.mapsUrl} class="inline-flex items-center gap-2 font-medium text-(--blue-ink) underline decoration-(--blue)/40 underline-offset-4" rel="noopener">
+          {t.areas.mapLink}
+          <Icon name="arrow-right" class="size-4" />
+        </a>
+      </figcaption>
+    </figure>
+  </div>
+</section>

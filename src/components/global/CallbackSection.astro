@@ -1,0 +1,48 @@
+---
+/** Call-back form as its own section (contact page): what happens next on the left, the form on the right. */
+import Icon from '../Icon.astro';
+import CallbackForm from './CallbackForm.astro';
+import { business } from '../../data/business';
+interface Props {
+  eyebrow: string;
+  h2Lead: string;
+  h2Accent: string;
+  text: string;
+  points: string[];
+  urgent: string;
+  formTitle: string;
+  source: string;
+}
+const { eyebrow, h2Lead, h2Accent, text, points, urgent, formTitle, source } = Astro.props;
+---
+
+<section id="callback" class="relative scroll-mt-28 py-20 md:py-28">
+  <div class="mx-auto grid max-w-[1240px] gap-10 px-4 md:px-6 lg:grid-cols-12 lg:gap-14 [&>*]:min-w-0">
+    <div class="lg:col-span-5">
+      <p class="eyebrow-warm">{eyebrow}</p>
+      <h2 class="mt-4">{h2Lead} <em>{h2Accent}</em></h2>
+      <p class="mt-6 text-lg">{text}</p>
+      <ul class="mt-8 space-y-4">
+        {
+          points.map((p) => (
+            <li class="flex gap-4 text-(--ink)">
+              <span class="blob-a flex size-9 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="check" class="size-4" /></span>
+              <span class="pt-1">{p}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <a href={business.phone.tel} class="pebble mt-10 flex items-center gap-4 rounded-[28px] bg-(--card) p-5 no-underline" data-placement="contact-form-urgent">
+        <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-call text-white"><Icon name="phone" class="ringing size-5" /></span>
+        <span>
+          <span class="block text-[15px]">{urgent}</span>
+          <span class="phone serif block text-2xl text-call">{business.phone.display}</span>
+        </span>
+      </a>
+    </div>
+    <div class="rounded-[40px] bg-(--card) p-7 soft-shadow md:p-12 lg:col-span-7">
+      <h3>{formTitle}</h3>
+      <CallbackForm source={source} />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,59 @@
+---
+/**
+ * Sideways links to sibling services, plus a link up to the homepage.
+ * A card links to the service page once it exists, otherwise to its card on the homepage.
+ */
+import Icon from '../Icon.astro';
+import { getService } from '../../data/business';
+import type { ServicePage } from '../../data/service-pages/schema';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  rel: NonNullable<ServicePage['related']>;
+  published: Set<string>;
+  lang?: Lang;
+  /** Repeated across pages by design (ambulance-type cards on district pages). */
+  shared?: boolean;
+}
+const { rel, published, lang = 'en', shared = false } = Astro.props;
+const icons = { nicu: 'baby', ac: 'fan', 'inter-district': 'route', icu: 'heart-pulse', freezer: 'snow', air: 'plane' } as const;
+// Only confirmed services (e.g. Non-AC waits until verified).
+const cards = rel.items.filter((it) => getService(it.key).status === 'fact').map((it) => {
+  const s = getService(it.key);
+  return {
+    ...it,
+    // Bangla pages link to the Bangla version of a service once it exists.
+    href: lang === 'bn' && published.has(`/bn${s.path}`) ? `/bn${s.path}` : published.has(s.path) ? s.path : `/#ambulance-${it.key}`,
+    icon: icons[it.key as keyof typeof icons] ?? 'ambulance',
+  };
+});
+---
+
+<section class="relative py-20 md:py-28" data-shared={shared ? '' : undefined}>
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <p class="eyebrow-warm">{rel.eyebrow}</p>
+    <h2 class="mt-4">{rel.h2Lead} <em>{rel.h2Accent}</em></h2>
+    {rel.intro && <p class="mt-6 max-w-3xl text-xl text-(--ink)">{rel.intro}</p>}
+    <ul class:list={['mt-12 grid gap-6', cards.length <= 2 ? 'md:grid-cols-2' : 'md:grid-cols-3']} data-shared>
+      {
+        cards.map((c, i) => (
+          <li class={i % 2 ? 'md:mt-8' : ''}>
+            <a href={c.href} class="pebble group flex h-full flex-col rounded-[32px] bg-(--card) p-7 no-underline">
+              <span class={`${i % 2 ? 'blob-b' : 'blob-a'} flex size-14 items-center justify-center bg-(--blue-soft) text-(--blue-ink)`}>
+                <Icon name={c.icon} class="size-6" />
+              </span>
+              <span class="serif mt-6 block text-2xl text-(--ink)">{c.anchor}</span>
+              <span class="mt-2.5 block grow">{c.text}</span>
+              <span class="mt-6 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
+                <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-10 text-lg">
+      {rel.homeLead}{' '}
+      <a href="/" class="font-medium text-(--blue-ink) underline underline-offset-4">{rel.homeAnchor}</a>{ui[lang].stop}
+    </p>
+  </div>
+</section>

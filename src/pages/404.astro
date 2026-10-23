@@ -1,0 +1,141 @@
+---
+/**
+ * 404 page. Cloudflare Pages serves dist/404.html with a real 404 status for any unknown URL.
+ * SEO: noindex, follow; no canonical; not in the sitemap. CRO: anyone who lands here may
+ * need an ambulance now, so the hotline (Call + WhatsApp) comes first, then every service,
+ * then the main pages, NAP + map and the final call banner.
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import CallButton from '../components/warm/CallButton.astro';
+import Final from '../components/warm/Final.astro';
+import { business, copy, services, shown } from '../data/business';
+import { publishedPaths } from '../lib/routes';
+
+import type { IconName } from '../components/Icon.astro';
+
+const pub = await publishedPaths('en');
+const wa = shown(business.whatsapp);
+
+const icons = { icu: 'heart-pulse', nicu: 'baby', ac: 'fan', 'non-ac': 'wind', freezer: 'snow', 'inter-district': 'route', air: 'navigation' } as const;
+const blurbs: Partial<Record<keyof typeof icons, string>> = {
+  icu: 'When the doctor advises ICU support on the way.',
+  nicu: 'For a newborn moving to a NICU at another hospital.',
+  ac: 'Emergencies, discharge, check-ups and trips home.',
+  freezer: 'Taking a loved one home with respect.',
+  'inter-district': 'Dhaka to any district and back.',
+  air: 'When the distance is too far by road.',
+};
+const serviceCards = services
+  .filter((s) => s.status === 'fact' && s.key in icons)
+  .map((s) => ({
+    label: s.en,
+    href: pub.all.has(s.path) ? s.path : `/#ambulance-${s.key}`,
+    icon: icons[s.key as keyof typeof icons],
+    text: blurbs[s.key as keyof typeof icons] ?? '',
+  }));
+
+const link = (label: string, href: string, icon: IconName) => ({ label, href, icon });
+const quickLinks = [
+  link('Homepage', '/', 'ambulance'),
+  ...(pub.all.has('/contact/') ? [link('Contact us', '/contact/', 'phone')] : []),
+  link('How a call works', '/#how', 'headset'),
+  link('Areas we serve', '/#areas', 'pin'),
+  link('Fares', '/#fare', 'receipt'),
+  link('Questions', '/#faq', 'check'),
+];
+---
+
+<SiteLayout
+  title="Page not found | Ambulance BD 24"
+  description={`Sorry, this page does not exist. Need an ambulance in Dhaka? Call ${business.phone.display}, 24/7, or find our ambulance services here.`}
+  path="/404/"
+  noindex
+  mainClass="svc"
+  nap={{ eyebrow: 'Find us', h2Lead: 'Our dispatch', h2Accent: 'base', body: 'You never need to come to the base. Call, and the ambulance comes to you.' }}
+>
+  <section class="px-3 pt-4 md:px-6 md:pt-6">
+    <div class="relative isolate mx-auto max-w-[1400px] overflow-hidden rounded-[36px] bg-(--ink) text-white md:rounded-[64px]">
+      <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_8%_0%,rgb(80_112_252/0.28),transparent_45%),radial-gradient(circle_at_100%_100%,rgb(80_112_252/0.18),transparent_40%)]"></div>
+      <!-- Branded "404" watermark -->
+      <span class="serif pointer-events-none absolute -right-4 -bottom-10 -z-10 text-[11rem] leading-none text-white/[0.05] select-none md:text-[20rem]" aria-hidden="true">404</span>
+
+      <div class="mx-auto grid max-w-[1240px] items-center gap-10 px-4 py-10 md:px-10 md:py-14 lg:grid-cols-12 lg:gap-10 [&>*]:min-w-0">
+        <div class="lg:col-span-7">
+          <p class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/85">
+            <span class="size-2.5 rounded-full bg-(--blue)"></span>
+            404 · Page not found
+          </p>
+          <h1 class="mt-6 text-white!">Sorry, we can't find that page</h1>
+          <p class="mt-5 max-w-xl text-lg text-white/80">
+            The link may be old or mistyped. If someone needs an ambulance right now, don't keep searching. Call us: a dispatcher answers 24/7.
+          </p>
+
+          <p class="mt-8 text-sm text-white/60">{business.hours.display}</p>
+          <a href={business.phone.tel} class="phone serif mt-1 inline-block text-[2.6rem] leading-tight text-white no-underline hover:underline md:text-[3.4rem]" data-placement="404-number">
+            {business.phone.display}
+          </a>
+
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <CallButton placement="404-hero" class="w-full justify-center sm:w-auto" />
+            {
+              wa && (
+                <a href={wa.url} class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-whatsapp py-2 pr-6 pl-2 font-heading text-[19px] font-bold tracking-tight whitespace-nowrap text-white no-underline shadow-[0_18px_40px_-18px_rgb(31_138_76/0.9)] transition hover:-translate-y-0.5 hover:brightness-95 sm:w-auto" data-placement="404-hero" rel="noopener">
+                  <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-whatsapp"><Icon name="whatsapp" class="size-5" /></span>
+                  {copy.cta.whatsapp.en}
+                </a>
+              )
+            }
+          </div>
+        </div>
+
+        <nav class="lg:col-span-5" aria-labelledby="nf-links">
+          <div class="pebble rounded-[32px] bg-(--card) p-7 text-(--body) md:p-8">
+            <p id="nf-links" class="serif text-2xl text-(--ink)">Looking for something else?</p>
+            <ul class="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {
+                quickLinks.map((l) => (
+                  <li>
+                    <a href={l.href} class="flex min-h-12 items-center gap-3 rounded-2xl px-3 py-2 font-medium text-(--ink) no-underline transition hover:bg-(--tint) hover:text-(--blue-ink)">
+                      <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-(--blue-soft) text-(--blue-ink)"><Icon name={l.icon} class="size-4" /></span>
+                      {l.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative py-20 md:py-28">
+    <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+      <p class="eyebrow-warm">Our ambulances</p>
+      <h2 class="mt-4">Which ambulance <em>do you need?</em></h2>
+      <p class="mt-5 max-w-2xl text-lg">Not sure? Call and describe the patient. The dispatcher matches the vehicle and tells you the fare first.</p>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          serviceCards.map((c, i) => (
+            <li>
+              <a href={c.href} class="pebble group flex h-full flex-col rounded-[32px] bg-(--card) p-7 no-underline">
+                <span class={`${i % 2 ? 'blob-b' : 'blob-a'} flex size-14 items-center justify-center bg-(--blue-soft) text-(--blue-ink)`}>
+                  <Icon name={c.icon} class="size-6" />
+                </span>
+                <span class="serif mt-6 block text-2xl text-(--ink)">{c.label}</span>
+                <span class="mt-2.5 block grow">{c.text}</span>
+                <span class="mt-6 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
+                  See {c.label}
+                  <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Final slot="end" h2Lead="Need an ambulance" h2Accent="now?" text="Call and tell us where you are. We tell you the fare and send the nearest available ambulance." placement="404-final" showForm={false} />
+</SiteLayout>

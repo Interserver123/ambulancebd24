@@ -1,0 +1,117 @@
+---
+/**
+ * Proof block. Equipment, crew roles and vehicle photos render only from verified
+ * vehicles (src/data/vehicles.ts). The buyer checklist always renders: it makes no claim
+ * about us, so it is marked data-not-a-claim for the content linter.
+ */
+import Icon from '../Icon.astro';
+import PhotoSlot from '../PhotoSlot.astro';
+import { business } from '../../data/business';
+import type { ServicePage } from '../../data/service-pages/schema';
+import type { Vehicle } from '../../data/vehicles';
+import { photoSlots, type PhotoSlotKey } from '../../lib/photos';
+import { digits, type Lang } from '../../data/ui';
+interface Props {
+  proof: NonNullable<ServicePage['proof']>;
+  vehicles: Vehicle[];
+  /** Fills the left column next to the checklist while no verified vehicle is listed. */
+  photo: PhotoSlotKey;
+  lang?: Lang;
+}
+const { proof, vehicles, photo, lang = 'en' } = Astro.props;
+const vehicleName = (v: Vehicle) => (lang === 'bn' && v.nameBn) || v.name;
+// Freezer Van facts (cabin type, family seats) as short chips, from verified vehicles only.
+const facts = (v: Vehicle) => [
+  ...(v.cabin && proof.cabinLabels ? [proof.cabinLabels[v.cabin]] : []),
+  ...(v.familySeats && proof.seatsLine ? [proof.seatsLine.replace('{n}', digits(lang, v.familySeats))] : []),
+];
+const isSlot = (s: string): s is PhotoSlotKey => s in photoSlots;
+const opsLine = proof.opsCheck && business.claims[proof.opsCheck.claim] ? proof.opsCheck.text : undefined;
+---
+
+<section class="relative pb-20 md:pb-28">
+  <div class="relative mx-auto grid max-w-[1240px] gap-12 px-4 md:px-6 lg:grid-cols-12 [&>*]:min-w-0">
+    <div class="lg:col-span-5 lg:flex lg:flex-col">
+      <h2>{proof.h2}</h2>
+      {
+        opsLine && (
+          <p class="mt-6 inline-flex items-center gap-3 rounded-full bg-(--blue-soft) px-5 py-2.5 font-medium text-(--ink)">
+            <Icon name="check" class="size-5 text-(--blue-ink)" />
+            {opsLine}
+          </p>
+        )
+      }
+      {
+        vehicles.length === 0 ? (
+          <>
+            <p class="mt-6 text-lg">{proof.pending}</p>
+            <div class="blob-c mt-8 aspect-[4/3] overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[240px] lg:flex-1">
+              <PhotoSlot slot={photo} sizes="(min-width: 1024px) 460px, 100vw" />
+            </div>
+          </>
+        ) : (
+          vehicles.map((v) => (
+            <div class="mt-8">
+              <h3>{vehicleName(v)}</h3>
+              {facts(v).length > 0 && (
+                <ul class="mt-4 flex flex-wrap gap-2">
+                  {facts(v).map((f) => (
+                    <li class="rounded-full bg-(--blue-soft) px-4 py-2 text-(--ink)">{f}</li>
+                  ))}
+                </ul>
+              )}
+              {v.photos.filter(isSlot).length > 0 && (
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                  {v.photos.filter(isSlot).map((p) => (
+                    <div class="aspect-[4/3] overflow-hidden rounded-[22px]">
+                      <PhotoSlot slot={p} sizes="(min-width: 1024px) 220px, 50vw" widths={[400, 600]} />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {v.equipment.length > 0 && (
+                <>
+                  <p class="mt-6 font-semibold text-(--ink)">{proof.equipmentH3}</p>
+                  <ul class="mt-3 flex flex-wrap gap-2">
+                    {v.equipment.map((e) => (
+                      <li class="rounded-full bg-(--card) px-4 py-2 text-(--ink)">{e}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {v.crew.length > 0 && (
+                <>
+                  <p class="mt-6 font-semibold text-(--ink)">{proof.crewH3}</p>
+                  <ul class="mt-3 flex flex-wrap gap-2">
+                    {v.crew.map((c) => (
+                      <li class="rounded-full bg-(--card) px-4 py-2 text-(--ink)">{c}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          ))
+        )
+      }
+    </div>
+
+    <div class="lg:col-span-6 lg:col-start-7">
+      <div class="pebble rounded-[40px] bg-(--card) p-7 md:p-10">
+        <h3>{proof.checklistH3}</h3>
+        <ul class="mt-6 space-y-4" data-not-a-claim>
+          {
+            proof.checklist.map((q) => (
+              <li class="flex gap-4 text-lg text-(--ink)">
+                <span class="blob-a flex size-9 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)">
+                  <Icon name="check" class="size-4" />
+                </span>
+                <span class="pt-1">{q}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="serif mt-8 text-xl text-(--blue-ink) italic">{proof.checklistClose}</p>
+      </div>
+    </div>
+  </div>
+</section>

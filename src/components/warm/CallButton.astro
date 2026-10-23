@@ -1,0 +1,30 @@
+---
+/** Red call CTA: the phone rings on hover, a sheen sweeps across, it presses in, and follows the pointer slightly. */
+import Icon from '../Icon.astro';
+import { business, copy } from '../../data/business';
+interface Props {
+  placement: string;
+  size?: 'md' | 'lg';
+  label?: string;
+  lang?: string;
+  class?: string;
+  /** No ringing, no arrow, no pointer-follow: Freezer Van (the deck says this button never animates). */
+  calm?: boolean;
+}
+const { placement, size = 'md', label = copy.cta.call.en, lang, class: cls = '', calm = false } = Astro.props;
+const big = size === 'lg';
+---
+
+<a
+  href={business.phone.tel}
+  lang={lang}
+  class={`cta-call ${calm ? 'cta-calm' : ''} group inline-flex items-center gap-3 rounded-full bg-call text-white no-underline ${big ? 'py-2.5 pr-6 pl-2.5 text-lg sm:pr-8 sm:text-xl' : 'py-2 pr-5 pl-2 text-base sm:pr-6 sm:text-lg'} ${cls}`}
+  data-placement={placement}
+  data-magnetic={calm ? undefined : ''}
+>
+  <span class={`flex shrink-0 items-center justify-center rounded-full bg-white text-call ${big ? 'size-14' : 'size-11'}`}>
+    <Icon name="phone" class={`${calm ? '' : 'ringing'} ${big ? 'size-7' : 'size-5'}`} />
+  </span>
+  <span class={`font-semibold tracking-tight ${lang === 'bn' ? 'font-body' : 'font-heading whitespace-nowrap'}`}>{label}</span>
+  {!calm && <Icon name="arrow-right" class="go size-5 opacity-80" />}
+</a>

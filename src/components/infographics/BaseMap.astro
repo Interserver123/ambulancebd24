@@ -1,0 +1,96 @@
+---
+/**
+ * Base map: a to-scale sketch of central Dhaka (real coordinates) with the dispatch base pinned.
+ * Address, hours and Plus Code come from business.ts. No response-time rings or distance claims.
+ */
+import { business } from '../../data/business';
+import { bnDigits } from '../../data/ui';
+
+interface Props {
+  lang?: 'en' | 'bn';
+}
+const { lang = 'en' } = Astro.props;
+const bn = lang === 'bn';
+const t = bn
+  ? {
+      title: 'আমাদের বেস',
+      locality: 'মহাখালী',
+      line2: `ঢাকা ${bnDigits(business.address.postalCode)}`,
+      hours: ['২৪ ঘণ্টা খোলা,', 'সপ্তাহে ৭ দিন'],
+      plus: undefined,
+      label: 'ঢাকার মানচিত্রে মহাখালীতে আমাদের ডিসপ্যাচ বেস, ২৪ ঘণ্টা খোলা, সপ্তাহে ৭ দিন।',
+    }
+  : {
+      title: 'Our base',
+      locality: business.address.locality,
+      line2: `${business.address.city} ${business.address.postalCode}`,
+      hours: ['Open 24 hours,', '7 days a week'],
+      plus: `Plus Code ${business.geo.plusCode}`,
+      label: `Map of central Dhaka showing our dispatch base in ${business.address.display}, ${business.hours.display.toLowerCase()}.`,
+    };
+/** Area names on the map, in Bangla on /bn/ pages. */
+const bnNames: Record<string, string> = {
+  Uttara: 'উত্তরা', Airport: 'বিমানবন্দর', Mirpur: 'মিরপুর', Gulshan: 'গুলশান', Badda: 'বাড্ডা',
+  Tejgaon: 'তেজগাঁও', Dhanmondi: 'ধানমন্ডি', Motijheel: 'মতিঝিল',
+};
+const nameOf = (n: string) => (bn ? (bnNames[n] ?? n) : n);
+
+const lng0 = 90.33;
+const lat0 = 23.89;
+const x = (lng: number) => 60 + (lng - lng0) * 2799;
+const y = (lat: number) => 40 + (lat0 - lat) * 3059;
+type Area = { name: string; lat: number; lng: number; dx: number; dy: number; anchor: 'start' | 'middle' | 'end' };
+const areas: Area[] = [
+  { name: 'Uttara', lat: 23.874, lng: 90.398, dx: 12, dy: 5, anchor: 'start' },
+  { name: 'Airport', lat: 23.843, lng: 90.398, dx: 12, dy: 5, anchor: 'start' },
+  { name: 'Mirpur', lat: 23.806, lng: 90.368, dx: -12, dy: 5, anchor: 'end' },
+  { name: 'Gulshan', lat: 23.792, lng: 90.415, dx: 12, dy: -4, anchor: 'start' },
+  { name: 'Badda', lat: 23.78, lng: 90.426, dx: 12, dy: 10, anchor: 'start' },
+  { name: 'Tejgaon', lat: 23.76, lng: 90.392, dx: -12, dy: 5, anchor: 'end' },
+  { name: 'Dhanmondi', lat: 23.746, lng: 90.374, dx: -12, dy: 5, anchor: 'end' },
+  { name: 'Motijheel', lat: 23.733, lng: 90.418, dx: 12, dy: 5, anchor: 'start' },
+];
+const base = { x: x(business.geo.lng), y: y(business.geo.lat) };
+---
+
+<svg viewBox="0 0 800 600" class="h-full w-full" role="img" aria-label={t.label}>
+  <rect width="800" height="600" class="fill-(--tint)"></rect>
+  <!-- Soft city area -->
+  <ellipse cx="250" cy="320" rx="190" ry="270" class="fill-(--card)" opacity="0.9"></ellipse>
+  <!-- Main roads (schematic) -->
+  <g class="fill-none stroke-(--blue-soft)" stroke-width="10" stroke-linecap="round">
+    <path d={`M${x(90.398)} ${y(23.88)} L${x(90.4)} ${y(23.79)} L${x(90.41)} ${y(23.73)}`}></path>
+    <path d={`M${x(90.36)} ${y(23.806)} L${x(90.404)} ${y(23.778)} L${x(90.43)} ${y(23.78)}`}></path>
+    <path d={`M${x(90.374)} ${y(23.746)} L${x(90.392)} ${y(23.76)} L${x(90.404)} ${y(23.778)}`}></path>
+  </g>
+  {
+    areas.map((a) => (
+      <g>
+        <circle cx={x(a.lng)} cy={y(a.lat)} r="5" class="fill-(--gray)"></circle>
+        <text x={x(a.lng) + a.dx} y={y(a.lat) + a.dy} text-anchor={a.anchor} font-size="16" class="fill-(--gray-ink)">{nameOf(a.name)}</text>
+      </g>
+    ))
+  }
+  <!-- Base pin -->
+  <circle cx={base.x} cy={base.y} r="34" class="fill-(--blue)" opacity="0.14"></circle>
+  <g transform={`translate(${base.x} ${base.y})`}>
+    <path d="M0 0 C-6 -14 -20 -22 -20 -38 A20 20 0 0 1 20 -38 C20 -22 6 -14 0 0 Z" class="fill-(--blue)"></path>
+    <circle cx="0" cy="-38" r="7.5" class="fill-(--card)"></circle>
+  </g>
+  <text x={base.x} y={base.y + 32} text-anchor="middle" font-size="20" font-weight="700" class="fill-(--ink)">{t.locality}</text>
+
+  <g transform="translate(470 92)">
+    <rect x="0" y="0" width="290" height="300" rx="28" class="fill-(--card)"></rect>
+    <text x="28" y="56" font-size="30" class={bn ? 'fill-(--ink) font-semibold' : 'serif fill-(--ink)'}>{t.title}</text>
+    <text x="28" y="98" font-size="18" class="fill-(--body)">
+      <tspan x="28">{t.locality},</tspan>
+      <tspan x="28" dy="26">{t.line2}</tspan>
+    </text>
+    <line x1="28" x2="262" y1="160" y2="160" class="stroke-(--line)" stroke-width="2"></line>
+    <text x="28" y="196" font-size="18" font-weight="600" class="fill-(--blue-ink)">
+      <tspan x="28">{t.hours[0]}</tspan>
+      <tspan x="28" dy="26">{t.hours[1]}</tspan>
+    </text>
+    {t.plus && <text x="28" y="268" font-size="15" class="fill-(--gray-ink)">{t.plus}</text>}
+  </g>
+</svg>

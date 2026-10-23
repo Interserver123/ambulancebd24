@@ -1,0 +1,18 @@
+---
+/**
+ * District location pages at their existing URLs (/ambulance-service-{district}/).
+ * Copy: src/data/district-pages. Facts and gates: src/data/districts.ts and src/data/routes.ts.
+ * Sections and schema: src/components/district/DistrictPageView.astro.
+ */
+import type { GetStaticPaths } from 'astro';
+import DistrictPageView from '../components/district/DistrictPageView.astro';
+import { districtPages } from '../data/district-pages';
+import type { DistrictPage } from '../data/district-pages/schema';
+
+export const getStaticPaths = (() =>
+  districtPages.filter((p) => p.lang === 'en').map((page) => ({ params: { district: page.slug.slice(1, -1) }, props: { page } }))) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: DistrictPage };
+---
+
+<DistrictPageView page={page} />

@@ -1,0 +1,23 @@
+---
+/** Short answer-first section: heading on the left, the answer on the right (same pattern as section intros). */
+import type { ServicePage } from '../../data/service-pages/schema';
+interface Props {
+  why: NonNullable<ServicePage['why']>;
+  /** Standard policy text repeated across pages (e.g. the 999 note on district pages). */
+  shared?: boolean;
+}
+const { why, shared = false } = Astro.props;
+---
+
+<section class="relative py-20 md:py-28" data-shared={shared ? '' : undefined}>
+  <div class="mx-auto grid max-w-[1240px] gap-8 px-4 md:px-6 lg:grid-cols-12 lg:gap-14">
+    <div class="lg:col-span-5">
+      <p class="eyebrow-warm">{why.eyebrow}</p>
+      <h2 class="mt-4">{why.h2}</h2>
+    </div>
+    <div class="lg:col-span-7 lg:pt-10">
+      <p class="text-xl leading-relaxed text-(--ink)">{why.answer}</p>
+      {why.more && <p class="mt-5 text-lg">{why.more}</p>}
+    </div>
+  </div>
+</section>

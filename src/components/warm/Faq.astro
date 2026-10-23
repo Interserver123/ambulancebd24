@@ -1,0 +1,58 @@
+---
+import Icon from '../Icon.astro';
+import { business, type Faq as FaqItem } from '../../data/business';
+import { warm as w } from '../../data/home-warm';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  /** shared: a standard answer repeated across pages (district similarity check skips it). */
+  items: readonly (FaqItem & { shared?: boolean })[];
+  eyebrow?: string;
+  h2Lead?: string;
+  h2Accent?: string;
+  /** Visible "Last updated" date (YYYY-MM-DD), on service pages. */
+  updated?: string;
+  /** Who maintains the page, shown under the date. */
+  byline?: string;
+  lang?: Lang;
+}
+const { items, eyebrow = w.faq.eyebrow, h2Lead = w.faq.h2Lead, h2Accent = w.faq.h2Accent, updated, byline, lang = 'en' } = Astro.props;
+const t = ui[lang];
+const updatedText = updated
+  ? new Date(`${updated}T00:00:00Z`).toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  : undefined;
+---
+
+<section class="relative bg-(--tint) py-20 md:py-28" id="faq">
+  <svg class="absolute top-0 left-0 h-10 w-full text-(--page) md:h-16" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 0h1440v54c-160 20-300 0-480-24S600 10 420 40 140 60 0 34Z"></path></svg>
+  <div class="relative mx-auto grid max-w-[1240px] gap-12 px-4 pt-4 md:px-6 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <p class="eyebrow-warm">{eyebrow}</p>
+      <h2 class="mt-4">{h2Lead} <em>{h2Accent}</em></h2>
+      {updatedText && <p class="mt-4 text-sm text-(--gray-ink)" data-shared>{t.faq.lastUpdated}: <time datetime={updated}>{updatedText}</time></p>}
+      {byline && <p class="mt-1 max-w-xs text-sm text-(--gray-ink) italic" data-shared>{byline}</p>}
+      <a href={business.phone.tel} class="pebble mt-10 flex -rotate-1 items-center gap-4 rounded-[32px] bg-(--card) p-6 no-underline" data-placement="faq-aside" data-shared>
+        <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-call text-white"><Icon name="phone" class="size-5" /></span>
+        <span>
+          <span class="serif block text-xl text-(--ink)">{t.faq.asideTitle}</span>
+          <span class="block text-sm">{t.faq.asideText}</span>
+          <span class="phone mt-1 block font-heading text-lg font-bold text-(--ink)">{business.phone.display}</span>
+        </span>
+      </a>
+    </div>
+    <div class="space-y-4 lg:col-span-7 lg:col-start-6">
+      {
+        items.map((f, i) => (
+          <details class="group rounded-[28px] bg-(--card) transition-shadow open:shadow-[0_24px_48px_-24px_rgb(28_40_110/0.3)]" open={i === 0} data-shared={f.shared ? '' : undefined}>
+            <summary class="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 md:px-7 [&::-webkit-details-marker]:hidden">
+              <span class="serif text-lg text-(--ink) md:text-xl">{f.q}</span>
+              <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--blue-soft) text-(--blue-ink) transition-transform duration-300 group-open:rotate-45">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg>
+              </span>
+            </summary>
+            <p class="max-w-2xl px-6 pb-6 text-lg md:px-7">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

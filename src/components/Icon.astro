@@ -1,0 +1,26 @@
+---
+/** Inline SVG icons, 1.5px stroke, colour from currentColor. Decorative unless `label` is given. */
+import { iconPaths, type IconName } from '../lib/icons';
+interface Props {
+  name: IconName;
+  class?: string;
+  label?: string;
+}
+export type { IconName };
+const { name, class: cls = 'size-5', label } = Astro.props;
+const paths = iconPaths;
+---
+
+<svg
+  class={cls}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  set:html={paths[name]}
+/>

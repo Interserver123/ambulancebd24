@@ -1,0 +1,55 @@
+---
+/**
+ * Nearby districts (sideways links) + the up-link to the inter-district hub.
+ * A district links only once its page exists ("Dhaka to {District} ambulance");
+ * until then it shows as a plain-text chip.
+ */
+import Icon from '../Icon.astro';
+import type { DistrictPage } from '../../data/district-pages/schema';
+interface Props {
+  nearby: DistrictPage['nearby'];
+  districtPages: Map<string, string>;
+  hubHref?: string;
+}
+const { nearby, districtPages, hubHref } = Astro.props;
+const chip = 'inline-flex min-h-12 items-center gap-2 rounded-full border border-(--line) bg-(--card) px-5 py-2 text-(--ink)';
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <p class="eyebrow-warm">{nearby.eyebrow}</p>
+    <h2 class="mt-4">{nearby.h2Lead} <em>{nearby.h2Accent}</em></h2>
+    <p class="mt-6 max-w-3xl text-xl text-(--ink)">{nearby.answer}</p>
+    <ul class="mt-10 flex flex-wrap gap-2.5" data-shared>
+      {
+        nearby.districts.map((d) => {
+          const href = districtPages.get(d);
+          const label = nearby.chip.replace('{d}', d);
+          return (
+            <li>
+              {href ? (
+                <a href={href} class={`${chip} font-medium no-underline hover:border-(--blue)`}>
+                  {label}
+                  <Icon name="arrow-right" class="size-4 text-(--blue-ink)" />
+                </a>
+              ) : (
+                <span class={`${chip} border-dashed`}>
+                  <Icon name="route" class="size-4 text-(--gray-ink)" />
+                  {d}
+                </span>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+    {
+      hubHref && (
+        <p class="mt-10 text-lg" data-shared>
+          {nearby.hubLead}{' '}
+          <a href={hubHref} class="font-medium text-(--blue-ink) underline underline-offset-4">{nearby.hubAnchor}</a>.
+        </p>
+      )
+    }
+  </div>
+</section>

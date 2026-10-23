@@ -1,0 +1,318 @@
+---
+/**
+ * Blog post at its original WordPress URL (/<slug>/), from src/content/blog/en.
+ * Layout: breadcrumbs · header (H1, dates, reading time, cover = LCP) · article + sticky aside
+ * (contents, call box, related service) · "next step" money-page band · FAQ (only if the post has
+ * faqs[]) · related posts · NAP + map · final CTA.
+ * Schema: BlogPosting + BreadcrumbList (Home > Blog > Post) + FAQPage only when faqs[] exist.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { ogImageFrom } from '../lib/og';
+import Icon from '../components/Icon.astro';
+import Faq from '../components/warm/Faq.astro';
+import Final from '../components/warm/Final.astro';
+import CallButton from '../components/warm/CallButton.astro';
+import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, services, shown, websiteLd } from '../data/business';
+import { insideDhaka } from '../data/inside-dhaka';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog', (e) => !e.data.draft && e.data.lang === 'en');
+  return posts.map((post) => ({ params: { post: post.data.slug.slice(1, -1) }, props: { post, all: posts } }));
+}) satisfies GetStaticPaths;
+
+const { post, all } = Astro.props as { post: CollectionEntry<'blog'>; all: CollectionEntry<'blog'>[] };
+const d = post.data;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
+const fmt = (dt: Date) => dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const iso = (dt: Date) => dt.toISOString().slice(0, 10);
+const wa = shown(business.whatsapp);
+
+/** Money pages this post points to, with a human label. */
+const moneyLabel = (path: string) =>
+  path === '/' ? '24/7 ambulance service in Dhaka' : path === insideDhaka.slug ? 'Ambulance in every area of Dhaka' : (services.find((s) => s.path === path)?.en ?? 'Our ambulance service');
+const money = d.moneyPages.map((p) => ({ path: p, label: moneyLabel(p) }));
+const primary = money[0]!;
+
+/** Related: same money page first, then newest. */
+const related = all
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => Number(b.data.moneyPages[0] === primary.path) - Number(a.data.moneyPages[0] === primary.path) || b.data.published.getTime() - a.data.published.getTime())
+  .slice(0, 3);
+
+const pageUrl = `${business.url}${d.slug}`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: d.h1, path: d.slug },
+];
+const ogImage = await ogImageFrom(d.cover, d.coverAlt ?? d.h1);
+const imageUrl = ogImage ? new URL(ogImage.src, business.url).href : undefined;
+const jsonLd = graphLd(
+  organizationLd(),
+  websiteLd(),
+  {
+    '@type': 'BlogPosting',
+    '@id': `${pageUrl}#article`,
+    mainEntityOfPage: { '@id': pageUrl },
+    headline: d.h1,
+    description: d.metaDescription,
+    url: pageUrl,
+    inLanguage: 'en-BD',
+    datePublished: iso(d.published),
+    dateModified: iso(d.updated),
+    wordCount: words,
+    ...(imageUrl ? { image: imageUrl } : {}),
+    author: { '@id': ids.organization },
+    publisher: { '@id': ids.organization },
+    isPartOf: { '@id': ids.website },
+  },
+  {
+    '@type': 'WebPage',
+    '@id': pageUrl,
+    url: pageUrl,
+    name: d.metaTitle,
+    inLanguage: 'en-BD',
+    isPartOf: { '@id': ids.website },
+    breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+  },
+  breadcrumbLd(
+    pageUrl,
+    crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),
+  ),
+  ...(d.faqs.length ? [faqPageLd(d.faqs, pageUrl)] : []),
+);
+---
+
+<SiteLayout
+  title={d.metaTitle}
+  description={d.metaDescription}
+  path={d.slug}
+  jsonLd={jsonLd}
+  crumbs={crumbs}
+  ogImage={ogImage}
+  ogType="article"
+  article={{ published: iso(d.published), modified: iso(d.updated) }}
+>
+  <article>
+    <header class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-10">
+      <div class="max-w-4xl">
+        <a href="/blog/" class="eyebrow-warm no-underline">Ambulance guide</a>
+        <h1 class="mt-4 text-[2.1rem]! leading-tight! md:text-5xl!">{d.h1}</h1>
+        <p class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px] text-(--gray-ink)">
+          <span>{d.author}</span>
+          <span aria-hidden="true">·</span>
+          <span>Published <time datetime={iso(d.published)}>{fmt(d.published)}</time></span>
+          {
+            iso(d.updated) !== iso(d.published) && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>
+                  Updated <time datetime={iso(d.updated)}>{fmt(d.updated)}</time>
+                </span>
+              </>
+            )
+          }
+        </p>
+      </div>
+      {
+        d.cover && (
+          <div class="mt-8 overflow-hidden rounded-[28px] bg-(--tint) md:rounded-[40px]">
+            <Image src={d.cover} alt={d.coverAlt ?? d.h1} widths={[640, 960, 1240]} sizes="(min-width: 1280px) 1240px, 100vw" class="aspect-[2/1] w-full object-cover" loading="eager" fetchpriority="high" />
+          </div>
+        )
+      }
+    </header>
+
+    <div class="mx-auto grid max-w-[1240px] gap-12 px-4 py-12 md:px-6 md:py-16 lg:grid-cols-12 [&>*]:min-w-0">
+      <div class="post-body lg:col-span-8">
+        {
+          d.generalGuide && (
+            <p class="rounded-[20px] bg-(--tint) px-5 py-4 text-base! text-(--ink)">
+              This guide describes ambulances in general. What the ambulance for your trip carries, and who travels with the patient, is confirmed by our dispatcher before you book.
+            </p>
+          )
+        }
+        {/* Markers let the content linter check general-guide text only where it speaks about us. */}
+        {d.generalGuide && <Fragment set:html="<!--guide-start-->" />}
+        <Content />
+        {d.generalGuide && <Fragment set:html="<!--guide-end-->" />}
+      </div>
+
+      <aside class="lg:col-span-4">
+        <div class="space-y-6 lg:sticky lg:top-28">
+          {
+            toc.length > 2 && (
+              <nav aria-labelledby="toc-title" class="hidden rounded-[28px] bg-(--card) p-6 soft-shadow lg:block">
+                <p id="toc-title" class="serif text-xl text-(--ink)">In this guide</p>
+                <ol class="mt-4 max-h-[40vh] space-y-2 overflow-y-auto pr-2 text-[15px]">
+                  {toc.map((h) => (
+                    <li>
+                      <a href={`#${h.slug}`} class="text-(--body) no-underline hover:text-(--blue-ink)">
+                        {h.text}
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )
+          }
+          <div class="rounded-[28px] bg-(--ink) p-6 text-white">
+            <p class="serif text-2xl text-white">Need an ambulance now?</p>
+            <p class="mt-2 text-white/80">{business.hours.display}. {copy.fareLine.en}</p>
+            <a href={business.phone.tel} class="phone serif mt-3 inline-block text-3xl text-white no-underline hover:underline" data-placement="post-aside">{business.phone.display}</a>
+            {
+              wa && (
+                <a href={wa.url} class="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-whatsapp px-5 font-heading text-[19px] font-bold text-white no-underline hover:brightness-95" data-placement="post-aside" rel="noopener">
+                  <Icon name="whatsapp" />
+                  {copy.cta.whatsapp.en}
+                </a>
+              )
+            }
+          </div>
+          <a href={primary.path} class="pebble group block rounded-[28px] bg-(--card) p-6 no-underline">
+            <span class="text-sm text-(--gray-ink)">Our service</span>
+            <span class="serif mt-1 block text-xl text-(--ink)">{primary.label}</span>
+            <span class="mt-3 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
+              See the service
+              <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+            </span>
+          </a>
+        </div>
+      </aside>
+    </div>
+
+    <section class="mx-auto max-w-[1240px] px-4 md:px-6" aria-labelledby="next-step">
+      <div class="flex flex-col gap-6 rounded-[36px] bg-(--blue-soft) p-8 md:flex-row md:items-center md:justify-between md:p-12">
+        <div class="max-w-2xl">
+          <h2 id="next-step" class="text-[1.75rem]! md:text-4xl!">Need this for your family?</h2>
+          <p class="mt-3 text-lg text-(--ink)/80">
+            Call and tell us where you are and how the patient is. {copy.fareLine.en} Or read about our <a href={primary.path} class="font-medium text-(--blue-ink) underline underline-offset-4">{primary.label.toLowerCase()}</a>.
+          </p>
+        </div>
+        <CallButton placement="post-band" size="lg" class="shrink-0 justify-center" />
+      </div>
+    </section>
+  </article>
+
+  {d.faqs.length > 0 && <Faq items={d.faqs} updated={iso(d.updated)} />}
+
+  {
+    related.length > 0 && (
+      <section class="relative py-20 md:py-24" aria-labelledby="related-title">
+        <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+          <h2 id="related-title">
+            More <em>guides</em>
+          </h2>
+          <ul class="mt-10 grid gap-6 md:grid-cols-3">
+            {related.map((r) => (
+              <li>
+                <a href={r.data.slug} class="pebble group flex h-full flex-col overflow-hidden rounded-[28px] bg-(--card) no-underline">
+                  {r.data.cover && <Image src={r.data.cover} alt="" widths={[400, 640]} sizes="(min-width: 768px) 400px, 100vw" class="aspect-[16/9] w-full object-cover" loading="lazy" />}
+                  <span class="flex grow flex-col p-6">
+                    <span class="serif block text-xl text-(--ink)">{r.data.h1}</span>
+                    <span class="mt-4 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
+                      Read the guide
+                      <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-8">
+            <a href="/blog/" class="font-medium text-(--blue-ink) underline underline-offset-4">All guides</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <Final slot="end" h2Lead="Need an" h2Accent="ambulance now?" text="Call and tell us where you are and how the patient is. We tell you the fare before we dispatch." placement="post-final" showForm={false} />
+</SiteLayout>
+
+<style>
+  /* Readable article typography for Markdown from the CMS (body >= 17px, long-form line length). */
+  .post-body {
+    max-width: 72ch;
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: var(--body);
+  }
+  .post-body :global(> * + *) {
+    margin-top: 1.25em;
+  }
+  .post-body :global(h2) {
+    margin-top: 2.2em;
+    font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.1rem);
+    line-height: 1.2;
+    scroll-margin-top: 7rem;
+  }
+  .post-body :global(h3) {
+    margin-top: 1.8em;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    scroll-margin-top: 7rem;
+  }
+  .post-body :global(h4) {
+    margin-top: 1.5em;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .post-body :global(strong) {
+    color: var(--ink);
+  }
+  .post-body :global(a) {
+    color: var(--blue-ink);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    padding-left: 1.4em;
+  }
+  .post-body :global(ul) {
+    list-style: disc;
+  }
+  .post-body :global(ol) {
+    list-style: decimal;
+  }
+  .post-body :global(li + li) {
+    margin-top: 0.5em;
+  }
+  .post-body :global(li::marker) {
+    color: var(--blue-ink);
+  }
+  .post-body :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+  }
+  .post-body :global(blockquote) {
+    border-left: 4px solid var(--blue);
+    padding-left: 1.2em;
+    font-style: italic;
+  }
+  .post-body :global(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+  .post-body :global(th),
+  .post-body :global(td) {
+    border: 1px solid var(--line);
+    padding: 0.6em 0.8em;
+    text-align: left;
+    vertical-align: top;
+  }
+  .post-body :global(th) {
+    background: var(--tint);
+    color: var(--ink);
+  }
+</style>

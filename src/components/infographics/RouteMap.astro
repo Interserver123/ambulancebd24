@@ -1,0 +1,88 @@
+---
+/**
+ * Route map: Dhaka hub with a line to every district in routes.ts that has map coordinates.
+ * Positions come from real latitude/longitude (simple equirectangular projection), so the map
+ * is to scale. No distances or journey times on the graphic.
+ */
+import { routes } from '../../data/routes';
+import { business } from '../../data/business';
+
+/** lat, lng, and where the label sits relative to the dot. */
+type Spot = { lat: number; lng: number; dx: number; dy: number; anchor: 'start' | 'middle' | 'end' };
+const R = (lat: number, lng: number, dx = 12, dy = 5, anchor: Spot['anchor'] = 'start'): Spot => ({ lat, lng, dx, dy, anchor });
+const spots: Record<string, Spot> = {
+  Panchagarh: R(26.33, 88.55),
+  Rangpur: R(25.74, 89.25),
+  Bogura: R(24.85, 89.37),
+  Mymensingh: R(24.75, 90.41),
+  Sylhet: R(24.89, 91.87),
+  Rajshahi: R(24.37, 88.6),
+  Kushtia: R(23.9, 89.12, -12, 5, 'end'),
+  Faridpur: R(23.61, 89.84, -12, 5, 'end'),
+  Cumilla: R(23.46, 91.18),
+  Chandpur: R(23.23, 90.65),
+  Jessore: R(23.17, 89.21, 0, -14, 'middle'),
+  Madaripur: R(23.17, 90.2, 0, -14, 'middle'),
+  Benapole: R(23.04, 88.89, -12, 5, 'end'),
+  Gopalganj: R(23.01, 89.82, -12, 5, 'end'),
+  Noakhali: R(22.87, 91.1),
+  Khulna: R(22.85, 89.54, 0, 24, 'middle'),
+  Barisal: R(22.7, 90.35),
+  Jhalokati: R(22.64, 90.2, 12, 24, 'start'),
+  Pirojpur: R(22.58, 89.97, -12, 20, 'end'),
+  Chittagong: R(22.36, 91.78),
+};
+const DHAKA = { lat: 23.81, lng: 90.41 };
+const x = (lng: number) => 50 + (lng - 88.3) * 112.5;
+const y = (lat: number) => 30 + (26.45 - lat) * 123;
+const hub = { x: x(DHAKA.lng), y: y(DHAKA.lat) };
+
+const points = routes.flatMap((r) => {
+  const s = spots[r.district];
+  if (!s) return [];
+  const px = x(s.lng);
+  const py = y(s.lat);
+  // Gentle curve: control point pushed sideways from the midpoint.
+  const mx = (hub.x + px) / 2;
+  const my = (hub.y + py) / 2;
+  const cx = mx + (py - hub.y) * 0.18;
+  const cy = my - (px - hub.x) * 0.18;
+  return [{ name: r.district, px, py, s, d: `M${hub.x} ${hub.y} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${px.toFixed(1)} ${py.toFixed(1)}` }];
+});
+const label = `Map of Bangladesh: from Dhaka to ${points.map((p) => p.name).join(', ')}, and every other district.`;
+---
+
+<svg viewBox="0 0 800 600" class="h-full w-full" role="img" aria-label={label}>
+  <rect width="800" height="600" class="fill-(--tint)"></rect>
+  <g class="fill-none stroke-(--blue)" stroke-width="3" stroke-linecap="round" opacity="0.5">
+    {points.map((p) => <path d={p.d}></path>)}
+  </g>
+  <g>
+    {
+      points.map((p) => (
+        <g>
+          <circle cx={p.px} cy={p.py} r="7" class="fill-(--card) stroke-(--blue)" stroke-width="3"></circle>
+          <text x={p.px + p.s.dx} y={p.py + p.s.dy} text-anchor={p.s.anchor} font-size="17" font-weight="500" class="fill-(--ink)">{p.name}</text>
+        </g>
+      ))
+    }
+  </g>
+  <circle cx={hub.x} cy={hub.y} r="30" class="fill-(--blue)" opacity="0.15"></circle>
+  <circle cx={hub.x} cy={hub.y} r="15" class="fill-(--blue)"></circle>
+  <text x={hub.x + 22} y={hub.y - 14} font-size="22" font-weight="700" class="fill-(--ink)">Dhaka</text>
+
+  <g transform="translate(560 64)">
+    <text font-size="34" class="serif fill-(--ink)"><tspan x="0" y="0">Dhaka to</tspan><tspan x="0" y="42">every district</tspan></text>
+    <text y="88" font-size="17" class="fill-(--body)"><tspan x="0">All 64 districts,</tspan><tspan x="0" dy="23">{business.hours.short.toLowerCase()}.</tspan></text>
+    <g transform="translate(0 168)">
+      <circle cx="10" cy="0" r="10" class="fill-(--blue)"></circle>
+      <text x="30" y="6" font-size="16" class="fill-(--ink)">Dhaka</text>
+      <circle cx="10" cy="34" r="7" class="fill-(--card) stroke-(--blue)" stroke-width="3"></circle>
+      <text x="30" y="40" font-size="16" class="fill-(--ink)">Routes families ask for</text>
+    </g>
+  </g>
+  <g transform="translate(740 520)" class="fill-(--gray-ink)">
+    <path d="M0 -26 L8 0 L0 -6 L-8 0 Z"></path>
+    <text y="22" text-anchor="middle" font-size="15" font-weight="600">N</text>
+  </g>
+</svg>

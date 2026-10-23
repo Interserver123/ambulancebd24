@@ -1,0 +1,127 @@
+---
+/**
+ * Service fare block (price intent). Answer first, verified fare factors, the fare-promise
+ * checklist and the WhatsApp CTA. Fare ranges render only when the service fare is verified.
+ */
+import Icon from '../Icon.astro';
+import CallButton from '../warm/CallButton.astro';
+import { business, shown } from '../../data/business';
+import { money, moneyBn, type ServiceFare } from '../../data/fares';
+import { ui, type Lang } from '../../data/ui';
+import type { ServicePage } from '../../data/service-pages/schema';
+interface Props {
+  fare: ServicePage['fare'];
+  data: ServiceFare;
+  placement: string;
+  lang?: Lang;
+  /** Freezer Van: quiet call label, no motion. */
+  calm?: boolean;
+  /** The answer line is the standard fare promise (district pages); fare.more carries the local note. */
+  sharedAnswer?: boolean;
+}
+const { fare, data, placement, lang = 'en', calm = false, sharedAnswer = false } = Astro.props;
+const t = ui[lang];
+const bn = lang === 'bn';
+const wa = shown(business.whatsapp);
+const amount = bn ? moneyBn : money;
+// A Bangla page shows only factors that have Bangla text.
+const factors = data.factors.filter((f) => f.verified && (!bn || f.bn)).map((f) => (bn ? f.bn! : f.text));
+const checklist = [...t.fare.checklist, ...(business.claims.fareInWritingSopLive ? [t.fare.inWriting] : [])];
+const payment = data.payment?.verified ? data.payment.methods : [];
+const ranges = data.verified
+  ? [...(data.withinDhaka ? [{ to: fare.tableWithin, fare: data.withinDhaka }] : []), ...data.routes.map((r) => ({ to: bn ? (r.toBn ?? r.to) : r.to, fare: r.fare }))]
+  : [];
+const font = bn ? 'font-body' : 'font-heading';
+---
+
+<section id="fare" class="relative scroll-mt-28 py-20 md:py-28">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <div class="relative overflow-hidden rounded-[48px] bg-(--ink) px-6 py-14 text-white/85 md:rounded-[72px] md:px-14 md:py-20">
+      <div class="drift blob-b pointer-events-none absolute -right-20 -bottom-24 size-[380px] bg-(--blue) opacity-25 blur-3xl"></div>
+      <div class="relative grid gap-12 lg:grid-cols-12 [&>*]:min-w-0">
+        <div class="lg:col-span-7">
+          <p class="eyebrow-warm text-(--gray)!">{fare.eyebrow}</p>
+          <h2 class="mt-4 text-white!">{fare.h2Lead} <em class="text-(--blue-soft)!">{fare.h2Accent}</em></h2>
+          <p class="mt-6 max-w-2xl text-xl text-white" data-shared={sharedAnswer ? '' : undefined}>{fare.answer}</p>
+          <p class="mt-4 max-w-2xl text-lg">{fare.more}</p>
+
+          <h3 class="mt-10 text-white!">{fare.factorsH3}</h3>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2" data-shared>
+            {
+              factors.map((f) => (
+                <li class="flex items-center gap-3 rounded-[20px] border border-white/10 bg-white/[0.04] px-4 py-3 text-white">
+                  <Icon name="receipt" class="size-5 shrink-0 text-(--blue-soft)" />
+                  {f}
+                </li>
+              ))
+            }
+          </ul>
+
+          {
+            fare.gateH3 && fare.gateText && (
+              <>
+                <h3 class="mt-10 text-white!">{fare.gateH3}</h3>
+                <p class="mt-3 max-w-2xl text-lg">{fare.gateText}</p>
+              </>
+            )
+          }
+          {
+            payment.length > 0 && fare.paymentLabel && (
+              <p class="mt-6 text-white">
+                <span class="font-semibold">{fare.paymentLabel}:</span> {payment.join(' · ')}
+              </p>
+            )
+          }
+        </div>
+
+        <div class="lg:col-span-5 lg:pt-6">
+          <div class="rounded-[32px] bg-(--card) p-7 text-(--body) md:p-8" data-shared>
+            <ul class="space-y-4">
+              {
+                checklist.map((item) => (
+                  <li class="flex items-center gap-4 text-lg text-(--ink)">
+                    <span class="blob-a flex size-10 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)">
+                      <Icon name="check" class="size-5" />
+                    </span>
+                    {item}
+                  </li>
+                ))
+              }
+            </ul>
+            <div class="mt-8 flex flex-col gap-3">
+              {
+                wa && (
+                  <a href={wa.url} class={`inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-whatsapp px-6 ${font} text-[19px] font-bold text-white no-underline transition hover:brightness-95`} data-placement={placement} rel="noopener">
+                    <Icon name="whatsapp" />
+                    {t.cta.whatsapp}
+                  </a>
+                )
+              }
+              <CallButton placement={`${placement}-call`} class="justify-center" label={calm ? t.cta.callCalm : t.cta.call} lang={bn ? 'bn' : undefined} calm={calm} />
+            </div>
+          </div>
+        </div>
+
+        {
+          ranges.length > 0 && (
+            <div class="overflow-x-auto rounded-[32px] bg-(--card) p-6 text-(--ink) lg:col-span-12">
+              <table class="w-full min-w-[480px] text-left">
+                <caption class="serif mb-4 text-left text-xl">{fare.tableCaption}</caption>
+                <tbody>
+                  {ranges.map((r) => (
+                    <tr class="border-b border-(--line) last:border-0">
+                      <th scope="row" class="py-3 pr-4 font-medium">{r.to}</th>
+                      <td class="py-3">
+                        {amount(r.fare.min)} {bn ? 'থেকে' : 'to'} {amount(r.fare.max)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

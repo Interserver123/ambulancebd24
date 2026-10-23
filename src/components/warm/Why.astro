@@ -1,0 +1,31 @@
+---
+/** Why families call us: only verified promises (24/7, nearest ambulance, fare first, route knowledge). */
+import type { ComponentProps } from 'astro/types';
+import Icon from '../Icon.astro';
+import { hp } from '../../data/homepage';
+type IconName = ComponentProps<typeof Icon>['name'];
+const y = hp.why;
+const frames = ['blob-a', 'blob-b', 'blob-a', 'blob-b'];
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <div class="max-w-2xl">
+      <p class="eyebrow-warm">{y.eyebrow}</p>
+      <h2 class="mt-4">{y.h2Lead} <em>{y.h2Accent}</em></h2>
+    </div>
+    <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        y.items.map((it, i) => (
+          <li class={`reveal pebble rounded-[32px] bg-(--card) p-7 ${i % 2 ? 'lg:mt-10' : ''}`}>
+            <span class={`${frames[i]} flex size-14 items-center justify-center bg-(--blue-soft) text-(--blue-ink)`}>
+              <Icon name={it.icon as IconName} class="size-6" />
+            </span>
+            <h3 class="mt-6">{it.title}</h3>
+            <p class="mt-2.5">{it.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

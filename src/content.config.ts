@@ -9,8 +9,8 @@
  * - Non-AC and Air pages cannot publish until the catalogue marks them "fact"
  * - entries default to draft: true, so nothing publishes by accident
  */
-import { defineCollection, reference } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection } from 'astro:content';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { services as catalogue, serviceKeys, icuSubtypes } from './data/business';
 
@@ -170,30 +170,62 @@ const districtsCollection = defineCollection({
     .superRefine(checkLangSlug),
 });
 
+/* ---------------- reviews ---------------- */
+
+/**
+ * Real Google reviews, copied verbatim (spelling included). One file: reviews/google.json.
+ * A review renders only with approved: true (client confirms it may be quoted).
+ * Tags: service keys (icu, nicu, ...) and area slugs (mirpur, ...), used to pick reviews per page.
+ * Never turned into review or star-rating schema.
+ */
+const reviewsCollection = defineCollection({
+  loader: file('src/content/reviews/google.json'),
+  schema: z.object({
+    author: z.string().min(2),
+    /** Month the review was posted, YYYY-MM. Shown as "Oct 2025". */
+    date: z.string().regex(/^\d{4}-\d{2}$/, 'Use YYYY-MM').optional(),
+    text: z.string().min(3),
+    /** Language the review is written in. Bangla pages show Bangla reviews first. */
+    lang: z.enum(['en', 'bn']).default('en'),
+    stars: z.number().int().min(1).max(5).optional(),
+    source: z.literal('Google'),
+    /** Link to the review (or the GBP reviews list). */
+    url: z.url().optional(),
+    tags: z.array(z.string().regex(/^[a-z0-9-]+$/)).default([]),
+    approved: z.boolean().default(false),
+  }),
+});
+
 /* ---------------- blog ---------------- */
 
 const blogCollection = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-  schema: z
-    .object({
-      ...base,
-      author: z.string().min(2),
-      published: z.coerce.date(),
-      /** Every post must link to at least one money page. */
-      moneyPages: z.object({
-        services: z.array(reference('services')).default([]),
-        areas: z.array(reference('areas')).default([]),
-        districts: z.array(reference('districts')).default([]),
+  schema: ({ image }) =>
+    z
+      .object({
+        ...base,
+        /** Posts have FAQs only where the article has them; FAQPage schema only then. */
+        faqs: z.array(faq).default([]),
+        author: z.string().min(2),
+        published: z.coerce.date(),
+        /** Cover image (own uploads only, never hot-linked or stock from other sites). */
+        cover: image().optional(),
+        coverAlt: z.string().optional(),
+        /** Every post must link to at least one money page: service pages, the Dhaka hub or the homepage. */
+        moneyPages: z.array(path).min(1, 'Blog posts must link to at least one service, area or district page'),
+        /**
+         * General guide: describes ambulances in general (equipment, crew training), not our fleet.
+         * The linter then checks equipment/crew wording only in sentences about us, and the page
+         * shows a note that the dispatcher confirms what our ambulance carries.
+         */
+        generalGuide: z.boolean().default(false),
+        /** Original WordPress post id (migration audit trail). */
+        wpId: z.number().int().optional(),
+      })
+      .superRefine((d, ctx) => {
+        checkLangSlug(d, ctx);
+        // No slug pattern forced: existing posts must keep their live URLs.
       }),
-    })
-    .superRefine((d, ctx) => {
-      checkLangSlug(d, ctx);
-      const m = d.moneyPages;
-      if (m.services.length + m.areas.length + m.districts.length === 0) {
-        ctx.addIssue({ code: 'custom', path: ['moneyPages'], message: 'Blog posts must link to at least one service, area or district page' });
-      }
-      // No slug pattern forced: existing posts must keep their live URLs.
-    }),
 });
 
 export const collections = {
@@ -201,4 +233,5 @@ export const collections = {
   areas: areasCollection,
   districts: districtsCollection,
   blog: blogCollection,
+  reviews: reviewsCollection,
 };

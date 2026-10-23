@@ -1,0 +1,218 @@
+---
+/**
+ * One service page (English or Bangla), rendered by src/pages/[service].astro and
+ * src/pages/bn/[service].astro from src/data/service-pages. Default section order
+ * (a page can reorder with page.order):
+ * Order follows what a visitor needs first: breadcrumbs · hero + dispatch card ·
+ * [how it works] · [trips we run] · [directions] · [route table] · fare · [planning tips] ·
+ * [what's on board] · [coverage] · reviews · [why] · [explainer] · FAQ · [related] ·
+ * NAP + map · final CTA + form.
+ * [ ] = optional per page.
+ *
+ * Gates: vehicles.ts (equipment, crew, photos), fares.ts (ranges, factors),
+ * destinations.ts (hospital list), FAQ verified flags, business.claims.
+ */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { ogImageFrom } from '../../lib/og';
+import { getPhoto as getSlotPhoto, photoSlots as slotMeta } from '../../lib/photos';
+import ServiceHero from './ServiceHero.astro';
+import Explainer from './Explainer.astro';
+import Proof from './Proof.astro';
+import FareBlock from './FareBlock.astro';
+import Coverage from './Coverage.astro';
+import Related from './Related.astro';
+import Trips from './Trips.astro';
+import WhyText from './WhyText.astro';
+import Directions from './Directions.astro';
+import RouteTable from './RouteTable.astro';
+import Tips from './Tips.astro';
+import { routes } from '../../data/routes';
+import { ui } from '../../data/ui';
+import How from '../warm/How.astro';
+import Faq from '../warm/Faq.astro';
+import Final from '../warm/Final.astro';
+import { servicePages } from '../../data/service-pages';
+import { defaultOrder, type ServicePage } from '../../data/service-pages/schema';
+import { acVehicles, airVehicles, freezerVehicles, icuVehicles, interDistrictVehicles, nicuVehicles, verifiedVehicles, type Vehicle } from '../../data/vehicles';
+import { fares, type ServiceFare } from '../../data/fares';
+import {
+  acDestinations,
+  airDestinations,
+  confirmed,
+  freezerDestinations,
+  icuDestinations,
+  interDistrictDestinations,
+  nicuDestinations,
+  type Destination,
+} from '../../data/destinations';
+import type { PhotoSlotKey } from '../../lib/photos';
+import { business, breadcrumbLd, faqPageLd, graphLd, organizationLd, serviceLd, webPageLd, websiteLd } from '../../data/business';
+import { publishedPaths } from '../../lib/routes';
+
+/** Per-service verified data. Add an entry when a new service page is added. */
+const sources: Partial<Record<ServicePage['serviceKey'], { vehicles: Vehicle[]; fare: ServiceFare; hospitals: Destination[]; photo: PhotoSlotKey; proofPhoto: PhotoSlotKey }>> = {
+  icu: { vehicles: icuVehicles, fare: fares.icu, hospitals: icuDestinations, photo: 'icu-interior', proofPhoto: 'icu-equipment' },
+  ac: { vehicles: acVehicles, fare: fares.ac, hospitals: acDestinations, photo: 'ac', proofPhoto: 'ac-interior' },
+  nicu: { vehicles: nicuVehicles, fare: fares.nicu, hospitals: nicuDestinations, photo: 'nicu', proofPhoto: 'nicu' },
+  freezer: { vehicles: freezerVehicles, fare: fares.freezer, hospitals: freezerDestinations, photo: 'freezer', proofPhoto: 'freezer' },
+  'inter-district': { vehicles: interDistrictVehicles, fare: fares['inter-district'], hospitals: interDistrictDestinations, photo: 'inter-district', proofPhoto: 'ac' },
+  air: { vehicles: airVehicles, fare: fares.air, hospitals: airDestinations, photo: 'air', proofPhoto: 'air' },
+};
+
+interface Props {
+  page: ServicePage;
+}
+const { page } = Astro.props;
+const src = sources[page.serviceKey];
+if (!src) throw new Error(`No data sources for service page ${page.slug}`);
+
+const lang = page.lang;
+// Social image: this service's own vehicle photo (exterior slot), else the site default.
+const ogSlot = page.serviceKey in slotMeta ? (page.serviceKey as keyof typeof slotMeta) : undefined;
+const ogImage = ogSlot ? await ogImageFrom(getSlotPhoto(ogSlot), slotMeta[ogSlot].alt) : undefined;
+const t = ui[lang];
+const bnLang = lang === 'bn' ? 'bn' : undefined;
+/** Freezer Van: quiet call buttons (no motion, no urgency words). */
+const calm = page.hero.calm ?? false;
+// The same service in the other language, linked by hreflang (both pages point at each other).
+const alt = servicePages.find((p) => p.serviceKey === page.serviceKey && p.lang !== page.lang);
+const alternates = alt ? [{ hreflang: alt.lang === 'bn' ? 'bn-BD' : 'en-BD', path: alt.slug }] : [];
+const xDefault = alt ? (page.lang === 'en' ? page.slug : alt.slug) : undefined;
+const order = page.order ?? defaultOrder;
+
+const pub = await publishedPaths('en');
+const vehicles = verifiedVehicles(src.vehicles);
+const crewVerified = business.claims.crewOnBoardVerified && vehicles.some((v) => v.crew.length > 0);
+const faqs = page.faq.items.filter((f) => f.verified).map(({ q, a }) => ({ q, a }));
+
+const pageUrl = `${business.url}${page.slug}`;
+const crumbs = [
+  { name: t.home, path: '/' },
+  { name: page.breadcrumb, path: page.slug },
+];
+const priced = src.fare.verified ? [src.fare.withinDhaka, ...src.fare.routes.map((r) => r.fare)].filter((r) => r !== undefined) : [];
+const offers = priced.length ? { minPrice: Math.min(...priced.map((r) => r.min)), maxPrice: Math.max(...priced.map((r) => r.max)) } : undefined;
+
+// Route table pages (inter-district hub): Bangladesh + each listed district as areaServed,
+// and an ItemList of the district pages that exist (URLs only).
+const routeRows = page.routes ? routes : [];
+const areaServed = page.routes
+  ? [
+      { '@type': 'Country', name: business.address.country },
+      ...routeRows.filter((r) => r.kind === 'district').map((r) => ({ '@type': 'AdministrativeArea', name: r.aka ?? r.district })),
+    ]
+  : undefined;
+const districtLinks = routeRows.flatMap((r) => (pub.districts.has(r.district) ? [`${business.url}${pub.districts.get(r.district)}`] : []));
+const itemListLd = districtLinks.length
+  ? [
+      {
+        '@type': 'ItemList',
+        '@id': `${pageUrl}#routes`,
+        itemListElement: districtLinks.map((url, i) => ({ '@type': 'ListItem', position: i + 1, url })),
+      },
+    ]
+  : [];
+
+const jsonLd = graphLd(
+  organizationLd(),
+  websiteLd(),
+  webPageLd({ pageUrl, name: page.metaTitle, dateModified: page.updated, aboutId: `${pageUrl}#service`, lang }),
+  serviceLd({ pageUrl, name: page.schema.name, serviceType: page.schema.serviceType, offers, areaServed }),
+  breadcrumbLd(
+    pageUrl,
+    crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),
+  ),
+  faqPageLd(faqs, pageUrl),
+  ...itemListLd,
+);
+const placement = page.serviceKey;
+---
+
+<SiteLayout
+  title={page.metaTitle}
+  description={page.metaDescription}
+  path={page.slug}
+  lang={lang}
+  alternates={alternates}
+  xDefault={xDefault}
+  jsonLd={jsonLd}
+  crumbs={crumbs}
+  mainClass="svc"
+  ogImage={ogImage}
+  reviews={{ ...page.reviewsHeading, tags: page.reviewTags }}
+  nap={{ ...page.napHeading, calm }}
+>
+  <ServiceHero hero={page.hero} crewVerified={crewVerified} placement={`${placement}-hero`} lang={lang} altPath={alt?.slug} />
+  {
+    order.main.map((section) =>
+      section === 'steps' && page.steps ? (
+        <How
+          eyebrow={page.steps.eyebrow}
+          h2Lead={page.steps.h2Lead}
+          h2Accent={page.steps.h2Accent}
+          intro={page.steps.intro}
+          steps={page.steps.items}
+          ready={page.steps.ready}
+          photo={page.serviceKey === 'icu' ? 'icu' : 'dispatch'}
+          placement={`${placement}-steps`}
+          callLabel={calm ? t.cta.callCalm : t.cta.call}
+          callLang={bnLang}
+          calm={calm}
+        />
+      ) : section === 'trips' && page.trips ? (
+        <Trips trips={page.trips} published={pub.all} />
+      ) : section === 'directions' && page.directions ? (
+        <Directions dir={page.directions} published={pub.all} />
+      ) : section === 'routes' && page.routes ? (
+        <RouteTable rt={page.routes} rows={routeRows} districtPages={pub.districts} placement={`${placement}-routes`} />
+      ) : section === 'fare' ? (
+        <FareBlock fare={page.fare} data={src.fare} placement={`${placement}-fare`} lang={lang} calm={calm} />
+      ) : section === 'tips' && page.tips ? (
+        <Tips tips={page.tips} photo={src.photo} />
+      ) : section === 'proof' && page.proof ? (
+        <Proof proof={page.proof} vehicles={vehicles} photo={src.proofPhoto} lang={lang} />
+      ) : section === 'coverage' && page.coverage ? (
+        <Coverage
+          cov={page.coverage}
+          hospitals={confirmed(src.hospitals)}
+          published={pub.all}
+          areaPages={pub.areas}
+          districtPages={pub.districts}
+          lang={lang}
+          placement={`${placement}-coverage`}
+        />
+      ) : section === 'explainer' && page.explainer ? (
+        <Explainer ex={page.explainer} vehicles={vehicles} published={pub.all} photo={src.photo} lang={lang} />
+      ) : null,
+    )
+  }
+  <Fragment slot="after-reviews">
+    {
+      order.afterReviews.map((section) =>
+        section === 'why' && page.why ? (
+          <WhyText why={page.why} />
+        ) : section === 'explainer' && page.explainer ? (
+          <Explainer ex={page.explainer} vehicles={vehicles} published={pub.all} photo={src.photo} lang={lang} />
+        ) : section === 'faq' ? (
+          <Faq items={faqs} eyebrow={page.faq.eyebrow} h2Lead={page.faq.h2Lead} h2Accent={page.faq.h2Accent} updated={page.updated} byline={page.byline} lang={lang} />
+        ) : section === 'related' && page.related ? (
+          <Related rel={page.related} published={pub.all} lang={lang} />
+        ) : null,
+      )
+    }
+  </Fragment>
+  <Final
+    slot="end"
+    h2Lead={page.final.h2Lead}
+    h2Accent={page.final.h2Accent}
+    text={page.final.text}
+    h3={page.final.h3}
+    placement={`${placement}-final`}
+    showForm={page.final.showForm}
+    whatsapp={page.final.whatsapp}
+    pickupHint={page.final.pickupHint}
+    formHelper={page.final.formHelper}
+    lang={lang}
+    calm={calm}
+  />
+</SiteLayout>

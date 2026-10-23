@@ -1,0 +1,84 @@
+---
+/**
+ * Numbered steps as an inline SVG graphic (4:3). Vertical list, or a row of 3 with arrows.
+ * Lines are pre-split (SVG text does not wrap). Used by the call, air and ICU infographics.
+ */
+import { iconPaths, type IconName } from '../../lib/icons';
+import { digits } from '../../data/ui';
+
+export interface Step {
+  icon: IconName;
+  lines: string[];
+}
+interface Props {
+  title: string[];
+  steps: Step[];
+  layout?: 'column' | 'row';
+  /** Small line at the bottom (e.g. "Arranged through an operator"). */
+  note?: string;
+  /** Large tappable-looking hotline line at the bottom (text only; red is reserved for calls). */
+  hotline?: string;
+  label: string;
+  lang?: 'en' | 'bn';
+  /** Calm voice (Freezer Van): hotline in ink, not call red. */
+  calm?: boolean;
+}
+const { title, steps, layout = 'column', note, hotline, label, lang = 'en', calm = false } = Astro.props;
+// Fraunces has no Bangla glyphs: Bangla titles use the body font.
+const titleClass = lang === 'bn' ? 'fill-(--ink) font-semibold' : 'serif fill-(--ink)';
+const n = steps.length;
+// Column: rows share the space under the title.
+const top = 40 + title.length * 44 + 30;
+const bottom = hotline || note ? 520 : 570;
+const rowH = (bottom - top) / n;
+// Row: equal columns.
+const colW = 720 / n;
+---
+
+<svg viewBox="0 0 800 600" class="h-full w-full" role="img" aria-label={label}>
+  <rect width="800" height="600" class="fill-(--tint)"></rect>
+  <text font-size="38" class={titleClass}>
+    {title.map((t, i) => <tspan x="40" y={78 + i * 44}>{t}</tspan>)}
+  </text>
+
+  {
+    layout === 'column'
+      ? steps.map((s, i) => {
+          const cy = top + rowH * i + rowH / 2;
+          return (
+            <g>
+              {i < n - 1 && <line x1="76" x2="76" y1={cy + 34} y2={cy + rowH - 34} class="stroke-(--blue)" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" />}
+              <circle cx="76" cy={cy} r="34" class="fill-(--card)" />
+              <svg x="58" y={cy - 18} width="36" height="36" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="stroke-(--blue-ink)" set:html={iconPaths[s.icon]} />
+              <text x="132" y={cy - (s.lines.length - 1) * 15 + 7} font-size="24" class="fill-(--ink)">
+                <tspan font-weight="700" class="fill-(--blue-ink)">{digits(lang, i + 1)}. </tspan>
+                {s.lines.map((l, j) => (j === 0 ? <tspan>{l}</tspan> : <tspan x="132" dy="30">{l}</tspan>))}
+              </text>
+            </g>
+          );
+        })
+      : steps.map((s, i) => {
+          const cx = 40 + colW * i + colW / 2;
+          return (
+            <g>
+              {i < n - 1 && (
+                <g class="stroke-(--blue)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d={`M${cx + 66} 270 H${cx + colW - 66}`} />
+                  <path d={`M${cx + colW - 76} 260 l10 10 -10 10`} />
+                </g>
+              )}
+              <circle cx={cx} cy="270" r="56" class="fill-(--card)" />
+              <circle cx={cx + 40} cy="228" r="17" class="fill-(--blue)" />
+              <text x={cx + 40} y="234" text-anchor="middle" font-size="17" font-weight="700" class="fill-(--card)">{digits(lang, i + 1)}</text>
+              <svg x={cx - 26} y="244" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-(--blue-ink)" set:html={iconPaths[s.icon]} />
+              <text text-anchor="middle" font-size="21" class="fill-(--ink)">
+                {s.lines.map((l, j) => <tspan x={cx} y={372 + j * 28}>{l}</tspan>)}
+              </text>
+            </g>
+          );
+        })
+  }
+
+  {hotline && <text x="40" y="566" font-size="34" font-weight="700" class={calm ? 'fill-(--ink)' : 'fill-call'}>{hotline}</text>}
+  {note && !hotline && <text x="40" y="560" font-size="18" class="fill-(--gray-ink)">{note}</text>}
+</svg>

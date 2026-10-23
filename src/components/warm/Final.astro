@@ -1,0 +1,123 @@
+---
+/** Final call + call-back form. Form posts to /api/callback/ (Pages Function, not built yet). */
+import Icon from '../Icon.astro';
+import PhotoSlot from '../PhotoSlot.astro';
+import CallButton from './CallButton.astro';
+import CallbackForm from '../global/CallbackForm.astro';
+import { business, shown } from '../../data/business';
+import { homeEn } from '../../data/home';
+import { warm as w } from '../../data/home-warm';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  h2Lead?: string;
+  h2Accent?: string;
+  text?: string;
+  h3?: string;
+  placement?: string;
+  /** false: banner only (the page shows the form elsewhere, e.g. /contact/). */
+  showForm?: boolean;
+  /** true: WhatsApp button instead of Share (planned trips: WhatsApp + Call, max two CTAs). */
+  whatsapp?: boolean;
+  /** Helper under the form's Pickup field. */
+  pickupHint?: string;
+  /** Helper under the form button. */
+  formHelper?: string;
+  lang?: Lang;
+  /** Freezer Van: quiet call label, no motion, no drifting shape. */
+  calm?: boolean;
+}
+const {
+  h2Lead = w.final.h2Lead,
+  h2Accent = w.final.h2Accent,
+  text = w.final.text,
+  h3 = homeEn.finalCta.h3,
+  placement = 'final-cta',
+  showForm = true,
+  whatsapp = false,
+  pickupHint,
+  formHelper,
+  lang = 'en',
+  calm = false,
+} = Astro.props;
+const t = ui[lang];
+const bn = lang === 'bn';
+const street = shown(business.address.street);
+const wa = whatsapp ? shown(business.whatsapp) : undefined;
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <div class="relative overflow-hidden rounded-[48px] bg-(--blue-soft) md:rounded-[72px]">
+      <div class:list={[!calm && 'drift', 'blob-a pointer-events-none absolute -top-16 -left-16 size-72 bg-(--gray-soft) opacity-80 blur-2xl']}></div>
+      <div class="relative grid items-center gap-10 p-8 md:p-14 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <h2>{h2Lead} <em>{h2Accent}</em></h2>
+          <p class="mt-5 max-w-lg text-lg text-(--ink)/80">{text}</p>
+          <div class="mt-9 flex flex-wrap items-center gap-4">
+            {wa && (
+              <a href={wa.url} class={`inline-flex min-h-14 items-center gap-2.5 rounded-full bg-whatsapp px-6 ${bn ? 'font-body' : 'font-heading'} text-[19px] font-bold text-white no-underline transition hover:brightness-95`} data-placement={`${placement}-whatsapp`} rel="noopener">
+                <Icon name="whatsapp" />
+                {t.cta.whatsapp}
+              </a>
+            )}
+            <CallButton placement={placement} size="lg" label={calm ? t.cta.callCalm : t.cta.call} lang={bn ? 'bn' : undefined} calm={calm} />
+            {!wa && <button
+              type="button"
+              class="inline-flex min-h-14 items-center gap-2.5 rounded-full border-2 border-(--ink)/15 bg-(--card) px-6 font-medium text-(--ink) transition hover:border-(--blue) hover:text-(--blue-ink) active:scale-[0.98]"
+              data-share-text={t.final.shareText}
+              data-share-url={`${business.url}/`}
+              data-shared={t.final.shared}
+            >
+              <Icon name="share" class="size-5" />
+              <span data-share-label>{t.final.share}</span>
+            </button>}
+          </div>
+        </div>
+        <div class="lg:col-span-5 lg:self-stretch">
+          <div class="blob-b aspect-[4/3] h-full overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[280px]">
+            <PhotoSlot slot="cta" sizes="(min-width: 1024px) 380px, 80vw" widths={[480, 800]} lang={lang} calm={calm} />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {showForm && (
+    <div class="mt-16 grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div class="lg:col-span-5 lg:flex lg:flex-col">
+        <div class="blob-d aspect-[16/10] overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[220px] lg:flex-1">
+          <PhotoSlot slot="base" sizes="(min-width: 1024px) 460px, 100vw" lang={lang} />
+        </div>
+        <ul class="mt-8 space-y-5">
+          <li class="flex gap-4">
+            <span class="blob-a flex size-12 shrink-0 items-center justify-center bg-(--gray-soft) text-(--gray-ink)"><Icon name="phone" /></span>
+            <span>
+              <span class="block text-sm">{t.final.contact.hotline}</span>
+              <a href={business.phone.tel} class="phone serif text-2xl text-(--ink)" data-placement="contact-block">{business.phone.display}</a>
+            </span>
+          </li>
+          <li class="flex gap-4">
+            <span class="blob-b flex size-12 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="pin" /></span>
+            <span>
+              <span class="block text-sm">{t.final.contact.base}</span>
+              <span class="block text-(--ink)">{street && !bn ? `${street}, ${t.address}` : t.address}</span>
+            </span>
+          </li>
+          <li class="flex gap-4">
+            <span class="blob-a flex size-12 shrink-0 items-center justify-center bg-(--tint) text-(--ink)"><Icon name="clock" /></span>
+            <span>
+              <span class="block text-sm">{t.final.contact.hours}</span>
+              <span class="block text-(--ink)">{t.hoursDisplay}</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div id="callback" class="scroll-mt-28 rounded-[40px] bg-(--card) p-7 soft-shadow md:p-12 lg:col-span-7">
+        <h3 class="text-3xl!">{h3}</h3>
+        <p class="mt-3">{t.final.formIntro}</p>
+        <CallbackForm source={placement} pickupHint={pickupHint} helper={formHelper} lang={lang} />
+      </div>
+    </div>
+    )}
+  </div>
+</section>

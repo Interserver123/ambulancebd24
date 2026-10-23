@@ -17,3 +17,6 @@ Thumbs.db
 
 # Client working files (confidential: keep out of git history)
 docs/*.xlsx
+
+# Local secrets for Pages Functions
+.dev.vars

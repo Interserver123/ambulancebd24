@@ -1,0 +1,63 @@
+---
+/**
+ * Contact page (/contact/). Same sections as the service pages, contact copy from
+ * src/data/contact.ts. NAP + map and reviews come from SiteLayout.
+ * Order: hero · ways to reach us · call-back form · who answers · how a call goes · where we go ·
+ * reviews · FAQ · NAP + map · final CTA (banner only).
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ServiceHero from '../components/service/ServiceHero.astro';
+import Trips from '../components/service/Trips.astro';
+import WhyText from '../components/service/WhyText.astro';
+import Coverage from '../components/service/Coverage.astro';
+import How from '../components/warm/How.astro';
+import Faq from '../components/warm/Faq.astro';
+import Final from '../components/warm/Final.astro';
+import CallbackSection from '../components/global/CallbackSection.astro';
+import { contactPage as c } from '../data/contact';
+import { hp } from '../data/homepage';
+import { business, breadcrumbLd, emergencyServiceLd, faqPageLd, graphLd, ids, organizationLd, websiteLd } from '../data/business';
+import { publishedPaths } from '../lib/routes';
+
+const pub = await publishedPaths('en');
+const pageUrl = `${business.url}${c.slug}`;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: c.breadcrumb, path: c.slug },
+];
+const faqs = c.faq.items.filter((f) => f.verified).map(({ q, a }) => ({ q, a }));
+
+const jsonLd = graphLd(
+  organizationLd(),
+  websiteLd(),
+  emergencyServiceLd(),
+  {
+    '@type': 'ContactPage',
+    '@id': pageUrl,
+    url: pageUrl,
+    name: c.title,
+    inLanguage: 'en-BD',
+    isPartOf: { '@id': ids.website },
+    about: { '@id': ids.business },
+    publisher: { '@id': ids.organization },
+    breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+    dateModified: c.updated,
+  },
+  breadcrumbLd(
+    pageUrl,
+    crumbs.map((x) => ({ name: x.name, url: `${business.url}${x.path}` })),
+  ),
+  faqPageLd(faqs, pageUrl),
+);
+---
+
+<SiteLayout title={c.title} description={c.description} path={c.slug} jsonLd={jsonLd} crumbs={crumbs} mainClass="svc" reviews={c.reviews} nap={c.nap}>
+  <ServiceHero hero={c.hero} crewVerified={false} placement="contact-hero" />
+  <Trips trips={c.ways} published={pub.all} />
+  <CallbackSection {...c.form} source="contact-page" />
+  <WhyText why={c.who} />
+  <How eyebrow={c.steps.eyebrow} h2Lead={c.steps.h2Lead} h2Accent={c.steps.h2Accent} intro={c.steps.intro} steps={hp.timeline.steps} placement="contact-steps" />
+  <Coverage cov={c.coverage} hospitals={[]} published={pub.all} areaPages={pub.areas} districtPages={pub.districts} />
+  <Faq slot="after-reviews" items={faqs} eyebrow={c.faq.eyebrow} h2Lead={c.faq.h2Lead} h2Accent={c.faq.h2Accent} updated={c.updated} byline={c.byline} />
+  <Final slot="end" h2Lead={c.final.h2Lead} h2Accent={c.final.h2Accent} text={c.final.text} h3={c.final.h3} placement="contact-final" showForm={false} />
+</SiteLayout>

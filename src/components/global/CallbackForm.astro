@@ -1,0 +1,57 @@
+---
+/**
+ * Call-back form (3 fields: Name, Phone, Pickup location). Posts to /api/callback,
+ * a Cloudflare Pages Function (functions/api/callback.js) that emails the request and
+ * can alert dispatch on Telegram. Spam: hidden honeypot field, plus Cloudflare Turnstile
+ * when PUBLIC_TURNSTILE_SITE_KEY is set (its script loads only when someone starts typing).
+ * Submit handling lives in SiteLayout.
+ */
+import Icon from '../Icon.astro';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  /** Where the form sits, sent along so the email says which page it came from. */
+  source: string;
+  /** Helper under the Pickup field, e.g. "e.g. hospital name, Dhaka → Rangpur". */
+  pickupHint?: string;
+  /** Helper under the button (default: "For an emergency, call. It's faster."). */
+  helper?: string;
+  lang?: Lang;
+}
+const { source, pickupHint, helper, lang = 'en' } = Astro.props;
+const t = ui[lang].form;
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
+const input =
+  'peer mt-2 block min-h-14 w-full rounded-2xl border border-(--line) bg-(--page) px-5 text-lg text-(--ink) transition focus:border-(--blue) focus:bg-white focus:ring-4 focus:ring-(--blue-soft) focus:outline-none';
+const label = 'block text-sm font-medium text-(--ink)';
+---
+
+<form class="mt-8" method="post" action="/api/callback" data-callback-form data-error={t.error} data-turnstile={turnstileKey}>
+  <input type="hidden" name="source" value={source} />
+  <!-- Honeypot: people never see or fill this; bots often do -->
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class={label}>
+      {t.fields.name}
+      <input class={input} type="text" name="name" autocomplete="name" required maxlength="80" />
+    </label>
+    <label class={label}>
+      {t.fields.phone}
+      <input class={input} type="tel" name="phone" autocomplete="tel" inputmode="tel" required minlength="6" maxlength="20" />
+    </label>
+    <label class={`${label} sm:col-span-2`}>
+      {t.fields.pickup}
+      <input class={input} type="text" name="pickup" autocomplete="street-address" required maxlength="160" aria-describedby={pickupHint ? `pickup-hint-${source}` : undefined} />
+      {pickupHint && <span id={`pickup-hint-${source}`} class="mt-2 block font-normal text-(--gray-ink)">{pickupHint}</span>}
+    </label>
+  </div>
+  {turnstileKey && <div class="mt-6" data-turnstile-box></div>}
+  <button type="submit" class="group mt-8 inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-(--ink) px-8 text-lg font-medium text-white transition hover:bg-(--gray-ink) active:scale-[0.98] disabled:opacity-60 sm:w-auto">
+    {t.button}
+    <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
+  </button>
+  <p class="mt-4 text-sm text-(--gray-ink) italic">{helper ?? t.helper}</p>
+  <p class="mt-4 hidden rounded-2xl bg-(--gray-soft) p-4 text-(--ink)" role="status" data-form-status></p>
+  <p class="sr-only" data-success-text>{t.success}</p>
+</form>

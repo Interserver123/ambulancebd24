@@ -1,0 +1,59 @@
+---
+/**
+ * Shows the real photo for a slot. Without one: the slot's infographic if it has one
+ * (src/components/infographics), otherwise a hatched "Photo coming soon" tile.
+ * Drop the file in src/assets/photos/ (see the README there). In dev the tile also names the file.
+ */
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import Infographic from './infographics/Infographic.astro';
+import { getPhoto, photoSlots, type PhotoSlotKey } from '../lib/photos';
+import { bnInfographicSlots, hasInfographic } from '../lib/infographics';
+
+interface Props {
+  slot: PhotoSlotKey;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  /** true for an above-the-fold image */
+  priority?: boolean;
+  /** Placeholder on a dark background */
+  dark?: boolean;
+  /** Language of the page (infographic text). */
+  lang?: 'en' | 'bn';
+  /** Freezer Van voice: the infographic avoids "patient" wording and the red hotline. */
+  calm?: boolean;
+}
+const { slot, class: cls = '', sizes = '100vw', widths = [480, 800, 1200], priority = false, dark = false, lang = 'en', calm = false } = Astro.props;
+const img = getPhoto(slot);
+const meta = photoSlots[slot];
+const isDev = import.meta.env.DEV;
+---
+
+{
+  img ? (
+    <Picture
+      src={img}
+      alt={meta.alt}
+      formats={['avif', 'webp']}
+      widths={widths}
+      sizes={sizes}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      class={`h-full w-full object-cover ${cls}`}
+      pictureAttributes={{ class: 'contents' }}
+    />
+  ) : hasInfographic(slot) && (lang === 'en' || bnInfographicSlots.includes(slot)) ? (
+    <Infographic slot={slot} lang={lang} calm={calm} />
+  ) : (
+    <div
+      class={`flex h-full w-full flex-col items-center justify-center gap-2 p-6 text-center ${dark ? 'bg-white/5 text-white/60' : 'photo-ph bg-mist text-slate'} bg-[repeating-linear-gradient(135deg,transparent_0_14px,rgb(19_35_63/0.06)_14px_15px)] ${cls}`}
+      role="img"
+      aria-label={`Photo coming soon: ${meta.label}`}
+    >
+      <Icon name="camera" class="size-6" />
+      <span class="text-sm">Photo coming soon: {meta.label}</span>
+      {isDev && <span class="font-mono text-[11px] opacity-70">src/assets/photos/{slot}.jpg · {meta.size}</span>}
+    </div>
+  )
+}

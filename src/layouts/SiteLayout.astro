@@ -5,7 +5,7 @@
  *
  * Page order: <default slot> · ReviewsBlock · <slot "after-reviews"> · NapMap · <slot "end">
  */
-import BaseLayout from './BaseLayout.astro';
+import BaseLayout, { type OgImage } from './BaseLayout.astro';
 import '../styles/warm.css';
 import hind400 from '@fontsource/hind-siliguri/files/hind-siliguri-latin-400-normal.woff2?url';
 import hind400bn from '@fontsource/hind-siliguri/files/hind-siliguri-bengali-400-normal.woff2?url';
@@ -42,12 +42,15 @@ interface Props {
   lang?: Lang;
   /** hreflang="x-default" target (English homepage by default). */
   xDefault?: string;
+  ogImage?: OgImage;
+  ogType?: 'website' | 'article';
+  article?: { published: string; modified: string };
 }
-const { title, description, path, jsonLd, noindex = false, alternates = [], crumbs, reviews, nap, mainClass, lang = 'en', xDefault } = Astro.props;
+const { title, description, path, jsonLd, noindex = false, alternates = [], crumbs, reviews, nap, mainClass, lang = 'en', xDefault, ogImage, ogType, article } = Astro.props;
 const { nav } = await homeData();
 ---
 
-<BaseLayout title={title} description={description} path={path} lang={lang} jsonLd={jsonLd} alternates={alternates} xDefault={xDefault} noindex={noindex} preloads={lang === 'bn' ? [hind400bn, hind400] : [hind400]}>
+<BaseLayout title={title} description={description} path={path} lang={lang} jsonLd={jsonLd} alternates={alternates} xDefault={xDefault} noindex={noindex} ogImage={ogImage} ogType={ogType} article={article} preloads={lang === 'bn' ? [hind400bn, hind400] : [hind400]}>
   <script is:inline>document.documentElement.classList.add('js');</script>
   <div class="warm" id="top">
     <Header nav={nav} lang={lang} />

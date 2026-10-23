@@ -1,0 +1,40 @@
+---
+/** When to call: common emergencies (no medical advice beyond "call, share location and condition"). */
+import type { ComponentProps } from 'astro/types';
+import Icon from '../Icon.astro';
+import { business } from '../../data/business';
+import { hp } from '../../data/homepage';
+type IconName = ComponentProps<typeof Icon>['name'];
+const e = hp.emergencies;
+const tints = ['bg-(--blue-soft)', 'bg-(--gray-soft)', 'bg-(--tint)'];
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="mx-auto grid max-w-[1240px] gap-12 px-4 md:px-6 lg:grid-cols-12 lg:items-center">
+    <div class="lg:col-span-5">
+      <p class="eyebrow-warm">{e.eyebrow}</p>
+      <h2 class="mt-4">{e.h2Lead} <em>{e.h2Accent}</em></h2>
+      <p class="mt-5 text-lg">{e.body}</p>
+      <a href={business.phone.tel} class="pebble mt-8 flex items-center gap-4 rounded-[28px] bg-(--card) p-5 no-underline" data-placement="emergencies">
+        <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-call text-white"><Icon name="phone" class="ringing size-5" /></span>
+        <span>
+          <span class="serif block text-xl text-(--ink)">{e.asideTitle}</span>
+          <span class="block text-[15px]">{e.asideText}</span>
+        </span>
+      </a>
+      <p class="mt-5 text-sm text-(--gray-ink) italic">{e.note}</p>
+    </div>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:col-span-7">
+      {
+        e.items.map((it, i) => (
+          <li class={`reveal pebble flex items-center gap-4 rounded-[28px] bg-(--card) p-5 ${i % 2 ? 'sm:translate-y-6' : ''}`}>
+            <span class={`blob-${i % 2 ? 'b' : 'a'} flex size-12 shrink-0 items-center justify-center ${tints[i % tints.length]} text-(--blue-ink)`}>
+              <Icon name={it.icon as IconName} />
+            </span>
+            <span class="serif text-lg leading-snug text-(--ink)">{it.title}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

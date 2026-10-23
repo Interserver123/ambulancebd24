@@ -1,0 +1,153 @@
+---
+/**
+ * Centered hero in a large rounded dark panel (layout from the Oct 2026 reference,
+ * in our own design language: Fraunces, logo blue, soft organic shapes, grain).
+ * Desktop gets the `hero` photo behind a dark overlay; phones get no photo (the
+ * <picture> serves them a 1px placeholder), so the H1 stays the LCP.
+ */
+import { getImage } from 'astro:assets';
+import Icon from '../Icon.astro';
+import CallButton from './CallButton.astro';
+import { business, copy, shown, services } from '../../data/business';
+import { homeEn as t } from '../../data/home';
+import { hp } from '../../data/homepage';
+import { warm as w } from '../../data/home-warm';
+import { getPhoto, photoSlots } from '../../lib/photos';
+interface Props {
+  published: Set<string>;
+}
+const { published } = Astro.props;
+const h = hp.hero;
+const wa = shown(business.whatsapp);
+const rating = shown(business.gbp.rating);
+
+// Lead sentence lists only confirmed services (Non-AC joins once confirmed).
+const listed = services.filter((s) => s.status === 'fact' && !['emergency', 'inter-district', 'air'].includes(s.key)).map((s) => s.en.replace(' Ambulance', ''));
+const servicesList = listed.length > 1 ? `${listed.slice(0, -1).join(', ')} and ${listed.at(-1)}` : listed.join('');
+
+// Bottom bar: jump to the card below, or the service page once it exists.
+const tabIcons: Record<string, 'heart-pulse' | 'baby' | 'fan' | 'wind' | 'snow' | 'route' | 'plane'> = {
+  icu: 'heart-pulse',
+  nicu: 'baby',
+  ac: 'fan',
+  'non-ac': 'wind',
+  freezer: 'snow',
+  'inter-district': 'route',
+  air: 'plane',
+};
+const tabs = services
+  .filter((s) => s.status === 'fact' && h.tabs[s.key])
+  .map((s) => ({ label: h.tabs[s.key]!, icon: tabIcons[s.key], href: published.has(s.path) ? s.path : `#ambulance-${s.key}` }));
+
+const photo = getPhoto('hero');
+const [avif, webp] = photo
+  ? await Promise.all([
+      getImage({ src: photo, widths: [1280, 1920], format: 'avif' }),
+      getImage({ src: photo, widths: [1280, 1920], format: 'webp' }),
+    ])
+  : [];
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+---
+
+<section class="px-3 pt-4 md:px-6 md:pt-6">
+  <div class="relative isolate mx-auto max-w-[1400px] overflow-hidden rounded-[36px] bg-(--ink) text-white md:rounded-[64px]">
+    {
+      avif && webp && (
+        <picture class="absolute inset-0 -z-30">
+          <source media="(min-width: 768px)" type="image/avif" srcset={avif.srcSet.attribute} sizes="100vw" />
+          <source media="(min-width: 768px)" type="image/webp" srcset={webp.srcSet.attribute} sizes="100vw" />
+          <img src={BLANK} alt={photoSlots.hero.alt} width={photo!.width} height={photo!.height} class="h-full w-full object-cover" fetchpriority="high" />
+        </picture>
+      )
+    }
+    <!-- Dark veil over the photo, soft blue glow, organic shapes -->
+    <div class="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_50%_35%,rgb(11_11_15/0.72),rgb(11_11_15/0.9)_70%)]"></div>
+    <div class="drift blob-a pointer-events-none absolute -top-32 -left-24 -z-10 size-[460px] bg-(--blue) opacity-25 blur-3xl"></div>
+    <div class="drift blob-b pointer-events-none absolute -right-24 bottom-10 -z-10 size-[400px] bg-(--blue) opacity-20 blur-3xl [animation-delay:-7s]"></div>
+
+    <div class="mx-auto max-w-[980px] px-5 pt-12 pb-10 text-center md:px-8 md:pt-16">
+      <p class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/85 backdrop-blur">
+        <span class="relative flex size-2.5"><span class="absolute inset-0 animate-ping rounded-full bg-(--blue) opacity-60 motion-reduce:hidden"></span><span class="relative size-2.5 rounded-full bg-(--blue)"></span></span>
+        {h.eyebrow}
+      </p>
+
+      <h1 class="mt-7 text-white!">
+        <span class="block text-[2rem] leading-[1.08] md:text-[3.4rem]">{h.h1Line1}</span>
+        <span class="mt-1 block text-[2.75rem] leading-[1.02] md:text-[5.25rem]">
+          {h.h1Line2Lead}{' '}<em class="text-[0.55em] font-normal text-white/70!">{h.h1Line2In}</em>{' '}<em class="scribble scribble-light text-[#8fa2ff]!">{h.h1Line2Accent}</em>
+        </span>
+      </h1>
+
+      <p class="mx-auto mt-8 max-w-2xl text-lg text-white/80">
+        <strong class="font-semibold text-white">{h.leadStrong}</strong>{' '}{h.lead(servicesList)}
+      </p>
+
+      <ul class="mx-auto mt-10 grid max-w-4xl gap-x-8 gap-y-6 text-left sm:grid-cols-3">
+        {
+          h.features.map((f) => (
+            <li class="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/[0.07]">
+              <p class="flex items-center gap-3">
+                <span class="blob-a flex size-10 shrink-0 items-center justify-center bg-(--blue)/20 text-[#b7c4ff]">
+                  <Icon name={f.icon as 'first-aid' | 'navigation' | 'phone'} class="size-5" />
+                </span>
+                <span class="serif text-lg text-white">{f.title}</span>
+              </p>
+              <p class="mt-2.5 text-[15px] leading-snug text-white/70">{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-12 text-sm text-white/65">{h.openLine}</p>
+      <div class="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        <a href={business.phone.tel} class="phone serif text-[2.75rem] leading-tight text-white no-underline hover:underline md:text-[4.25rem]" data-placement="hero-number">
+          {business.phone.display}
+        </a>
+        <button
+          type="button"
+          class="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 text-sm text-white/85 transition hover:border-white/40 hover:text-white"
+          data-copy={business.phone.display}
+          data-copied={w.hero.copied}
+        >
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="3"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
+          <span data-copy-label>{w.hero.copy}</span>
+        </button>
+      </div>
+
+      <div class="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <CallButton placement="hero" size="lg" class="w-full justify-center sm:w-auto" />
+        {
+          wa && (
+            <a href={wa.url} class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-whatsapp py-2.5 pr-6 pl-2.5 font-heading text-[19px] font-bold tracking-tight sm:w-auto sm:pr-8 sm:text-xl whitespace-nowrap text-white no-underline shadow-[0_18px_40px_-18px_rgb(31_138_76/0.9)] transition hover:-translate-y-0.5 hover:brightness-95" data-placement="hero" rel="noopener">
+              <span class="flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-whatsapp"><Icon name="whatsapp" class="size-7" /></span>
+              {copy.cta.whatsapp.en}
+            </a>
+          )
+        }
+      </div>
+      <p class="mt-4 text-white/65 italic">{w.hero.nudge}</p>
+
+      <div class="mx-auto mt-8 max-w-md border-t border-white/10 pt-6">
+        <a href={business.gbp.reviewsListUrl} class="inline-flex items-center gap-2 text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white" rel="noopener">
+          <Icon name="star" class="size-4 text-[#b7c4ff]" />
+          {rating ? t.hero.rating(rating) : h.reviewsLink}
+        </a>
+      </div>
+    </div>
+
+    <nav aria-label="Ambulance types" class="px-3 pb-3 md:px-6 md:pb-6">
+      <ul class="mx-auto grid max-w-[1180px] grid-cols-2 gap-1.5 rounded-[28px] border border-white/10 bg-white/[0.06] p-1.5 backdrop-blur-md sm:grid-cols-3 lg:flex lg:rounded-full">
+        {
+          tabs.map((tb) => (
+            <li class="max-sm:odd:last:col-span-2 lg:flex-1">
+              <a href={tb.href} class="flex min-h-12 items-center justify-center gap-2.5 rounded-full px-4 font-medium text-white no-underline transition hover:bg-white hover:text-(--ink) md:min-h-14">
+                <Icon name={tb.icon} class="size-5" />
+                {tb.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</section>

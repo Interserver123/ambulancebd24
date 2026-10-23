@@ -1,7 +1,7 @@
 /**
  * Single source of truth for brand, NAP and service data.
  *
- * Mirrors docs/brand-deck.md (v1.0, 6 Oct 2026). If this file and the deck
+ * Mirrors docs/brand-deck.md (v1.3, 20 Oct 2026). If this file and the deck
  * disagree, the deck wins: update the deck first, then this file, then GBP,
  * social and citations.
  *
@@ -29,6 +29,15 @@ export function shown<T>(field: Verifiable<T>): T | undefined {
   return field.verified ? field.value : undefined;
 }
 
+/** One row of the fare table (homepage FarePromise). Amounts in ৳. */
+export type FareRow = {
+  serviceKey: string;
+  min: number;
+  max: number;
+  waitingPerHour?: number;
+  extraStop?: number;
+};
+
 const PHONE_DISPLAY = '01919-339689';
 const PHONE_E164 = '+8801919339689';
 
@@ -52,8 +61,8 @@ export const business = {
 
   whatsapp: {
     value: { number: '8801919339689', url: 'https://wa.me/8801919339689' },
-    verified: false,
-    note: 'Confirm this number is on WhatsApp and staffed 24/7.',
+    verified: true,
+    note: 'Confirmed by owner, 20 Oct 2026.',
   } as Verifiable<{ number: string; url: string }>,
 
   email: {
@@ -82,6 +91,7 @@ export const business = {
 
   hours: {
     display: 'Open 24 hours, 7 days a week',
+    short: 'Open 24 hours, 7 days',
     is24x7: true,
   },
 
@@ -94,6 +104,28 @@ export const business = {
     directionsUrl:
       'https://www.google.com/maps/dir/?api=1&destination=Ambulance+BD+24&destination_place_id=ChIJ4RUtzdyTfYcR3KkqAqu2f3E',
     reviewUrl: 'https://search.google.com/local/writereview?placeid=ChIJ4RUtzdyTfYcR3KkqAqu2f3E',
+    /** Reviews list on Google (for "Read all reviews on Google"). */
+    reviewsListUrl: 'https://search.google.com/local/reviews?placeid=ChIJ4RUtzdyTfYcR3KkqAqu2f3E',
+    /**
+     * Shown as visible text only, never as schema. Re-check the numbers on GBP
+     * before each release, then set verified: true.
+     */
+    rating: {
+      value: { rating: 4.3, count: 35, checkedOn: '2026-09-29' },
+      verified: false,
+      note: 'From the 29 Sep 2026 audit. Confirm current numbers before showing.',
+    } as Verifiable<{ rating: number; count: number; checkedOn: string }>,
+    /**
+     * Third-party Google reviews widget (Elfsight, Trustindex, etc.), loaded only
+     * when the reviews section nears the screen. Paste from the provider's embed code:
+     * scriptSrc = the <script src="…">, mountHtml = the <div …></div> (empty if none).
+     * Turn OFF any "rich snippet"/schema option in the widget: no review schema on this site.
+     */
+    reviewsWidget: {
+      value: { provider: 'Trustindex', scriptSrc: 'https://cdn.trustindex.io/loader.js?a7daa3c84dee03001116c8a7826', mountHtml: '' },
+      verified: true,
+      note: 'Trustindex widget from the owner, 20 Oct 2026.',
+    } as Verifiable<{ provider: string; scriptSrc: string; mountHtml: string }>,
   },
 
   /** Real profiles only. Nothing else goes in sameAs. */
@@ -114,10 +146,10 @@ export const business = {
       note: 'Can the team pick up at any hospital gate?',
     } as Verifiable<boolean | null>,
     fareRanges: {
-      value: null,
+      value: [],
       verified: false,
       note: 'Fare ranges, waiting charge and extra-stop rate per vehicle type.',
-    } as Verifiable<null>,
+    } as Verifiable<FareRow[]>,
   },
 
   /**
@@ -133,6 +165,8 @@ export const business = {
     crewOnBoardVerified: false,
     /** Allows naming specific medical equipment (ventilator, defibrillator, etc.). */
     equipmentVerified: false,
+    /** Allows "We check the AC before every trip" (ops SOP live). */
+    acCheckSopLive: false,
   },
 } as const;
 
@@ -156,7 +190,7 @@ export const services = [
     status: 'fact',
   },
   { key: 'non-ac', en: 'Non-AC Ambulance', bn: 'নন-এসি অ্যাম্বুলেন্স', path: '/non-ac-ambulance-service-dhaka/', status: 'verify' },
-  { key: 'air', en: 'Air Ambulance', bn: 'এয়ার অ্যাম্বুলেন্স', path: '/air-ambulance-service-bangladesh/', status: 'verify' },
+  { key: 'air', en: 'Air Ambulance', bn: 'এয়ার অ্যাম্বুলেন্স', path: '/air-ambulance-service-bangladesh/', status: 'fact' },
 ] as const satisfies ReadonlyArray<{
   key: string;
   en: string;
@@ -181,6 +215,8 @@ export function getService(key: ServiceKey) {
 /* Approved copy: taglines, CTAs, USPs. Use these strings verbatim.    */
 /* ------------------------------------------------------------------ */
 
+const TIMING = 'Around 10 minutes in central Dhaka, depending on traffic';
+
 export const copy = {
   tagline: {
     en: 'Fast ambulance. Fare confirmed first.',
@@ -191,8 +227,16 @@ export const copy = {
     en: 'Taking your loved one home with respect — fare confirmed first.',
     bn: 'সম্মানের সাথে প্রিয়জনকে বাড়ি পৌঁছে দিই — ভাড়া আগেই নিশ্চিত।',
   },
-  /** The only approved timing claim. */
-  timingLine: { en: 'Around 10 minutes in central Dhaka, depending on traffic.' },
+  /**
+   * The only approved timing claim (deck v1.3, USP #2). Every page takes it from here;
+   * the content linter fails on any other timing wording. No Bangla line approved yet.
+   *   en: full sentence · chip: no full stop (trust rows, cards) · inline: mid-sentence
+   */
+  timingLine: {
+    en: `${TIMING}.`,
+    chip: TIMING,
+    inline: `${TIMING.charAt(0).toLowerCase()}${TIMING.slice(1)}`,
+  },
   /** Approved fare line. "In writing" only once claims.fareInWritingSopLive is true. */
   fareLine: { en: 'We tell you the fare before we dispatch.' },
   cta: {
@@ -205,7 +249,7 @@ export const copy = {
   /** Ranked. Lead with #1 and #2 together. */
   usps: [
     { rank: 1, en: 'Fare told before we move, no change after', requires: 'fareInWritingSopLive (for "in writing")' },
-    { rank: 2, en: 'Nearest ambulance, around 10 minutes in central Dhaka, depending on traffic' },
+    { rank: 2, en: `Nearest ambulance, ${TIMING.charAt(0).toLowerCase()}${TIMING.slice(1)}` },
     { rank: 3, en: 'ICU, NICU, AC and Freezer Van on one hotline' },
     { rank: 4, en: 'Open 24/7, a person answers', requires: 'backupLineLive' },
     { rank: 5, en: 'Right vehicle for the patient' },
@@ -220,10 +264,11 @@ export const copy = {
 const ALL_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 function postalAddressLd() {
-  const street = shown(business.address.street);
+  // Until the house/road number is confirmed, the locality stands in (homepage spec §6).
+  const street = shown(business.address.street) || business.address.locality;
   return {
     '@type': 'PostalAddress',
-    ...(street ? { streetAddress: street } : {}),
+    streetAddress: street,
     addressLocality: business.address.city,
     addressRegion: business.address.region,
     postalCode: business.address.postalCode,
@@ -234,6 +279,12 @@ function postalAddressLd() {
 function openingHoursLd() {
   return [{ '@type': 'OpeningHoursSpecification', dayOfWeek: ALL_DAYS, opens: '00:00', closes: '23:59' }];
 }
+
+/** Stable public image URLs for schema (files in public/). Real photo and logo only. */
+export const schemaImages = {
+  logo: { url: `${business.url}/logo.png`, width: 375, height: 165 },
+  photo: { url: `${business.url}/og-default.jpg`, width: 1200, height: 630 },
+};
 
 export const ids = {
   organization: `${business.url}/#org`,
@@ -248,6 +299,7 @@ export function organizationLd() {
     '@id': ids.organization,
     name: business.name,
     url: `${business.url}/`,
+    logo: { '@type': 'ImageObject', ...schemaImages.logo },
     telephone: business.phone.e164,
     ...(shown(business.email) ? { email: shown(business.email) } : {}),
     sameAs: [...business.sameAs],
@@ -274,6 +326,8 @@ export function emergencyServiceLd(opts: { pageUrl?: string } = {}) {
     '@id': ids.business,
     name: business.name,
     url: opts.pageUrl ?? `${business.url}/`,
+    image: schemaImages.photo.url,
+    logo: schemaImages.logo.url,
     telephone: business.phone.e164,
     ...(email ? { email } : {}),
     address: postalAddressLd(),
@@ -298,5 +352,102 @@ export function websiteLd() {
     name: business.name,
     inLanguage: ['en-BD', 'bn-BD'],
     publisher: { '@id': ids.organization },
+  };
+}
+
+export type Faq = { q: string; a: string };
+
+/** FAQPage from the same faqs[] that the page renders. */
+export function faqPageLd(faqs: readonly Faq[], pageUrl: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+}
+
+/** Combines nodes into one @graph, dropping each node's own @context. */
+export function graphLd(...nodes: Array<Record<string, unknown>>) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': nodes.map(({ '@context': _ctx, ...rest }) => rest),
+  };
+}
+
+/** BreadcrumbList. Items in order, Home first. Matches the visible breadcrumbs. */
+export function breadcrumbLd(pageUrl: string, items: ReadonlyArray<{ name: string; url: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: it.url })),
+  };
+}
+
+/**
+ * Service node for a service page. Offers only when the fare is verified (pass it in);
+ * WhatsApp only once verified. No rating or review markup.
+ */
+export function serviceLd(opts: {
+  pageUrl: string;
+  name: string;
+  serviceType: string;
+  offers?: { minPrice: number; maxPrice: number };
+  /** Overrides the default (Dhaka + Bangladesh), e.g. Bangladesh + each district on the inter-district hub. */
+  areaServed?: Array<Record<string, unknown>>;
+}) {
+  const wa = shown(business.whatsapp);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${opts.pageUrl}#service`,
+    name: opts.name,
+    serviceType: opts.serviceType,
+    url: opts.pageUrl,
+    provider: { '@id': ids.business },
+    areaServed: opts.areaServed ?? [
+      { '@type': 'City', name: business.address.city },
+      { '@type': 'Country', name: business.address.country },
+    ],
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      servicePhone: { '@type': 'ContactPoint', telephone: business.phone.e164, contactType: 'emergency' },
+      ...(wa ? { serviceUrl: wa.url } : {}),
+    },
+    hoursAvailable: openingHoursLd(),
+    ...(opts.offers
+      ? {
+          offers: {
+            '@type': 'Offer',
+            priceSpecification: {
+              '@type': 'PriceSpecification',
+              priceCurrency: 'BDT',
+              minPrice: opts.offers.minPrice,
+              maxPrice: opts.offers.maxPrice,
+            },
+          },
+        }
+      : {}),
+  };
+}
+
+export function webPageLd(opts: { pageUrl: string; name: string; dateModified: string; aboutId?: string; lang?: 'en' | 'bn' }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': opts.pageUrl,
+    url: opts.pageUrl,
+    name: opts.name,
+    inLanguage: opts.lang === 'bn' ? 'bn-BD' : 'en-BD',
+    isPartOf: { '@id': ids.website },
+    ...(opts.aboutId ? { about: { '@id': opts.aboutId } } : {}),
+    breadcrumb: { '@id': `${opts.pageUrl}#breadcrumb` },
+    publisher: { '@id': ids.organization },
+    dateModified: opts.dateModified,
   };
 }

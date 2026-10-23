@@ -1,0 +1,40 @@
+---
+/**
+ * Fixed bottom bar, mobile only, always visible. 64px + safe area.
+ * <body> carries matching bottom padding (BaseLayout) so it never covers content.
+ * WhatsApp shows only once the number is verified; until then Call takes the full width.
+ */
+import Icon from '../Icon.astro';
+import { business, shown } from '../../data/business';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  lang?: Lang;
+}
+const { lang = 'en' } = Astro.props;
+const t = ui[lang];
+const wa = shown(business.whatsapp);
+---
+
+<div class="fixed inset-x-0 bottom-0 z-50 flex bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgb(19_35_63/0.12)] md:hidden">
+  <a
+    href={business.phone.tel}
+    class={`flex h-16 items-center justify-center gap-2 bg-call ${lang === 'bn' ? 'font-body' : 'font-heading'} text-lg font-bold text-white no-underline ${wa ? 'w-3/5' : 'w-full'}`}
+    data-placement="mobile-bar"
+  >
+    <Icon name="phone" class="size-6" />
+    {t.mobileBar.call}
+  </a>
+  {
+    wa && (
+      <a
+        href={wa.url}
+        class={`flex h-16 w-2/5 items-center justify-center gap-2 bg-whatsapp ${lang === 'bn' ? 'font-body' : 'font-heading'} text-[19px] font-bold text-white no-underline`}
+        data-placement="mobile-bar"
+        rel="noopener"
+      >
+        <Icon name="whatsapp" class="size-6" />
+        {t.mobileBar.whatsapp}
+      </a>
+    )
+  }
+</div>

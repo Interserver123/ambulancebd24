@@ -1,0 +1,9 @@
+# Copy to .dev.vars for local testing with `npx wrangler pages dev dist` (never commit .dev.vars).
+# In production set these in Cloudflare Pages > Settings > Environment variables.
+RESEND_API_KEY=re_xxxxxxxx
+CALLBACK_TO=you@example.com
+CALLBACK_FROM=Ambulance BD 24 <forms@ambulancebd24.com>
+# Optional
+TURNSTILE_SECRET=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=

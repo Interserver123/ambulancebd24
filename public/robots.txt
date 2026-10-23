@@ -1,0 +1,13 @@
+# ambulancebd24.com
+# All crawlers may fetch every public page, CSS, JS and image.
+# /api/ is the call-back form endpoint (POST only), not content.
+# AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, ...) are allowed on purpose:
+# this is a public emergency service, and being cited helps people find the hotline.
+# To opt out, add a group per bot, e.g.:
+#   User-agent: GPTBot
+#   Disallow: /
+
+User-agent: *
+Disallow: /api/
+
+Sitemap: https://ambulancebd24.com/sitemap-index.xml

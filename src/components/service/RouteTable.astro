@@ -1,0 +1,114 @@
+---
+/**
+ * Route table for the inter-district hub (rows from src/data/routes.ts).
+ * Always: district (+ official spelling), division, main road.
+ * Distance column: only once a row has distanceChecked. Fare columns: only per vehicle type
+ * with a verified range. Page column: only once a district page is published, with the
+ * anchor "Dhaka to {District} ambulance". No journey times, ever.
+ */
+import Icon from '../Icon.astro';
+import CallButton from '../warm/CallButton.astro';
+import { business, copy, shown } from '../../data/business';
+import { homeEn as t } from '../../data/home';
+import { money } from '../../data/fares';
+import type { Route } from '../../data/routes';
+import type { ServicePage } from '../../data/service-pages/schema';
+interface Props {
+  rt: NonNullable<ServicePage['routes']>;
+  rows: Route[];
+  /** district name -> published page path */
+  districtPages: Map<string, string>;
+  placement: string;
+}
+const { rt, rows, districtPages, placement } = Astro.props;
+const wa = shown(business.whatsapp);
+const showDistance = rows.some((r) => r.distanceChecked);
+const fareTypes = (['ac', 'icu', 'freezer'] as const).filter((k) => rows.some((r) => r.faresVerified && r.fares[k]));
+const showPage = rows.some((r) => districtPages.has(r.district));
+const cell = 'px-5 py-4';
+const link = 'font-medium text-(--blue-ink) underline underline-offset-4';
+---
+
+<section class="relative overflow-hidden bg-(--tint) py-20 md:py-28">
+  <svg class="absolute top-0 left-0 h-10 w-full text-(--page) md:h-16" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 0h1440v34c-180 30-360 46-540 30S540 18 360 30 120 70 0 54Z"></path></svg>
+  <div class="relative mx-auto max-w-[1240px] px-4 pt-6 md:px-6">
+    <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="eyebrow-warm">{rt.eyebrow}</p>
+        <h2 class="mt-4">{rt.h2Lead} <em>{rt.h2Accent}</em></h2>
+      </div>
+      <p class="text-lg lg:col-span-4 lg:col-start-9">{rt.intro}</p>
+    </div>
+
+    <div class="mt-12 overflow-x-auto rounded-[28px] bg-(--card) soft-shadow">
+      <table class="w-full min-w-[560px] text-left">
+        <caption class="sr-only">{rt.caption}</caption>
+        <thead>
+          <tr class="border-b border-(--line) text-sm text-(--gray-ink)">
+            <th scope="col" class={cell}>{rt.cols.district}</th>
+            <th scope="col" class={cell}>{rt.cols.division}</th>
+            <th scope="col" class={cell}>{rt.cols.via}</th>
+            {showDistance && <th scope="col" class={cell}>{rt.cols.distance}</th>}
+            {fareTypes.map((k) => <th scope="col" class={cell}>{rt.cols.fares[k]}</th>)}
+            {showPage && <th scope="col" class={cell}>{rt.cols.page}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => {
+              const href = districtPages.get(r.district);
+              return (
+                <tr class="border-b border-(--line) align-top last:border-0">
+                  <th scope="row" class={cell}>
+                    <span class="serif block text-lg text-(--ink)">{r.district}</span>
+                    {r.aka && <span class="block text-sm font-normal">{r.aka}</span>}
+                  </th>
+                  <td class={cell}>{r.division}</td>
+                  <td class={cell}>{r.via ?? ''}</td>
+                  {showDistance && <td class={cell}>{r.distanceChecked ? `About ${r.distanceKm} km` : rt.notChecked}</td>}
+                  {fareTypes.map((k) => {
+                    const f = r.faresVerified ? r.fares[k] : undefined;
+                    return <td class={cell}>{f ? `${money(f.min)} to ${money(f.max)}` : rt.notChecked}</td>;
+                  })}
+                  {showPage && (
+                    <td class={cell}>
+                      {href && (
+                        <a href={href} class={link}>
+                          {t.areas.districtAnchor(r.district)}
+                        </a>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    {showDistance && <p class="mt-4 text-sm text-(--gray-ink)">{rt.distanceNote}</p>}
+
+    <div class="mt-10 flex flex-col gap-6 rounded-[32px] bg-(--card) p-7 soft-shadow md:flex-row md:items-center md:justify-between md:p-8">
+      <p class="flex items-start gap-4 text-lg text-(--ink)">
+        <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="route" class="size-5" /></span>
+        <span class="pt-1.5">{rt.missingLead}</span>
+      </p>
+      <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
+        {
+          wa && (
+            <a href={wa.url} class="inline-flex min-h-14 items-center justify-center gap-2.5 rounded-full bg-whatsapp px-6 font-heading text-[19px] font-bold text-white no-underline transition hover:brightness-95" data-placement={`${placement}-whatsapp`} rel="noopener">
+              <Icon name="whatsapp" />
+              {copy.cta.whatsapp.en}
+            </a>
+          )
+        }
+        <CallButton placement={`${placement}-call`} class="justify-center" />
+      </div>
+    </div>
+
+    <p class="mt-8 text-lg">
+      {rt.homeLead}{' '}
+      <a href="/" class={link}>{rt.homeAnchor}</a>.
+    </p>
+  </div>
+</section>

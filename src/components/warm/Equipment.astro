@@ -1,0 +1,51 @@
+---
+/** Hidden until business.claims.equipmentVerified is true (no unverified equipment claims). */
+import Icon from '../Icon.astro';
+import PhotoSlot from '../PhotoSlot.astro';
+import { business } from '../../data/business';
+import { hp } from '../../data/homepage';
+import { warm as w } from '../../data/home-warm';
+const e = hp.equipment;
+---
+
+{
+  business.claims.equipmentVerified && (
+    <section class="py-20 md:py-28">
+      <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+        <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+          <div class="lg:col-span-6">
+            <p class="eyebrow-warm">{w.equipment.eyebrow}</p>
+            <h2 class="mt-4">
+              {w.equipment.h2Lead} <em>{w.equipment.h2Accent}</em>
+            </h2>
+            <p class="mt-5 text-lg">{e.body}</p>
+          </div>
+          <div class="blob-d aspect-[3/2] overflow-hidden soft-shadow lg:col-span-5 lg:col-start-8">
+            <PhotoSlot slot="icu-interior" sizes="(min-width: 1024px) 460px, 100vw" />
+          </div>
+        </div>
+        <div class="mt-14 grid gap-6 md:grid-cols-3">
+          {e.groups.map((g, gi) => (
+            <div class={`pebble rounded-[32px] bg-(--card) p-7 ${gi === 1 ? 'md:translate-y-8' : ''}`}>
+              <h3>{g.title}</h3>
+              <p class="text-sm italic">{g.sub}</p>
+              <ul class="mt-5 space-y-4">
+                {g.items.map((i) => (
+                  <li class="flex gap-3">
+                    <span class="blob-a flex size-8 shrink-0 items-center justify-center bg-(--gray-soft) text-(--gray-ink)">
+                      <Icon name="check" class="size-4" />
+                    </span>
+                    <span>
+                      <span class="block font-semibold text-(--ink)">{i.name}</span>
+                      <span class="block text-sm">{i.text}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

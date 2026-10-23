@@ -1,0 +1,38 @@
+---
+/**
+ * Key facts box near the top of a district page (GEO / AI-answer block): a definition list
+ * where each line is a self-contained, quotable fact.
+ */
+import Icon from '../Icon.astro';
+import type { DistrictPage } from '../../data/district-pages/schema';
+interface Props {
+  facts: DistrictPage['keyFacts'];
+  /** Marks the page for scripts/check-district-similarity.mjs. */
+  district: string;
+}
+const { facts, district } = Astro.props;
+---
+
+<section class="relative py-16 md:py-24" data-district-page={district}>
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <div class="pebble rounded-[40px] bg-(--card) p-7 md:p-12">
+      <p class="eyebrow-warm">{facts.eyebrow}</p>
+      <h2 class="mt-4">{facts.h2}</h2>
+      <dl class="mt-10 grid gap-x-12 md:grid-cols-2">
+        {
+          facts.items.map((f) => (
+            <div class="border-t border-(--line) py-5" data-shared={f.shared ? '' : undefined}>
+              <dt class="flex items-center gap-3 font-semibold text-(--ink)">
+                <span class="blob-a flex size-8 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)">
+                  <Icon name="check" class="size-4" />
+                </span>
+                {f.term}
+              </dt>
+              <dd class="mt-2 pl-11 text-lg">{f.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

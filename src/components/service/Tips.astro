@@ -1,0 +1,46 @@
+---
+/**
+ * Practical planning list ("Planning a long ambulance trip"). Non-medical: anything about the
+ * patient's needs defers to the treating doctor. Same card style as the Proof checklist.
+ */
+import Icon from '../Icon.astro';
+import PhotoSlot from '../PhotoSlot.astro';
+import type { ServicePage } from '../../data/service-pages/schema';
+import type { PhotoSlotKey } from '../../lib/photos';
+interface Props {
+  tips: NonNullable<ServicePage['tips']>;
+  photo: PhotoSlotKey;
+}
+const { tips, photo } = Astro.props;
+---
+
+<section class="relative pb-20 md:pb-28">
+  <div class="relative mx-auto grid max-w-[1240px] gap-12 px-4 md:px-6 lg:grid-cols-12 [&>*]:min-w-0">
+    <div class="lg:col-span-5 lg:flex lg:flex-col">
+      <p class="eyebrow-warm">{tips.eyebrow}</p>
+      <h2 class="mt-4">{tips.h2}</h2>
+      <p class="mt-6 text-lg">{tips.intro}</p>
+      <div class="blob-c mt-8 aspect-[4/3] overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[240px] lg:flex-1">
+        <PhotoSlot slot={photo} sizes="(min-width: 1024px) 460px, 100vw" />
+      </div>
+    </div>
+
+    <div class="lg:col-span-6 lg:col-start-7">
+      <div class="pebble rounded-[40px] bg-(--card) p-7 md:p-10">
+        <ul class="space-y-4">
+          {
+            tips.items.map((q) => (
+              <li class="flex gap-4 text-lg text-(--ink)">
+                <span class="blob-a flex size-9 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)">
+                  <Icon name="check" class="size-4" />
+                </span>
+                <span class="pt-1">{q}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="serif mt-8 text-xl text-(--blue-ink) italic">{tips.close}</p>
+      </div>
+    </div>
+  </div>
+</section>

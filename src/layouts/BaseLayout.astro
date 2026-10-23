@@ -29,11 +29,26 @@ interface Props {
   noindex?: boolean;
   /** Font files to preload instead of the defaults. */
   preloads?: string[];
+  /** Social image (absolute or site path). Defaults to /og-default.jpg (1200×630). */
+  ogImage?: OgImage;
+  /** "article" for blog posts (adds published/modified times). */
+  ogType?: 'website' | 'article';
+  article?: { published: string; modified: string };
 }
 
-const { title, description, path, lang, jsonLd, alternates = [], xDefault = '/', noindex = false, preloads } = Astro.props;
+export interface OgImage {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
+const { title, description, path, lang, jsonLd, alternates = [], xDefault = '/', noindex = false, preloads, ogType = 'website', article } = Astro.props;
+const og: OgImage = Astro.props.ogImage ?? { src: '/og-default.jpg', width: 1200, height: 630, alt: `${business.name} ambulance in Dhaka` };
 const fontPreloads = preloads ?? [lang === 'bn' ? hind400bn : archivo700, hind400];
 const abs = (p: string) => new URL(p, business.url).href;
+/** X handle from the real profile in sameAs (no handle is invented). */
+const xHandle = business.sameAs.find((u) => /\/\/(x|twitter)\.com\//.test(u))?.split('/').pop();
 const hreflang = lang === 'bn' ? 'bn-BD' : 'en-BD';
 const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_BD';
 ---
@@ -48,8 +63,9 @@ const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_BD';
     <!-- noindex pages (404, utility) still pass link value on, and get no canonical -->
     {noindex && <meta name="robots" content="noindex, follow" />}
     {!noindex && <link rel="canonical" href={abs(path)} />}
+    {/* hreflang only when a real other-language version exists (pairs are reciprocal). */}
     {
-      !noindex && (
+      !noindex && alternates.length > 0 && (
         <>
           <link rel="alternate" hreflang={hreflang} href={abs(path)} />
           {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={abs(a.path)} />)}
@@ -58,13 +74,25 @@ const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_BD';
       )
     }
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={business.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={abs(path)} />
     <meta property="og:locale" content={ogLocale} />
     {alternates.map((a) => <meta property="og:locale:alternate" content={a.hreflang.replace('-', '_')} />)}
+    <meta property="og:image" content={abs(og.src)} />
+    <meta property="og:image:width" content={String(og.width)} />
+    <meta property="og:image:height" content={String(og.height)} />
+    <meta property="og:image:alt" content={og.alt} />
+    {article && <meta property="article:published_time" content={article.published} />}
+    {article && <meta property="article:modified_time" content={article.modified} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    {xHandle && <meta name="twitter:site" content={`@${xHandle}`} />}
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={abs(og.src)} />
+    <meta name="twitter:image:alt" content={og.alt} />
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 

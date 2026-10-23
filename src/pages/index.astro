@@ -1,0 +1,56 @@
+---
+/**
+ * English homepage: warm design (brand deck v1.3). Shared shell, reviews block and
+ * NAP + map come from SiteLayout.
+ * Copy: home.ts, homepage.ts, home-warm.ts · NAP and flags: business.ts.
+ * Gated until verified: email, rating, equipment, fare table, Non-AC, "in writing".
+ */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Hero from '../components/warm/Hero.astro';
+import Services from '../components/warm/Services.astro';
+import Emergencies from '../components/warm/Emergencies.astro';
+import Why from '../components/warm/Why.astro';
+import How from '../components/warm/How.astro';
+import Fare from '../components/warm/Fare.astro';
+import Areas from '../components/warm/Areas.astro';
+import Destinations from '../components/warm/Destinations.astro';
+import Equipment from '../components/warm/Equipment.astro';
+import Freezer from '../components/warm/Freezer.astro';
+import Faq from '../components/warm/Faq.astro';
+import Final from '../components/warm/Final.astro';
+import { homeEn } from '../data/home';
+import { hp } from '../data/homepage';
+import { warm as w } from '../data/home-warm';
+import { business, organizationLd, emergencyServiceLd, websiteLd, faqPageLd, graphLd } from '../data/business';
+import { homeData } from '../lib/homeNav';
+
+const { pub, hasBn, faqs } = await homeData();
+
+const pageUrl = `${business.url}/`;
+const jsonLd = graphLd(organizationLd(), emergencyServiceLd({ pageUrl }), websiteLd(), faqPageLd(faqs, pageUrl));
+---
+
+<SiteLayout
+  title={homeEn.meta.title}
+  description={homeEn.meta.description}
+  path="/"
+  jsonLd={jsonLd}
+  alternates={hasBn ? [{ hreflang: 'bn-BD', path: '/bn/' }] : []}
+  reviews={{ ...w.reviews }}
+  nap={{ ...w.findUs, body: hp.findUs.body }}
+>
+  <Hero published={pub.all} />
+  <Services published={pub.all} />
+  <Emergencies />
+  <How />
+  <Fare />
+  <Areas areaPages={pub.areas} districtPages={pub.districts} />
+  <Destinations />
+  <Why />
+  <Equipment />
+  <Fragment slot="after-reviews">
+    <Freezer published={pub.all} />
+    <Faq items={faqs} />
+  </Fragment>
+  <Final slot="end" />
+</SiteLayout>

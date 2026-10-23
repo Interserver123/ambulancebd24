@@ -56,8 +56,10 @@ const PHONE_FORMS = new Set([business.phone.display, business.phone.e164, busine
 const OUR_DIGITS = business.phone.e164.replace(/\D/g, '').slice(-10); // 1919339689
 
 /** Finds phone-like digit runs; returns problems for any non-canonical one. */
-function phoneProblems(text) {
+function phoneProblems(raw) {
   const problems = [];
+  // SVG shape data (path d, viewBox, points) is full of digit runs that are not phone numbers.
+  const text = raw.replace(/\s(?:d|viewBox|points)\s*=\s*("[^"]*"|'[^']*')/g, ' ');
   for (const m of text.matchAll(/\+?[\d০-৯][\d০-৯ -]{8,}[\d০-৯]/g)) {
     const token = m[0].trim();
     const digits = toLatinDigits(token).replace(/\D/g, '');
@@ -78,7 +80,14 @@ function stripPhones(text) {
   return t;
 }
 
+/** The Latin brand name ("Ambulance BD 24") may appear on Bangla pages until the Bangla name is verified. */
+const stripBrand = (text) => text.split(business.name).join(' ');
+
 const APPROVED_TIMING = copy.timingLine.en;
+
+/** Sentences that speak about us. In general guides only these must pass the equipment/crew rules. */
+const ABOUT_US = /\b(we|we're|we've|our|ours|us)\b|ambulance ?bd ?24/i;
+const usSentences = (t) => (t.match(/[^.!?]+[.!?]*/g) ?? []).filter((s) => ABOUT_US.test(s)).join(' ');
 const FREEZER_BN = services.find((s) => s.key === 'freezer').bn; // the service name may always appear
 
 /* ------------------------------------------------------------------ */
@@ -105,7 +114,9 @@ const RULES = [
   },
   {
     id: 'timing',
-    re: /\b\d+\s*(?:(?:-|–|to)\s*\d+\s*)?(?:mins?|minutes?)\b|\bavg\b|average response|মিনিট/i,
+    // Catches "15 minutes", "60 to 90 minutes", "6–40 min", "12m avg", "within minutes",
+    // "under an hour", "response time" and Bangla minute/hour claims.
+    re: /\b\d+\s*(?:(?:-|–|to)\s*\d+\s*)?(?:mins?|minutes?)\b|\b\d+\s*m\b\s*(?:avg|average|eta|away|response)|\bavg\b|\baverage (?:response|arrival)\b|\bresponse time\b|\b(?:within|in) (?:a )?few minutes\b|\bwithin minutes\b|\bminutes away\b|\b(?:within|in under|under)\s+(?:an?|one|two|half an?|\d+)\s*(?:hours?|hrs?)\b|মিনিট|ঘণ্টার মধ্যে|ঘণ্টায় পৌঁছ/i,
     msg: `Only the approved timing claim: "${APPROVED_TIMING}" ("around 10 minutes … depending on traffic" in one sentence). No Bangla timing line approved yet.`,
     // The approved claim may be phrased inside a longer sentence, but must keep "around" and the traffic qualifier.
     prep: (t) => t.split(APPROVED_TIMING).join(' ').replace(/\baround 10 minutes\b[^.!?]*?\bdepending on traffic\b/gi, ' '),
@@ -125,12 +136,14 @@ const RULES = [
     re: /\b(doctor|nurse|paramedic|emt|medic|crew|staff)s?\b[^.]{0,30}\bon[- ]?board\b|\bon[- ]?board\b[^.]{0,30}\b(doctor|nurse|paramedic|emt|medic)s?\b|trained medical (professionals?|staff|team)|\bwith (an? )?(mbbs )?(doctor|nurse|paramedic)\b|(ডাক্তার|নার্স|প্যারামেডিক)\s*সহ/i,
     msg: 'Crew-on-board claims need business.claims.crewOnBoardVerified = true.',
     when: () => !gates.crewOnBoardVerified,
+    prep: (t, c) => c.claimFree ?? t,
   },
   {
     id: 'equipment-claim',
     re: /\b(ventilators?|defibrillators?|AED|cardiac monitors?|infusion pumps?|incubators?|syringe pumps?)\b|ভেন্টিলেটর|ডিফিব্রিলেটর|ইনকিউবেটর/i,
     msg: 'Named equipment needs business.claims.equipmentVerified = true (list it in frontmatter `equipment` with verified flags).',
     when: (c) => !gates.equipmentVerified && c.key !== 'equipment',
+    prep: (t, c) => c.claimFree ?? t,
   },
   {
     id: 'in-writing',
@@ -166,7 +179,7 @@ const RULES = [
     re: /[0-9]/,
     msg: 'Bangla copy uses Bangla digits (except the phone number).',
     when: (c) => c.lang === 'bn',
-    prep: (t) => stripPhones(t).replace(/https?:\/\/\S+/g, ' ').replace(/\]\([^)]*\)/g, '] '),
+    prep: (t) => stripBrand(stripPhones(t)).replace(/https?:\/\/\S+/g, ' ').replace(/\]\([^)]*\)/g, '] '),
   },
 
   /* Voice */
@@ -177,7 +190,7 @@ const RULES = [
     msg: 'Freezer Van voice: no "fast". Condolence first.',
     when: (c) => c.voice === 'freezer',
   },
-  { id: 'freezer-emoji', re: /\p{Extended_Pictographic}/u, msg: 'Freezer Van pages: no emojis.', when: (c) => c.voice === 'freezer' },
+  { id: 'freezer-emoji', re: /(?![©®™])\p{Extended_Pictographic}/u, msg: 'Freezer Van pages: no emojis.', when: (c) => c.voice === 'freezer' },
 ];
 
 function applyRules(text, ctx, hit) {
@@ -269,8 +282,16 @@ for (const e of entries) {
     if (l.section === 'fm' && NON_COPY_KEYS.has(l.key ?? '')) {
       // Still check codes/links for phones and dead anchors.
     } else {
-      const ctx = { lang: lang ?? e.folderLang, voice, key: l.key, inQuote: l.inQuote, isHeading: l.section === 'body' && /^#{1,3}\s/.test(l.text) };
       const copyText = l.section === 'fm' ? l.text.replace(/^\s*(?:-\s+)?[A-Za-z]\w*:\s*/, '') : l.text;
+      const generalGuide = e.collection === 'blog' && e.meta.generalGuide === 'true' && l.section === 'body';
+      const ctx = {
+        lang: lang ?? e.folderLang,
+        voice,
+        key: l.key,
+        inQuote: l.inQuote,
+        isHeading: l.section === 'body' && /^#{1,3}\s/.test(l.text),
+        ...(generalGuide ? { claimFree: usSentences(copyText) } : {}),
+      };
       applyRules(copyText, ctx, (level, rule, msg) => report(level, e.file, l.n, rule, msg));
     }
     for (const p of phoneProblems(l.text)) report('error', e.file, l.n, 'phone', p);
@@ -373,6 +394,10 @@ for (const f of codeFiles) {
     for (const p of phoneProblems(text)) report('error', f, n, 'phone', p);
     if (/href\s*=\s*["']#["']/.test(text)) report('error', f, n, 'dead-link', 'No href="#".');
     if (/aggregateRating/i.test(text)) report('error', f, n, 'aggregate-rating', 'No aggregateRating.');
+    // Timing and guarantee wording lives only in copy.timingLine (business.ts). Comments are skipped.
+    const timingHit = !f.endsWith(join('data', 'business.ts')) && !/^\s*(?:\/\/|\/?\*)/.test(text)
+      && text.match(/\bminutes?\b|\bmins\b|\bavg\b|\bresponse time\b|মিনিট|\bguarantee[sd]?\b|গ্যারান্টি/i);
+    if (timingHit) report('error', f, n, 'hardcoded-timing', `Use copy.timingLine from src/data/business.ts. Found: "${timingHit[0]}"`);
     if (/\[VERIFY/i.test(text)) report('error', f, n, 'verify-left', 'No [VERIFY] in code. Use a verified: false field in business.ts.');
     if (/['"`]\+?8801919|01919[\s-]?339|wa\.me\//.test(text) && !f.endsWith(join('data', 'business.ts'))) {
       report('error', f, n, 'hardcoded-nap', 'Import phone/WhatsApp from src/data/business.ts instead of hard-coding.');
@@ -431,7 +456,12 @@ function checkDist() {
     const noQuotes = html.replace(/<title>[\s\S]*?<\/title>/gi, ' ').replace(/<blockquote\b[\s\S]*?<\/blockquote>/gi, ' ');
     // Headings (h1-h3) count as titles, where লাশবাহী is allowed: that rule gets the text without them.
     const bodyOnly = visibleText(noQuotes.replace(/<h[1-3]\b[\s\S]*?<\/h[1-3]>/gi, ' '));
-    applyRules(visibleText(noQuotes), { lang, voice, key: null, inQuote: false, bodyOnly }, hit);
+    // Elements marked data-not-a-claim (e.g. "What to ask any ICU provider") name equipment or crew
+    // as questions, not as something we offer. Only the equipment and crew rules skip them.
+    // General-guide blog posts: inside <!--guide-start/end-->, only sentences about us are checked.
+    const guideless = noQuotes.replace(/<!--guide-start-->([\s\S]*?)<!--guide-end-->/g, (_, inner) => ` ${usSentences(visibleText(inner))} `);
+    const claimFree = visibleText(guideless.replace(/<(ul|ol|li|p)\b[^>]*\bdata-not-a-claim\b[^>]*>[\s\S]*?<\/\1>/gi, ' '));
+    applyRules(visibleText(noQuotes), { lang, voice, key: null, inQuote: false, bodyOnly, claimFree }, hit);
 
     if (lang === 'bn' && !business.nameBn.verified && html.includes(business.nameBn.value)) {
       report('error', f, 0, 'bn-brand-name', `${urlPath}: Bangla brand name is not verified yet.`);

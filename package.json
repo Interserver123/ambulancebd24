@@ -5,13 +5,16 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build && node scripts/lint-content.mjs --dist",
+    "build": "astro check && astro build && node scripts/lint-content.mjs --dist && node scripts/check-district-similarity.mjs && node scripts/seo-check.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "lint:content": "node scripts/lint-content.mjs"
+    "lint:content": "node scripts/lint-content.mjs",
+    "check:districts": "node scripts/check-district-similarity.mjs",
+    "seo:check": "node scripts/seo-check.mjs --report"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource/archivo": "^5.3.0",
     "@fontsource/hind-siliguri": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
@@ -20,6 +23,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.11",
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2",
     "typescript": "^6.0.3"
   }
 }

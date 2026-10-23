@@ -108,8 +108,9 @@
   .warm .svc h3 { font-size: 1.5rem !important; }
 }
 
-/* Service pages: two plain (page-background) sections in a row share one gap, not two. */
-.warm .svc > section:not([class*='bg-']) + section:not([class*='bg-']) {
+/* Service pages: two plain (page-background) sections in a row share one gap, not two.
+   The hero is a dark panel with no bottom padding, so the section after it keeps its gap. */
+.warm .svc > section:not([class*='bg-']):not(.svc-hero) + section:not([class*='bg-']) {
   padding-top: 0;
 }
 
@@ -206,8 +207,11 @@
   75% { transform: rotate(-3deg); }
 }
 
-/* Gentle float for decorative shapes */
-.drift { animation: drift 14s ease-in-out infinite alternate; }
+/* Gentle float for decorative shapes. Desktop only: on phones the large blurred blobs
+   repaint every frame and add main-thread work (Lighthouse TBT/INP), for no content value. */
+@media (min-width: 768px) {
+  .drift { animation: drift 14s ease-in-out infinite alternate; }
+}
 @keyframes drift {
   from { transform: translate3d(0, 0, 0) rotate(0deg); }
   to { transform: translate3d(12px, -16px, 0) rotate(6deg); }
@@ -252,11 +256,3 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M2 14C40 4 90 2 198 10' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='.85'/%3E%3C/svg%3E");
 }
 
-/* Footer link columns: native <details> accordions on mobile, always open from md up
-   (the inline script in Footer.astro covers browsers without ::details-content). */
-@media (min-width: 768px) {
-  .site-footer details.ft-col::details-content {
-    content-visibility: visible;
-    display: contents;
-  }
-}

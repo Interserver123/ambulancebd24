@@ -1,0 +1,17 @@
+---
+/**
+ * English service pages: one URL per service, the catalogue path from business.ts.
+ * Page copy: src/data/service-pages. Sections and schema: components/service/ServicePageView.astro.
+ */
+import type { GetStaticPaths } from 'astro';
+import ServicePageView from '../components/service/ServicePageView.astro';
+import { servicePages } from '../data/service-pages';
+import type { ServicePage } from '../data/service-pages/schema';
+
+export const getStaticPaths = (() =>
+  servicePages.filter((p) => p.lang === 'en').map((page) => ({ params: { service: page.slug.slice(1, -1) }, props: { page } }))) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: ServicePage };
+---
+
+<ServicePageView page={page} />

@@ -1,0 +1,10 @@
+# 301 map (single hop). Never change a live URL without an entry here.
+# Old WordPress contact page, if it used /contact-us/
+/contact-us/ /contact/ 301
+/contact-us /contact/ 301
+# Duplicate blog post (same title, newer copy) -> the original
+/how-many-ambulances-does-a-hospital/ /how-many-ambulances-does-a-hospital-have/ 301
+/how-many-ambulances-does-a-hospital /how-many-ambulances-does-a-hospital-have/ 301
+# Duplicate WordPress locations page -> the locations hub
+/location/ /locations/ 301
+/location /locations/ 301

@@ -1,0 +1,141 @@
+---
+/**
+ * One district location page, rendered by src/pages/[district].astro from src/data/district-pages.
+ * Section order (district brief §4): hero + dispatch card · key facts · [emergency note, Mode A] ·
+ * journeys · which ambulance · route · where we go · fare · planning checklist · reviews ·
+ * FAQ · nearby districts · NAP + map · final CTA + form.
+ *
+ * Schema (@graph): Organization, WebSite, WebPage (about → Service, mentions → places),
+ * Service (areaServed: the district + Dhaka; offers only with verified route fares),
+ * BreadcrumbList, FAQPage (verified FAQs only). Never a LocalBusiness with a district address.
+ */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ServiceHero from '../service/ServiceHero.astro';
+import Trips from '../service/Trips.astro';
+import Related from '../service/Related.astro';
+import FareBlock from '../service/FareBlock.astro';
+import Tips from '../service/Tips.astro';
+import WhyText from '../service/WhyText.astro';
+import Faq from '../warm/Faq.astro';
+import Final from '../warm/Final.astro';
+import KeyFacts from './KeyFacts.astro';
+import RouteSection from './RouteSection.astro';
+import LocalPickup from './LocalPickup.astro';
+import Nearby from './Nearby.astro';
+import { longTrip, routes } from '../../data/routes';
+import { serviceFareSchema } from '../../data/fares';
+import type { DistrictPage } from '../../data/district-pages/schema';
+import { business, breadcrumbLd, faqPageLd, getService, graphLd, organizationLd, serviceLd, webPageLd, websiteLd } from '../../data/business';
+import { publishedPaths } from '../../lib/routes';
+
+interface Props {
+  page: DistrictPage;
+}
+const { page } = Astro.props;
+const facts = page.facts;
+const route = routes.find((r) => r.district === page.district);
+if (!route) throw new Error(`No route row for ${page.district} (src/data/routes.ts)`);
+
+const pub = await publishedPaths('en');
+const local = facts.localDispatch.verified;
+const fromDistrict = local || longTrip.districtPickup.verified;
+const fullCoverage = fromDistrict && facts.coverage.verified;
+
+// Journeys: a card with a plain href (e.g. Benapole) renders only once that page exists.
+const journeys = {
+  ...page.journeys,
+  items: page.journeys.items.filter((j) => !j.link?.href || pub.all.has(j.link.href)),
+};
+
+// Fare: factors with their own verification flags; route fares only once verified.
+const label = (k: 'ac' | 'icu' | 'freezer') => ({ ac: 'AC ambulance', icu: 'ICU ambulance', freezer: 'Freezer van' })[k];
+const fareRows = route.faresVerified
+  ? (['ac', 'icu', 'freezer'] as const).flatMap((k) => (route.fares[k] ? [{ to: `${page.district} ⇄ Dhaka, ${label(k)}`, fare: route.fares[k]! }] : []))
+  : [];
+const fare = serviceFareSchema.parse({
+  routes: fareRows,
+  factors: [
+    { text: 'Distance on the route', verified: true },
+    { text: 'The type of ambulance the patient needs', verified: true },
+    { text: 'Bridge and highway tolls', verified: longTrip.tollsIncluded.verified },
+    { text: 'Waiting at the hospital', verified: true },
+    { text: 'Whether the quote is one-way or includes the return leg', verified: longTrip.returnLeg.verified },
+    { text: 'Night travel', verified: false },
+  ],
+  verified: fareRows.length > 0,
+});
+
+const faqs = page.faq.items.filter((f) => f.verified).map(({ q, a, shared }) => ({ q, a, shared }));
+
+// Breadcrumb: Home › Areas we serve › {District}. The areas hub (/locations/) does not exist yet,
+// so the middle crumb points to the inter-district hub until it does.
+const inter = getService('inter-district');
+const hubHref = pub.all.has(inter.path) ? inter.path : undefined;
+const middle = pub.all.has('/locations/') ? { name: 'Areas we serve', path: '/locations/' } : hubHref ? { name: 'Dhaka to any district', path: inter.path } : undefined;
+const crumbs = [{ name: 'Home', path: '/' }, ...(middle ? [middle] : []), { name: page.breadcrumb, path: page.slug }];
+
+const onRouteHref = page.route.onRoute ? pub.districts.get(page.route.onRoute.district) : undefined;
+const km = route.distanceChecked ? route.distanceKm : undefined;
+
+const pageUrl = `${business.url}${page.slug}`;
+const offers = fareRows.length ? { minPrice: Math.min(...fareRows.map((r) => r.fare.min)), maxPrice: Math.max(...fareRows.map((r) => r.fare.max)) } : undefined;
+const jsonLd = graphLd(
+  organizationLd(),
+  websiteLd(),
+  {
+    ...webPageLd({ pageUrl, name: page.metaTitle, dateModified: page.updated, aboutId: `${pageUrl}#service`, lang: page.lang }),
+    ...(page.schema.mentions.length ? { mentions: page.schema.mentions.map((m) => ({ '@type': m.type, name: m.name, sameAs: m.sameAs })) } : {}),
+  },
+  serviceLd({
+    pageUrl,
+    name: page.schema.name,
+    serviceType: page.schema.serviceType,
+    offers,
+    areaServed: page.schema.areaServed.map((a) => ({ '@type': a.type, name: a.name })),
+  }),
+  breadcrumbLd(
+    pageUrl,
+    crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),
+  ),
+  faqPageLd(faqs, pageUrl),
+);
+const placement = page.key;
+---
+
+<SiteLayout
+  title={page.metaTitle}
+  description={page.metaDescription}
+  path={page.slug}
+  lang={page.lang}
+  jsonLd={jsonLd}
+  crumbs={crumbs}
+  mainClass="svc"
+  reviews={{ eyebrow: 'Reviews', h2Lead: 'What families', h2Accent: 'say', tags: page.reviewTags }}
+  nap={page.napHeading}
+>
+  <ServiceHero hero={page.hero} crewVerified={false} placement={`${placement}-hero`} lang={page.lang} />
+  <KeyFacts facts={page.keyFacts} district={page.district} />
+  {!local && page.emergency && <WhyText why={page.emergency} shared />}
+  <Trips trips={journeys} published={pub.all} />
+  <Related rel={page.vehicles} published={pub.all} lang={page.lang} shared />
+  <RouteSection route={page.route} km={km} onRouteHref={onRouteHref} />
+  <LocalPickup pickup={page.pickup} facts={facts} fullCoverage={fullCoverage} />
+  <FareBlock fare={page.fare} data={fare} placement={`${placement}-fare`} lang={page.lang} sharedAnswer />
+  <Tips tips={page.tips} photo="inter-district" />
+  <Fragment slot="after-reviews">
+    <Faq items={faqs} eyebrow={page.faq.eyebrow} h2Lead={page.faq.h2Lead} h2Accent={page.faq.h2Accent} updated={page.updated} byline={page.byline} lang={page.lang} />
+    <Nearby nearby={page.nearby} districtPages={pub.districts} hubHref={hubHref} />
+  </Fragment>
+  <Final
+    slot="end"
+    h2Lead={page.final.h2Lead}
+    h2Accent={page.final.h2Accent}
+    text={page.final.text}
+    h3={page.final.h3}
+    placement={`${placement}-final`}
+    whatsapp
+    pickupHint={page.final.pickupHint}
+    formHelper={page.final.formHelper}
+    lang={page.lang}
+  />
+</SiteLayout>

@@ -1,0 +1,17 @@
+# Cloudflare Pages response headers.
+
+# Security headers on every response (CLAUDE.md: HSTS, nosniff, Referrer-Policy).
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), payment=(), usb=()
+
+# Fingerprinted build assets (CSS, JS, optimised images, fonts) never change: cache for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The *.pages.dev preview/deploy domain must never be indexed (duplicate of ambulancebd24.com).
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,153 @@
+---
+/**
+ * Answer-first explainer: a self-contained definition (featured-snippet target), then the
+ * optional parts a page has: a short H3 note, common uses, the "doctor decides" line and a
+ * comparison with a sibling service. Equipment and crew rows appear only from verified vehicle data.
+ */
+import Icon from '../Icon.astro';
+import PhotoSlot from '../PhotoSlot.astro';
+import { getService } from '../../data/business';
+import { ui, type Lang } from '../../data/ui';
+import type { ServicePage } from '../../data/service-pages/schema';
+import type { Vehicle } from '../../data/vehicles';
+import type { PhotoSlotKey } from '../../lib/photos';
+interface Props {
+  ex: NonNullable<ServicePage['explainer']>;
+  /** Verified vehicles of this service. */
+  vehicles: Vehicle[];
+  published: Set<string>;
+  photo: PhotoSlotKey;
+  lang?: Lang;
+}
+const { ex, vehicles, published, photo, lang = 'en' } = Astro.props;
+const t = ui[lang];
+/** Service page if it exists, otherwise its card on the homepage. */
+const hrefFor = (key: Parameters<typeof getService>[0]) => {
+  const s = getService(key);
+  return published.has(s.path) ? s.path : `/#ambulance-${key}`;
+};
+
+const c = ex.compare;
+// Columns only for confirmed services (e.g. Non-AC stays out until verified).
+const columns = c ? c.columns.filter((col) => getService(col.key).status === 'fact') : [];
+const own = columns[0]?.key;
+const partial = c && columns.length < c.columns.length ? c.partial : undefined;
+const equipment = [...new Set(vehicles.flatMap((v) => v.equipment))];
+const crew = [...new Set(vehicles.flatMap((v) => v.crew))];
+const rows =
+  c && own
+    ? [
+        ...c.rows,
+        ...(equipment.length ? [{ label: c.carriesLabel, values: { [own]: equipment.join(', ') } as Record<string, string> }] : []),
+        ...(crew.length ? [{ label: c.crewLabel, values: { [own]: crew.join(', ') } as Record<string, string> }] : []),
+      ]
+    : [];
+const uses = ex.uses ?? [];
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="mx-auto grid max-w-[1240px] gap-12 px-4 md:px-6 lg:grid-cols-12 lg:gap-14 [&>*]:min-w-0">
+    <!-- Text and photo share one row; the photo fills the text height (no dead space) -->
+    <div class="lg:col-span-7">
+      <h2>{ex.h2}</h2>
+      <p class="mt-6 text-xl leading-relaxed text-(--ink)">{ex.definition}</p>
+      {ex.more && <p class="mt-5 text-lg">{ex.more}</p>}
+      {
+        ex.note && (
+          <>
+            <h3 class="mt-10">{ex.note.h3}</h3>
+            <p class="mt-3 text-lg">{ex.note.text}</p>
+            {ex.note.more && <p class="mt-3 text-lg">{ex.note.more}</p>}
+          </>
+        )
+      }
+    </div>
+    <div class="lg:col-span-5 lg:self-stretch">
+      <div class="blob-c aspect-[4/3] h-full overflow-hidden soft-shadow lg:aspect-auto lg:min-h-[320px]">
+        <PhotoSlot slot={photo} sizes="(min-width: 1024px) 460px, 100vw" />
+      </div>
+    </div>
+
+    {
+      (uses.length > 0 || ex.doctorLine) && (
+        <div class="lg:col-span-12">
+          {ex.usesH3 && uses.length > 0 && (
+            <>
+              <h3>{ex.usesH3}</h3>
+              <ul class:list={['mt-5 grid gap-3 sm:grid-cols-2', uses.length === 3 ? 'lg:grid-cols-3' : uses.length === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-4']}>
+                {uses.map((u) => (
+                  <li class="flex items-start gap-3 rounded-[22px] bg-(--card) p-4 text-(--ink) soft-shadow">
+                    <span class="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-(--blue-soft) text-(--blue-ink)">
+                      <Icon name="check" class="size-4" />
+                    </span>
+                    {u}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {ex.doctorLine && (
+            <p class:list={['serif max-w-3xl border-l-2 border-(--blue) pl-5 text-xl text-(--ink) italic', uses.length > 0 && 'mt-8']}>
+              {ex.doctorLine}
+              {ex.doctorLink && (
+                <>
+                  {' '}
+                  <a href={hrefFor(ex.doctorLink.key)} class="text-(--blue-ink) underline underline-offset-4">
+                    {ex.doctorLink.anchor}
+                  </a>
+                  {t.stop}
+                </>
+              )}
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      c && own && (
+        <div class="lg:col-span-12">
+          <h3>{partial ? partial.h3 : c.h3}</h3>
+          <p class="mt-3 max-w-2xl text-lg">{partial ? partial.intro : c.intro}</p>
+          <div class="mt-6 overflow-x-auto rounded-[28px] bg-(--card) soft-shadow">
+            <table class="w-full min-w-[560px] text-left">
+              <thead>
+                <tr class="border-b border-(--line) text-(--ink)">
+                  <th scope="col" class="w-1/5 px-6 py-4">
+                    <span class="sr-only">{t.compareSr}</span>
+                  </th>
+                  {columns.map((col) => (
+                    <th scope="col" class="serif px-6 py-4 text-lg">
+                      {col.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr class="border-b border-(--line) align-top last:border-0">
+                    <th scope="row" class="px-6 py-4 text-sm font-semibold text-(--gray-ink)">
+                      {r.label}
+                    </th>
+                    {columns.map((col, i) => (
+                      <td class={`px-6 py-4 ${i === 0 ? 'text-(--ink)' : ''}`}>{r.values[col.key] ?? ''}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {c.link && (
+            <p class="mt-5">
+              {c.link.lead}{' '}
+              <a href={hrefFor(c.link.key)} class="font-medium text-(--blue-ink) underline underline-offset-4">
+                {c.link.anchor}
+              </a>
+              {t.stop}
+            </p>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

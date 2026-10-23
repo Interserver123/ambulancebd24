@@ -1,0 +1,39 @@
+---
+/**
+ * "AC or ICU ambulance? The doctor decides." Two-branch decision chart. No equipment or crew
+ * claims: the treating doctor decides, the dispatcher matches the vehicle.
+ */
+const label = 'Decision chart: ask the treating doctor. A stable patient goes in an AC ambulance; if the doctor advises ICU support on the way, choose an ICU ambulance. Describe the patient and we match the vehicle.';
+const box = 'fill-(--card)';
+---
+
+<svg viewBox="0 0 800 600" class="h-full w-full" role="img" aria-label={label}>
+  <rect width="800" height="600" class="fill-(--tint)"></rect>
+  <text font-size="36" class="serif fill-(--ink)"><tspan x="40" y="74">AC or ICU ambulance?</tspan></text>
+  <text x="40" y="112" font-size="20" class="fill-(--body)">The treating doctor decides. We match the vehicle.</text>
+
+  <!-- Start -->
+  <rect x="250" y="148" width="300" height="70" rx="35" class="fill-(--ink)"></rect>
+  <text x="400" y="191" text-anchor="middle" font-size="22" font-weight="600" class="fill-(--card)">Ask the treating doctor</text>
+
+  <g class="fill-none stroke-(--blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M400 218 V250 M400 250 H200 V292 M400 250 H600 V292"></path>
+    <path d="M190 282 l10 10 10 -10 M590 282 l10 10 10 -10"></path>
+    <path d="M200 386 V418 M600 386 V418"></path>
+    <path d="M190 408 l10 10 10 -10 M590 408 l10 10 10 -10"></path>
+  </g>
+
+  <!-- Conditions -->
+  <rect x="60" y="300" width="280" height="86" rx="22" class={box}></rect>
+  <text x="200" y="351" text-anchor="middle" font-size="21" class="fill-(--ink)">Patient is stable</text>
+  <rect x="460" y="300" width="280" height="86" rx="22" class={box}></rect>
+  <text text-anchor="middle" font-size="21" class="fill-(--ink)"><tspan x="600" y="336">Doctor advises ICU</tspan><tspan x="600" y="364">support on the way</tspan></text>
+
+  <!-- Results -->
+  <rect x="60" y="426" width="280" height="76" rx="38" class="fill-(--blue-soft)"></rect>
+  <text x="200" y="472" text-anchor="middle" font-size="24" font-weight="700" class="fill-(--blue-ink)">AC ambulance</text>
+  <rect x="460" y="426" width="280" height="76" rx="38" class="fill-(--blue)"></rect>
+  <text x="600" y="472" text-anchor="middle" font-size="24" font-weight="700" class="fill-(--card)">ICU ambulance</text>
+
+  <text x="400" y="560" text-anchor="middle" font-size="19" class="fill-(--gray-ink)">Describe the patient on the call, and we confirm the fare first.</text>
+</svg>

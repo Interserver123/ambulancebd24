@@ -1,0 +1,109 @@
+---
+/**
+ * NAP + map, on every page (via SiteLayout). NAP comes from business.ts and must match
+ * the Google Business Profile character for character. The map is a static illustration
+ * with a Mohakhali pin; the Google map loads only when the visitor taps "Show Google map".
+ */
+import Icon from '../Icon.astro';
+import CallButton from '../warm/CallButton.astro';
+import { business, shown } from '../../data/business';
+import { ui, type Lang } from '../../data/ui';
+interface Props {
+  eyebrow: string;
+  h2Lead: string;
+  h2Accent: string;
+  body: string;
+  lang?: Lang;
+  /** Freezer Van: still call button with the quiet label. */
+  calm?: boolean;
+}
+const { eyebrow, h2Lead, h2Accent, body, lang = 'en', calm = false } = Astro.props;
+const t = ui[lang];
+const f = t.findUs;
+const email = shown(business.email);
+const street = shown(business.address.street);
+const row = 'flex gap-4 py-3.5';
+const label = 'block text-sm text-(--gray-ink) italic';
+---
+
+<section id="contact" class="relative scroll-mt-28 py-20 md:py-28">
+  <div class="mx-auto max-w-[1240px] px-4 md:px-6">
+    <div class="grid gap-6 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="eyebrow-warm">{eyebrow}</p>
+        <h2 class="mt-4">{h2Lead} <em>{h2Accent}</em></h2>
+      </div>
+      <p class="text-lg lg:col-span-4 lg:col-start-9">{body}</p>
+    </div>
+
+    <div class="mt-14 grid items-start gap-8 lg:grid-cols-12">
+      <div class="relative z-10 rounded-[40px] bg-(--card) p-7 soft-shadow md:p-10 lg:col-span-5 lg:mt-12 lg:-mr-12">
+        <ul class="divide-y divide-(--line)">
+          <li class={row}>
+            <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--tint) text-(--ink)"><Icon name="building" /></span>
+            <span><span class={label}>{f.labels.business}</span><span class="serif text-xl text-(--ink)">{business.name}</span></span>
+          </li>
+          <li class={row}>
+            <span class="blob-b flex size-11 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="pin" /></span>
+            <span>
+              <span class={label}>{f.labels.address}</span>
+              <span class="block text-(--ink)">{street && lang === 'en' ? `${street}, ${t.address}` : t.address}</span>
+              {f.plusCode && <span class="block text-sm">{f.plusCode}</span>}
+            </span>
+          </li>
+          <li class={row}>
+            <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--gray-soft) text-(--gray-ink)"><Icon name="phone" /></span>
+            <span>
+              <span class={label}>{f.labels.hotline}</span>
+              <a href={business.phone.tel} class="phone serif text-2xl text-call no-underline hover:underline" data-placement="find-us-number">{business.phone.display}</a>
+            </span>
+          </li>
+          <li class={row}>
+            <span class="blob-b flex size-11 shrink-0 items-center justify-center bg-(--tint) text-(--ink)"><Icon name="clock" /></span>
+            <span>
+              <span class={label}>{f.labels.hours}</span>
+              <span class="block text-(--ink)">{t.hoursDisplay}</span>
+            </span>
+          </li>
+          {
+            email && (
+              <li class={row}>
+                <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="mail" /></span>
+                <span><span class={label}>{f.labels.email}</span><a href={`mailto:${email}`} class="text-(--ink) underline underline-offset-4">{email}</a></span>
+              </li>
+            )
+          }
+        </ul>
+        <div class="mt-7"><CallButton placement="find-us" label={calm ? t.cta.callCalm : t.cta.call} lang={lang === 'bn' ? 'bn' : undefined} calm={calm} /></div>
+        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+          <a href={business.gbp.directionsUrl} class="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-(--ink)/15 bg-white px-5 font-medium text-(--ink) no-underline transition hover:border-(--blue) hover:text-(--blue-ink)" rel="noopener">
+            <Icon name="navigation" class="size-5" />{f.directions}
+          </a>
+          <a href={business.gbp.mapsUrl} class="inline-flex items-center gap-1.5 font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener"><Icon name="star" class="size-4" />{f.seeGoogle}</a>
+        </div>
+        <p class="mt-5 text-xs italic">{f.napNote}</p>
+      </div>
+
+      <figure class="lg:col-span-7">
+        <div class="blob-c relative min-h-[420px] overflow-hidden bg-(--gray-soft) soft-shadow lg:min-h-[560px]" data-click-map={business.gbp.embedUrl}>
+          <!-- Static map: illustrative streets + Mohakhali pin (no third-party request) -->
+          <svg class="absolute inset-0 h-full w-full text-(--gray-ink) opacity-20" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <path d="M-10 90C70 60 140 130 220 95s130-30 190 5M-10 210c80-40 160 40 240 5s120-45 180-15M90 -10c-15 80 35 150 15 220s15 70 0 100M290 -10c20 90-30 160 0 220s-5 60 5 100" fill="none" stroke="currentColor" stroke-width="3"></path>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center" data-map-placeholder>
+            <span class="flex flex-col items-center">
+              <span class="flex size-14 items-center justify-center rounded-full bg-call text-white shadow-[0_12px_30px_-10px_rgb(200_16_46/0.7)]"><Icon name="pin" class="size-7" /></span>
+              <span class="serif mt-2 text-xl text-(--ink)">{t.locality}</span>
+              <span class="text-sm text-(--gray-ink) italic">{f.base}</span>
+            </span>
+            <button type="button" class="mt-3 inline-flex min-h-12 items-center gap-2 rounded-full bg-(--card) px-5 font-medium text-(--ink) soft-shadow transition hover:text-(--blue-ink)" data-load-map>
+              <Icon name="map" class="size-5" />{f.mapShow}
+            </button>
+            <a href={business.gbp.mapsUrl} class="inline-flex items-center gap-1.5 text-sm font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener">{f.mapOpen}<Icon name="external" class="size-4" /></a>
+          </div>
+        </div>
+        <figcaption class="mt-3 text-xs italic">{f.mapCaption}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

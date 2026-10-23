@@ -1,0 +1,107 @@
+---
+/**
+ * Service page hero: dark rounded panel (same family as the homepage hero), H1 as the LCP,
+ * Call + WhatsApp at equal weight, trust row, and a dispatch card telling people what to share.
+ */
+import Icon from '../Icon.astro';
+import CallButton from '../warm/CallButton.astro';
+import { business, shown } from '../../data/business';
+import { digits, ui, type Lang } from '../../data/ui';
+import type { ServicePage } from '../../data/service-pages/schema';
+interface Props {
+  hero: ServicePage['hero'];
+  /** True once crew roles are verified for this service. */
+  crewVerified: boolean;
+  placement: string;
+  lang?: Lang;
+  /** The other language version of this page, if it exists (for hero.langNote). */
+  altPath?: string;
+}
+const { hero, crewVerified, placement, lang = 'en', altPath } = Astro.props;
+const t = ui[lang];
+const bn = lang === 'bn';
+const wa = shown(business.whatsapp);
+// The note is written in the other page's language.
+const noteLang = bn ? 'en' : 'bn';
+---
+
+<section class="svc-hero px-3 pt-4 md:px-6 md:pt-6">
+  <div class="relative isolate mx-auto max-w-[1400px] overflow-hidden rounded-[36px] bg-(--ink) text-white md:rounded-[64px]">
+    <!-- Soft blue glow as a static gradient (no blur filter or animation: cheaper first paint on phones) -->
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_8%_0%,rgb(80_112_252/0.28),transparent_45%),radial-gradient(circle_at_100%_100%,rgb(80_112_252/0.18),transparent_40%)]"></div>
+
+    <div class="mx-auto grid max-w-[1240px] items-center gap-10 px-4 py-10 md:px-10 md:py-14 lg:grid-cols-12 lg:gap-10">
+      <div class="min-w-0 lg:col-span-7">
+        <p class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/85">
+          <span class="size-2.5 rounded-full bg-(--blue)"></span>
+          {hero.eyebrow}
+        </p>
+        {hero.condolence && <p class="mt-6 text-xl text-white">{hero.condolence}</p>}
+        <h1 class:list={[hero.condolence ? 'mt-3' : 'mt-6', 'text-white!']}>{hero.h1}</h1>
+        {hero.calm && hero.bnLine && <p lang="bn" class="mt-5 max-w-xl text-xl text-white">{hero.bnLine}</p>}
+        <p class="mt-5 max-w-xl text-lg text-white/80">{hero.lede}</p>
+        {!hero.calm && hero.bnLine && <p lang="bn" class="mt-3 text-white/60">{hero.bnLine}</p>}
+        {
+          hero.langNote && altPath && (
+            <p lang={noteLang} class="mt-4 text-white/80">
+              {hero.langNote.lead}{' '}
+              <a href={altPath} hreflang={noteLang} class="font-medium text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">
+                {hero.langNote.anchor}
+              </a>
+            </p>
+          )
+        }
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-shared>
+          {
+            hero.calm ? (
+              <CallButton placement={placement} label={t.cta.callCalm} lang={bn ? 'bn' : undefined} calm class="w-full justify-center sm:w-auto" />
+            ) : (
+              <CallButton placement={placement} label={t.cta.call} lang={bn ? 'bn' : undefined} class="w-full justify-center sm:w-auto" />
+            )
+          }
+          {
+            wa && (
+              <a href={wa.url} class={`${hero.waFirst ? 'order-first ' : ''}inline-flex w-full items-center justify-center gap-3 rounded-full bg-whatsapp py-2 pr-6 pl-2 ${bn ? 'font-body' : 'font-heading'} text-[19px] font-bold tracking-tight whitespace-nowrap text-white no-underline shadow-[0_18px_40px_-18px_rgb(31_138_76/0.9)] transition hover:-translate-y-0.5 hover:brightness-95 sm:w-auto`} data-placement={placement} rel="noopener">
+                <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-whatsapp"><Icon name="whatsapp" class="size-5" /></span>
+                {t.cta.whatsapp}
+              </a>
+            )
+          }
+        </div>
+
+        <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[15px] text-white/80" data-shared>
+          {
+            hero.trust.map((t) => (
+              <li class="flex items-center gap-2">
+                <span class="flex size-5 items-center justify-center rounded-full bg-(--blue)/25 text-[#b7c4ff]"><Icon name="check" class="size-3.5" /></span>
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="min-w-0 lg:col-span-5" aria-labelledby="dispatch-card-title" data-shared>
+        <div class="pebble rounded-[32px] bg-(--card) p-7 text-(--body) md:p-8">
+          <p class="flex items-center gap-3">
+            <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="headset" /></span>
+            <span id="dispatch-card-title" class="serif text-2xl text-(--ink)">{hero.card.title}</span>
+          </p>
+          <ol class="mt-6 space-y-4">
+            {
+              hero.card.items.map((it, i) => (
+                <li class="flex gap-4" data-not-a-claim={it.notAClaim ? '' : undefined}>
+                  <span class="serif flex size-8 shrink-0 items-center justify-center rounded-full bg-(--tint) text-(--blue-ink)">{digits(lang, i + 1)}</span>
+                  <span class="pt-0.5 text-(--ink)">{it.text}</span>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="mt-6 border-t border-(--line) pt-5 text-[15px] italic">{crewVerified ? hero.card.footerWithCrew : hero.card.footer}</p>
+          <a href={business.phone.tel} class="phone serif mt-3 inline-block text-3xl text-call no-underline hover:underline" data-placement={`${placement}-card`}>{business.phone.display}</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>

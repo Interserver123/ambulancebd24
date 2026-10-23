@@ -49,6 +49,7 @@ export const GET: APIRoute = async () => {
     '',
     line('Ambulance service in Dhaka (home)', '/', 'Overview of all ambulance types, how booking works and the hotline.'),
     line('Ambulance in every area of Dhaka', '/ambulance-service-areas-dhaka/', 'Coverage inside Dhaka city, area by area.'),
+    line('Our services', '/services/', 'Every ambulance service in one list, with a guide to choosing the right one.'),
     line('Areas we serve', '/locations/', 'Dhaka areas and every district page in one list.'),
     line('Contact', '/contact/', 'Hotline, WhatsApp, call-back form, address and map.'),
     '',

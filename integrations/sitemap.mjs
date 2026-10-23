@@ -20,7 +20,7 @@ import { execFileSync } from 'node:child_process';
 
 /** Sections in index order. `match` sees the page; first match wins, `pages` catches the rest. */
 const SECTIONS = [
-  { name: 'services', match: (p) => p.types.has('Service') && !p.crumbs.some(isLocationHub) },
+  { name: 'services', match: (p) => p.path === '/services/' || p.types.has('Service') && !p.crumbs.some(isLocationHub) },
   { name: 'locations', match: (p) => isLocationHub(p.path) || p.crumbs.some(isLocationHub) },
   { name: 'blog', match: (p) => p.path === '/blog/' || p.crumbs.includes('/blog/') },
 ];
@@ -130,7 +130,7 @@ function attrOf(head, tag, attr) {
 }
 
 /** Home and section hubs first, then by URL; Bangla pages after their section's English pages. */
-const HUBS = ['/', '/blog/', ...LOCATION_HUBS];
+const HUBS = ['/', '/services/', '/blog/', ...LOCATION_HUBS];
 function byPath(/** @type {{ path: string }} */ a, /** @type {{ path: string }} */ b) {
   const hub = (/** @type {string} */ p) => (HUBS.includes(p) ? HUBS.indexOf(p) : HUBS.length);
   if (hub(a.path) !== hub(b.path)) return hub(a.path) - hub(b.path);

@@ -8,7 +8,7 @@ import { districtPages } from '../data/district-pages';
  * data-driven service and district pages come from src/data/service-pages and
  * src/data/district-pages.
  */
-const STATIC_PAGES = ['/', '/contact/', '/ambulance-service-areas-dhaka/', '/locations/', ...servicePages.map((p) => p.slug), ...districtPages.map((p) => p.slug)];
+const STATIC_PAGES = ['/', '/contact/', '/ambulance-service-areas-dhaka/', '/locations/', '/services/', ...servicePages.map((p) => p.slug), ...districtPages.map((p) => p.slug)];
 
 export async function publishedPaths(lang: 'en' | 'bn' = 'en') {
   const keep = (e: { data: { draft: boolean; lang: string } }) => !e.data.draft && e.data.lang === lang;

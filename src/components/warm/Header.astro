@@ -30,7 +30,7 @@ type Item = { label: string; path: string } | { label: string; menu: { label: st
 // About and Blog appear only once their pages exist. Contact falls back to the footer contact block (never "#").
 const items: Item[] = [
   { label: n.home, path: '/' },
-  ...(serviceLinks.length ? [{ label: n.services, path: '/#ambulances', menu: [...serviceLinks, { label: n.allServices, path: '/#ambulances' }] }] : []),
+  ...(serviceLinks.length ? [{ label: n.services, path: '/services/', menu: [...serviceLinks, { label: n.allServices, path: '/services/' }] }] : []),
   ...(nav.about ? [{ label: n.about, path: nav.about }] : []),
   ...(locationLinks.length ? [{ label: n.locations, menu: locationLinks }] : []),
   ...(nav.blog ? [{ label: n.blog, path: nav.blog }] : []),

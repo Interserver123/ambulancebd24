@@ -8,3 +8,8 @@
 # Duplicate WordPress locations page -> the locations hub
 /location/ /locations/ 301
 /location /locations/ 301
+# Common and old WordPress (Yoast / Rank Math) sitemap URLs -> Astro's sitemap index
+/sitemap.xml /sitemap-index.xml 301
+/sitemap_index.xml /sitemap-index.xml 301
+/post-sitemap.xml /sitemap-index.xml 301
+/page-sitemap.xml /sitemap-index.xml 301

@@ -101,6 +101,60 @@ const linkCls = 'font-medium text-(--ink) hover:text-(--blue-ink)';
         <span class:list={['phone hidden font-bold sm:inline', lang === 'bn' ? 'font-body' : 'font-heading']}>{t.header.call}</span>
         <span class:list={['font-bold sm:hidden', lang === 'bn' ? 'font-body' : 'font-heading']}>{t.header.callShort}</span>
       </a>
+      <button type="button" class="menu-btn inline-flex size-12 shrink-0 items-center justify-center rounded-full border border-(--line) bg-(--card) text-(--ink) lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label={t.header.menu} data-menu-btn>
+        <span data-open-icon><Icon name="menu" class="size-6" /></span>
+        <span class="hidden" data-close-icon><Icon name="close" class="size-6" /></span>
+      </button>
     </div>
   </div>
+  <!-- Mobile and tablet menu: real links in the HTML, opened by the button above -->
+  <nav id="mobile-menu" aria-label={t.header.menuLabel} class="absolute inset-x-3 top-full z-50 mt-2 hidden max-h-[calc(100dvh-12rem)] overscroll-contain overflow-y-auto rounded-[28px] border border-(--line) bg-(--card) p-3 shadow-[0_20px_40px_-20px_rgb(28_40_110/0.45)] md:inset-x-6 lg:hidden" data-menu>
+    <ul class="grid gap-1">
+      {
+        items.map((it) =>
+          'menu' in it ? (
+            <li>
+              {it.path ? (
+                <a href={it.path} class="flex min-h-12 items-center rounded-2xl px-4 font-medium text-(--ink) no-underline active:bg-(--tint)">{it.label}</a>
+              ) : (
+                <p class="flex min-h-12 items-center px-4 font-medium text-(--ink)">{it.label}</p>
+              )}
+              <ul class="mb-1 ml-4 grid gap-0.5 border-l border-(--line) pl-2">
+                {it.menu.map((m) => (
+                  <li>
+                    <a href={m.path} class="flex min-h-12 flex-col justify-center rounded-2xl px-4 py-1 text-(--ink) no-underline active:bg-(--tint)">
+                      <span>{m.label}</span>
+                      {m.hint && <span class="text-sm text-(--gray-ink)">{m.hint}</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ) : (
+            <li>
+              <a href={it.path} class="flex min-h-12 items-center rounded-2xl px-4 font-medium text-(--ink) no-underline active:bg-(--tint)">{it.label}</a>
+            </li>
+          ),
+        )
+      }
+    </ul>
+  </nav>
 </header>
+
+<script>
+  // Mobile menu: open/close with the button, Escape, a tap outside, or after choosing a link.
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (btn && menu) {
+    const set = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('[data-open-icon]')?.classList.toggle('hidden', open);
+      btn.querySelector('[data-close-icon]')?.classList.toggle('hidden', !open);
+    };
+    btn.addEventListener('click', () => set(menu.classList.contains('hidden')));
+    menu.addEventListener('click', (e) => (e.target as Element).closest('a') && set(false));
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
+    document.addEventListener('click', (e) => !menu.contains(e.target as Node) && !btn.contains(e.target as Node) && set(false));
+  }
+</script>

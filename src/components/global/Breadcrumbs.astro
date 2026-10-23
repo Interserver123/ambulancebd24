@@ -22,7 +22,7 @@ const { items } = Astro.props;
         <li class="flex items-center gap-2">
           {i > 0 && <Icon name="arrow-right" class="size-3.5 text-(--gray)" />}
           {i < items.length - 1 ? (
-            <a href={c.path} class="text-(--blue-ink) underline decoration-(--blue)/30 underline-offset-4 hover:decoration-(--blue)">
+            <a href={c.path} class="inline-flex min-h-11 items-center text-(--blue-ink) underline decoration-(--blue)/30 underline-offset-4 hover:decoration-(--blue)">
               {c.name}
             </a>
           ) : (

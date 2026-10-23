@@ -18,7 +18,7 @@ const wa = shown(business.whatsapp);
 <div class="fixed inset-x-0 bottom-0 z-50 flex bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgb(19_35_63/0.12)] md:hidden">
   <a
     href={business.phone.tel}
-    class={`flex h-16 items-center justify-center gap-2 bg-call ${lang === 'bn' ? 'font-body' : 'font-heading'} text-lg font-bold text-white no-underline ${wa ? 'w-3/5' : 'w-full'}`}
+    class={`flex h-16 items-center justify-center gap-2 bg-call ${lang === 'bn' ? 'font-body' : 'font-heading'} text-lg font-bold text-white no-underline active:brightness-90 ${wa ? 'w-3/5' : 'w-full'}`}
     data-placement="mobile-bar"
   >
     <Icon name="phone" class="size-6" />
@@ -28,7 +28,7 @@ const wa = shown(business.whatsapp);
     wa && (
       <a
         href={wa.url}
-        class={`flex h-16 w-2/5 items-center justify-center gap-2 bg-whatsapp ${lang === 'bn' ? 'font-body' : 'font-heading'} text-[19px] font-bold text-white no-underline`}
+        class={`flex h-16 w-2/5 items-center justify-center gap-2 bg-whatsapp ${lang === 'bn' ? 'font-body' : 'font-heading'} text-[19px] font-bold text-white no-underline active:brightness-90`}
         data-placement="mobile-bar"
         rel="noopener"
       >

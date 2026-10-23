@@ -79,7 +79,7 @@ const label = 'block text-sm text-(--gray-ink) italic';
           <a href={business.gbp.directionsUrl} class="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-(--ink)/15 bg-white px-5 font-medium text-(--ink) no-underline transition hover:border-(--blue) hover:text-(--blue-ink)" rel="noopener">
             <Icon name="navigation" class="size-5" />{f.directions}
           </a>
-          <a href={business.gbp.mapsUrl} class="inline-flex items-center gap-1.5 font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener"><Icon name="star" class="size-4" />{f.seeGoogle}</a>
+          <a href={business.gbp.mapsUrl} class="inline-flex min-h-12 items-center gap-1.5 font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener"><Icon name="star" class="size-4" />{f.seeGoogle}</a>
         </div>
         <p class="mt-5 text-xs italic">{f.napNote}</p>
       </div>
@@ -99,7 +99,7 @@ const label = 'block text-sm text-(--gray-ink) italic';
             <button type="button" class="mt-3 inline-flex min-h-12 items-center gap-2 rounded-full bg-(--card) px-5 font-medium text-(--ink) soft-shadow transition hover:text-(--blue-ink)" data-load-map>
               <Icon name="map" class="size-5" />{f.mapShow}
             </button>
-            <a href={business.gbp.mapsUrl} class="inline-flex items-center gap-1.5 text-sm font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener">{f.mapOpen}<Icon name="external" class="size-4" /></a>
+            <a href={business.gbp.mapsUrl} class="inline-flex min-h-12 items-center gap-1.5 text-sm font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener">{f.mapOpen}<Icon name="external" class="size-4" /></a>
           </div>
         </div>
         <figcaption class="mt-3 text-xs italic">{f.mapCaption}</figcaption>

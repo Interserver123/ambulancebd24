@@ -28,7 +28,7 @@ const linkable = published.has(path);
       <p class="mt-4">{t.freezer.bodyEn}</p>
       <div class="mt-8 flex flex-col items-start gap-5">
         <CallButton placement="freezer-block" label={t.freezer.cta} lang="bn" calm />
-        {linkable && <a href={path} lang="bn" class="font-body font-medium text-(--blue-ink) underline underline-offset-4">{t.freezer.link}</a>}
+        {linkable && <a href={path} lang="bn" class="inline-flex min-h-12 items-center font-body font-medium text-(--blue-ink) underline underline-offset-4">{t.freezer.link}</a>}
       </div>
     </div>
   </div>

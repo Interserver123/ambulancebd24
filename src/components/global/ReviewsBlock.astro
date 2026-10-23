@@ -52,7 +52,7 @@ const tilt = ['-rotate-1', 'rotate-1 lg:mt-10', '-rotate-[0.5deg]'];
         <h2 id="reviews-h2" class="mt-4">{h2Lead} <em>{h2Accent}</em></h2>
         {items.length > 0 && <p class="mt-2 italic">{t.reviews.sub}</p>}
       </div>
-      <a href={business.gbp.reviewsListUrl} class="inline-flex items-center gap-2 font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener">
+      <a href={business.gbp.reviewsListUrl} class="inline-flex min-h-12 items-center gap-2 font-medium text-(--blue-ink) underline underline-offset-4" rel="noopener">
         {t.reviews.allOurs}
         <Icon name="arrow-right" class="size-4" />
       </a>

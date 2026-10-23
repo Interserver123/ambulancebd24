@@ -129,7 +129,7 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
       <p class="mt-4 text-white/65 italic">{w.hero.nudge}</p>
 
       <div class="mx-auto mt-8 max-w-md border-t border-white/10 pt-6">
-        <a href={business.gbp.reviewsListUrl} class="inline-flex items-center gap-2 text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white" rel="noopener">
+        <a href={business.gbp.reviewsListUrl} class="inline-flex min-h-12 items-center gap-2 text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white" rel="noopener">
           <Icon name="star" class="size-4 text-[#b7c4ff]" />
           {rating ? t.hero.rating(rating) : h.reviewsLink}
         </a>

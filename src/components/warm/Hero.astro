@@ -89,7 +89,7 @@ const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
     <div class="mx-auto max-w-[980px] px-5 pb-10 text-center md:px-8 md:pt-16 max-md:pt-2">
       <p class="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/85 backdrop-blur">
         <span class="relative flex size-2.5"><span class="absolute inset-0 animate-ping rounded-full bg-(--blue) opacity-60 motion-reduce:hidden"></span><span class="relative size-2.5 rounded-full bg-(--blue)"></span></span>
-        <span class="sm:hidden">{business.address.locality}, {business.address.city}</span>
+        <span class="sm:hidden">{business.hours.is24x7 ? 'Open 24/7 · ' : ''}{business.address.locality}, {business.address.city}</span>
         <span class="hidden sm:inline">{h.eyebrow}</span>
       </p>
 

@@ -11,7 +11,7 @@
  * JSON-LD (parses, one graph, @id/url consistency, no aggregateRating/Review), OG/Twitter
  * tags, hreflang reciprocity, internal links (target exists, no "#"/javascript:),
  * sitemap (only canonical indexable pages, all indexable pages listed), robots.txt
- * (sitemap line, no site-wide disallow) and _redirects (no chains, loops or redirected
+ * (sitemap line, no site-wide disallow), llms.txt (links resolve to indexable pages) and _redirects (no chains, loops or redirected
  * URLs that also exist as pages). Content rules (YMYL wording) live in lint-content.mjs.
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -218,6 +218,17 @@ else {
   if (!/^Sitemap:\s*https:\/\/ambulancebd24\.com\/sitemap-index\.xml\s*$/im.test(r)) err('/robots.txt', 'robots', 'no Sitemap line for sitemap-index.xml');
   const groups = r.split(/\n(?=User-agent:)/i);
   for (const g of groups) if (/User-agent:\s*\*/i.test(g) && /^Disallow:\s*\/\s*$/im.test(g)) err('/robots.txt', 'robots', 'site-wide Disallow for all crawlers');
+}
+
+// llms.txt: every listed site URL must be a live, indexable page
+const llmsFile = join(DIST, 'llms.txt');
+if (!existsSync(llmsFile)) err('/llms.txt', 'llms', 'missing');
+else {
+  for (const m of readFileSync(llmsFile, 'utf8').matchAll(/\]\((https:\/\/ambulancebd24\.com\/[^)]*)\)/g)) {
+    const page = byUrl.get(new URL(m[1]).pathname);
+    if (!page) err('/llms.txt', 'llms', `links to missing page ${m[1]}`);
+    else if (page.noindex) err('/llms.txt', 'llms', `links to noindex page ${m[1]}`);
+  }
 }
 
 // _redirects: chains, loops, sources that are live pages

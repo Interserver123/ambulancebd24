@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { readdirSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 
 /** /blog/ is noindex (and out of the sitemap) until a post file exists. */
 const hasBlogPosts = ['en', 'bn'].some((l) => {
@@ -12,6 +12,20 @@ const hasBlogPosts = ['en', 'bn'].some((l) => {
     return false;
   }
 });
+
+/**
+ * Sitemap lastmod = the page's own JSON-LD dateModified (the "updated" date shown on the page),
+ * so the sitemap and the page never disagree. Pages without one get no lastmod rather than a
+ * guessed date. Read from dist/, which is written before the sitemap integration runs.
+ */
+const lastmodFor = (/** @type {string} */ url) => {
+  try {
+    const html = readFileSync(new URL(`./dist${new URL(url).pathname}index.html`, import.meta.url), 'utf8');
+    return html.match(/"dateModified":"(\d{4}-\d{2}-\d{2})/)?.[1];
+  } catch {
+    return undefined;
+  }
+};
 
 /**
  * Dev only: mirror Cloudflare Pages, which 308-redirects "/path" to "/path/".
@@ -57,6 +71,10 @@ export default defineConfig({
       // Design previews (and /blog/ while empty) are noindex and stay out of the sitemap.
       filter: (page) => !page.includes('/preview/') && (hasBlogPosts || !page.endsWith('/blog/')),
       i18n: { defaultLocale: 'en', locales: { en: 'en-BD', bn: 'bn-BD' } },
+      serialize(item) {
+        const lastmod = lastmodFor(item.url);
+        return lastmod ? { ...item, lastmod } : item;
+      },
     }),
   ],
   vite: { plugins: [devTrailingSlash, tailwindcss()] },

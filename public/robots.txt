@@ -1,13 +1,21 @@
-# ambulancebd24.com
-# All crawlers may fetch every public page, CSS, JS and image.
-# /api/ is the call-back form endpoint (POST only), not content.
-# AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, ...) are allowed on purpose:
-# this is a public emergency service, and being cited helps people find the hotline.
-# To opt out, add a group per bot, e.g.:
-#   User-agent: GPTBot
-#   Disallow: /
+# robots.txt for https://ambulancebd24.com
+#
+# Every public page, CSS, JS, font and image may be crawled: Google needs the
+# assets to render pages and judge mobile-friendliness and Core Web Vitals.
+#
+# Not blocked on purpose:
+# - Noindex pages (404, previews): crawlers must fetch them to see the noindex tag.
+# - URLs with ?utm_ etc.: every page has a self-referencing canonical, so
+#   tracking parameters consolidate to the clean URL instead of being hidden.
+#
+# AI and answer-engine crawlers (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot,
+# Google-Extended, Applebot-Extended, ...) are welcome: this is a public emergency
+# service and being cited helps people find the hotline. Summary for them: /llms.txt
+#
+# Cloudflare: keep "Managed robots.txt" / "Block AI bots" OFF, or they override this file.
 
 User-agent: *
+Allow: /
 Disallow: /api/
 
 Sitemap: https://ambulancebd24.com/sitemap-index.xml

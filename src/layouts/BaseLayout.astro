@@ -60,6 +60,8 @@ const ogLocale = lang === 'bn' ? 'bn_BD' : 'en_BD';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {/* Google Search Console ownership: home page only. Keep this tag, or verification is lost. */}
+    {path === '/' && lang === 'en' && <meta name="google-site-verification" content="3e_uwW2fYGFZE4Eh27lit5My8LadzlGNCPZMEOCtovM" />}
     <!-- noindex pages (404, utility) still pass link value on, and get no canonical -->
     {noindex && <meta name="robots" content="noindex, follow" />}
     {!noindex && <link rel="canonical" href={abs(path)} />}

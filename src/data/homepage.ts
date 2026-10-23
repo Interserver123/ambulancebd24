@@ -8,21 +8,6 @@ import { business, copy, type ServiceKey } from './business';
 const phone = business.phone.display;
 
 export const hp = {
-  meta: {
-    title: 'Ambulance Service in Dhaka 24/7 | Ambulance BD 24',
-    description: `24/7 ambulance service in Dhaka: ICU, NICU, AC and freezer van. Nearest ambulance, fare told before we move. Call ${phone}.`,
-  },
-
-  topbar: { status: `Dispatch open · ${business.hours.display}`, whatsapp: copy.cta.whatsapp.en },
-
-  header: {
-    nav: { ambulances: 'Ambulances', areas: 'Dhaka Areas', districts: 'Districts', about: 'About', contact: 'Contact' },
-    allAmbulances: 'All ambulance types',
-    allAreas: 'Areas we serve',
-    allDistricts: 'Dhaka to districts',
-    hotlineLabel: '24/7 Emergency hotline',
-    call: `Call ${phone}`,
-  },
 
   hero: {
     eyebrow: `${business.name} · ${business.address.locality}, ${business.address.city} ${business.address.postalCode}`,
@@ -43,16 +28,6 @@ export const hp = {
     reviewsLink: 'Read our Google reviews',
     rating: (r: { rating: number; count: number }) => `${r.rating} on Google · ${r.count} reviews`,
     tabs: { icu: 'ICU', nicu: 'NICU', ac: 'AC', 'non-ac': 'Non-AC', freezer: 'Freezer Van', 'inter-district': 'Inter-District', air: 'Air' } as Partial<Record<ServiceKey, string>>,
-  },
-
-
-  quick: {
-    eyebrow: 'What happens when you call',
-    steps: [
-      { n: '01', title: 'You call, we answer', text: 'Day or night, a dispatcher answers.' },
-      { n: '02', title: 'Tell us two things', text: "Where you are, and the patient's condition." },
-      { n: '03', title: 'Fare first, then we move', text: 'We confirm the fare and send the nearest ambulance.' },
-    ],
   },
 
   ambulances: {
@@ -110,13 +85,6 @@ export const hp = {
       line: copy.freezerLine.bn,
       cta: copy.cta.freezerCall.bn,
     },
-  },
-
-  fareBand: {
-    kicker: 'Need an ambulance right now?',
-    promiseTitle: 'The fare is told before we move',
-    checks: ['Fare told on the call, before dispatch', 'Waiting time and extra stops included', 'No change after the trip'],
-    inWriting: 'Sent to you in writing by SMS or WhatsApp',
   },
 
   timeline: {
@@ -281,12 +249,6 @@ export const hp = {
     allOurs: 'Read all our reviews on Google',
   },
 
-  note: {
-    label: 'From our dispatch desk',
-    text: "If you're calling in a panic, that's normal. We'll ask where you are, how the patient is and where they need to go. Then we tell you the fare and send the nearest ambulance. Stay on the line if you can.",
-    sign: `— The ${business.name} dispatch desk, ${business.address.locality}`,
-  },
-
   findUs: {
     eyebrow: 'Find us',
     h2: `Our dispatch base in ${business.address.locality}`,
@@ -305,16 +267,6 @@ export const hp = {
     chips: ['Gulshan', 'Banani', 'Mohakhali', 'Mirpur', 'Uttara', 'Dhanmondi', 'Mohammadpur', 'Badda', 'Bashundhara', 'Tejgaon', 'Old Dhaka'],
   },
 
-  faq: { eyebrow: 'Questions', h2: 'Questions families ask', aside: 'Still have a question?' },
-
-  callback: {
-    eyebrow: 'Callback',
-    h2: 'Request a call back',
-    h3: 'Planning a discharge or district trip?',
-    text: "We'll call you back. For a medical emergency, always call the hotline directly.",
-    pickupHint: 'Area, road or a nearby landmark',
-  },
-
   final: {
     eyebrow: business.hours.short,
     tagline: copy.tagline.en,
@@ -325,17 +277,4 @@ export const hp = {
     shareText: `${business.name}: 24/7 ambulance in Dhaka. Call ${phone}.`,
   },
 
-  footer: {
-    tagline: '24/7 · ICU · NICU · AC · Freezer Van · Dhaka & all districts',
-    baseTitle: 'Dispatch base',
-    openNow: 'Open now · 24/7',
-    directions: 'Get directions',
-    seeGoogle: 'See us on Google',
-    cols: { ambulances: 'Ambulances', areas: 'Dhaka Areas', districts: 'Districts', company: 'Company' },
-    hospitalsLead: 'Hospitals we transport to:',
-    hospitalsNote: 'Listed as destinations only.',
-    backToTop: 'Back to top',
-  },
 };
-
-export type HomePage = typeof hp;

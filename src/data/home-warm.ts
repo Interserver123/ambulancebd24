@@ -6,7 +6,6 @@
 import { homeEn } from './home';
 
 export const warm = {
-  meta: homeEn.meta,
   hero: {
     status: 'Open right now, day and night',
     h1Lead: '24/7 ambulance service',
@@ -40,7 +39,6 @@ export const warm = {
     text: homeEn.finalCta.bannerText,
     formIntro: 'Planning ahead? Leave your number and a dispatcher will call you back.',
   },
-  footer: { sign: 'Here for Dhaka, day and night.', backToTop: 'Back to top' },
   destinations: { eyebrow: 'Where we take you', h2Lead: 'Hospitals we', h2Accent: 'take patients to' },
   reviews: { eyebrow: 'Kind words', h2Lead: 'What families', h2Accent: 'told Google' },
   findUs: { eyebrow: 'Our home base', h2Lead: 'Find us in', h2Accent: 'Mohakhali' },

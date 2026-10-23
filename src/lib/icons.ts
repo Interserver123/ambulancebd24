@@ -3,7 +3,7 @@ export type IconName =
   | 'phone' | 'check' | 'whatsapp' | 'pin' | 'chevron-down' | 'arrow-right' | 'clock'
   | 'ambulance' | 'route' | 'receipt' | 'headset' | 'mail' | 'facebook' | 'x' | 'youtube' | 'map'
   | 'heart-pulse' | 'baby' | 'snow' | 'wind' | 'fan' | 'building' | 'star' | 'share' | 'navigation'
-  | 'camera' | 'plus' | 'close' | 'lines' | 'arrow-up' | 'first-aid' | 'external' | 'plane';
+  | 'camera' | 'arrow-up' | 'first-aid' | 'external' | 'plane';
 
 export const iconPaths: Record<IconName, string> = {
   phone:
@@ -37,9 +37,6 @@ export const iconPaths: Record<IconName, string> = {
   share: '<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"/>',
   navigation: '<path d="M20 4 4 10.5l7 2.5 2.5 7L20 4Z"/>',
   camera: '<path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2.3l1.5-2h5.4l1.5 2h2.3A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-9Z"/><circle cx="12" cy="13" r="3.2"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>',
-  close: '<path d="m6 6 12 12M18 6 6 18"/>',
-  lines: '<path d="M4 7h16M4 12h12M4 17h8"/>',
   'arrow-up': '<path d="M12 19V5M6 11l6-6 6 6"/>',
   'first-aid': '<rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M12 10.5v5.5M9.25 13.25h5.5"/>',
   external: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',

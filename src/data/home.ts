@@ -15,12 +15,6 @@ export const homeEn = {
     description: `24/7 ambulance service in Dhaka: ICU, NICU, AC and freezer van. Nearest ambulance, fare told before we move. Call ${phone}.`,
   },
 
-  utility: {
-    hours: business.hours.short,
-    location: `${business.address.locality}, ${business.address.city}`,
-    langToggle: 'বাংলা',
-  },
-
   header: {
     services: 'Services',
     areas: 'Areas',
@@ -46,81 +40,6 @@ export const homeEn = {
       { icon: 'ambulance', title: 'One hotline', text: 'ICU, NICU, AC and Freezer Van' },
     ] as const,
     rating: (r: { rating: number; count: number }) => `${r.rating} on Google · ${r.count} reviews`,
-  },
-
-  dispatch: {
-    title: 'On the call, tell us 3 things',
-    steps: [
-      'Where you are: area and a nearby landmark',
-      "The patient's condition, and if they need oxygen, a stretcher or a wheelchair",
-      'Where they need to go: hospital or home',
-    ],
-    footer: 'We tell you the ambulance type, the ETA and the fare.',
-  },
-
-  services: {
-    eyebrow: 'Our ambulances',
-    tags: { icu: 'ICU', nicu: 'NICU', ac: 'AC', freezer: 'Freezer', 'inter-district': 'Inter-district', 'non-ac': 'Non-AC' } as Record<string, string>,
-    help: { title: 'Not sure which one?', text: "Tell the dispatcher the patient's condition. We'll match the right vehicle." },
-    h2: 'Which ambulance do you need?',
-    intro:
-      "One hotline for every ambulance type. Not sure which one? Tell the dispatcher the patient's condition and we'll match the right vehicle.",
-    cards: [
-      {
-        key: 'icu',
-        title: 'ICU Ambulance',
-        text: 'For critical patients moving between hospitals or going home on support. Tell us the patient\'s needs; we confirm the vehicle and fare first.',
-        anchor: 'ICU ambulance in Dhaka',
-      },
-      {
-        key: 'nicu',
-        title: 'NICU Ambulance',
-        text: 'For a newborn who needs a NICU at another hospital. We guide you step by step.',
-        anchor: 'NICU ambulance service',
-      },
-      {
-        key: 'ac',
-        title: 'AC Ambulance',
-        text: 'For hospital transfers, discharge trips and check-ups in a cooled, comfortable vehicle.',
-        anchor: 'AC ambulance in Dhaka',
-      },
-      {
-        key: 'freezer',
-        title: 'Freezer Van',
-        text: 'Taking your loved one home with respect, within Dhaka or to any district.',
-        anchor: 'Freezer van (লাশবাহী ফ্রিজিং গাড়ি)',
-      },
-      {
-        key: 'inter-district',
-        title: 'Inter-District Ambulance',
-        text: 'Dhaka to any district, any time, for transfers, discharge and hometown journeys.',
-        anchor: 'Dhaka to district ambulance',
-      },
-      {
-        key: 'non-ac',
-        title: 'Non-AC Ambulance',
-        text: 'A lower-cost option for stable patients on planned trips.',
-        anchor: 'Non-AC ambulance',
-      },
-    ] satisfies ServiceCard[],
-  },
-
-  how: {
-    eyebrow: 'How it works',
-    h2: 'What happens when you call',
-    steps: [
-      { n: '01', title: `Call ${phone}`, text: 'A dispatcher answers, day or night.' },
-      {
-        n: '02',
-        title: 'Tell us the situation',
-        text: 'Location, patient condition and destination. We tell you the ambulance type, the ETA and the fare.',
-      },
-      {
-        n: '03',
-        title: 'We send the nearest ambulance',
-        text: 'The nearest available ambulance is on its way. The fare does not change after the trip.',
-      },
-    ],
   },
 
   fare: {
@@ -153,11 +72,6 @@ export const homeEn = {
     h2: 'What families say',
     source: 'Google review',
     link: 'Read all reviews on Google',
-  },
-
-  fleet: {
-    h2: 'Inside our ambulances',
-    intro: 'Real photos of our own vehicles. Ask the dispatcher what each ambulance carries before you book.',
   },
 
   freezer: {
@@ -233,18 +147,5 @@ export const homeEn = {
     error: `We couldn't send your request. Please call ${phone}.`,
   },
 
-  footer: {
-    services: 'Services',
-    areas: 'Dhaka areas',
-    districts: 'Districts',
-    company: 'Company',
-    about: 'About',
-    contact: 'Contact',
-    bangla: 'বাংলা',
-    social: { facebook: 'Facebook', x: 'X', youtube: 'YouTube' },
-  },
-
   mobileBar: { call: 'Call now', whatsapp: 'WhatsApp' },
 };
-
-export type HomeCopy = typeof homeEn;

@@ -7,11 +7,12 @@
  *   whatsapp = green, for WhatsApp only
  */
 
-/* Fonts: few weights to keep LCP low. Each file has unicode-range subsets,
-   so a browser downloads only the scripts a page uses. */
-@import '@fontsource/archivo/700.css';
-@import '@fontsource/hind-siliguri/400.css';
-@import '@fontsource/hind-siliguri/600.css';
+/* Fonts: few weights, Latin subset only, to keep the first paint light. The Bengali subset
+   (src/styles/fonts-bn.css) loads only on Bangla pages; the odd Bangla word on an English
+   page uses the phone's own Bengali font. */
+@import '@fontsource/archivo/latin-700.css';
+@import '@fontsource/hind-siliguri/latin-400.css';
+@import '@fontsource/hind-siliguri/latin-600.css';
 
 @import 'tailwindcss';
 

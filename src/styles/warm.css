@@ -7,8 +7,24 @@
  *   - Green #1F8A4C only for WhatsApp
  *   - Blue is the brand accent (logo, headings accents, decoration), never a call button
  */
-@import '@fontsource-variable/fraunces/soft.css';
-@import '@fontsource-variable/fraunces/soft-italic.css';
+/* Heading font: Fraunces, self-hosted and trimmed to what the site uses (softness fixed at 100,
+   weight 400 to 700, Latin text glyphs). 48 KB for both styles instead of 140 KB. */
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/fraunces-latin-normal.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0, U+00B7, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2026;
+}
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/fraunces-latin-italic.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0, U+00B7, U+2013, U+2014, U+2018, U+2019, U+201C, U+201D, U+2026;
+}
 
 .warm {
   /* Brand deck v1.2: black, logo blue, white + red for calls */
@@ -33,6 +49,20 @@
   min-height: 100vh;
   background: var(--page);
   color: var(--body);
+}
+
+/* Phones: skip the full-screen grain layer and the blurred decorative blobs. Both are costly to
+   paint on a mid-range phone and add nothing to the content. */
+@media (max-width: 767px) {
+  .warm::before,
+  .drift { display: none; }
+}
+
+/* Below-the-fold sections are laid out and painted only when they get near the screen. The page is
+   still in the HTML for Google; the browser just skips the work (big first-paint saving). */
+.warm main > section ~ section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1300px;
 }
 
 /* Paper grain over the whole page */

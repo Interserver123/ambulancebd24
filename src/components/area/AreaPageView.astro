@@ -1,0 +1,305 @@
+---
+/**
+ * One Dhaka area page, rendered by src/pages/[area].astro from src/data/area-pages.
+ * Order: hero + dispatch card · quick answer · what goes wrong (pain → what we do) · which ambulance ·
+ * how to give the address · hospitals (destinations) · fare · reviews · FAQ · landmarks with distance
+ * and route links + route map · NAP + map · final CTA + form.
+ *
+ * Schema (@graph): Organization, WebSite, WebPage (about → Service, mentions → places), Service
+ * (areaServed: the area + Dhaka), ItemList (landmarks), BreadcrumbList, FAQPage (from the same faqs[]).
+ * Never a LocalBusiness with an area address.
+ */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ServiceHero from '../service/ServiceHero.astro';
+import Icon from '../Icon.astro';
+import Faq from '../warm/Faq.astro';
+import Final from '../warm/Final.astro';
+import type { AreaPage } from '../../data/area-pages/schema';
+import { business, breadcrumbLd, faqPageLd, graphLd, organizationLd, serviceLd, webPageLd, websiteLd } from '../../data/business';
+import { insideDhaka } from '../../data/inside-dhaka';
+import { publishedPaths } from '../../lib/routes';
+
+interface Props {
+  page: AreaPage;
+}
+const { page } = Astro.props;
+const pub = await publishedPaths('en');
+const has = (href: string) => pub.all.has(href);
+
+const hub = has(insideDhaka.slug) ? { name: insideDhaka.breadcrumb, path: insideDhaka.slug } : undefined;
+const crumbs = [{ name: 'Home', path: '/' }, ...(hub ? [hub] : []), { name: page.breadcrumb, path: page.slug }];
+const pageUrl = `${business.url}${page.slug}`;
+const faqs = page.faq.items;
+
+const enc = encodeURIComponent;
+/** Route from our GBP listing to a place (the same listing as the NAP and the map). */
+const routeUrl = (query: string) => `https://www.google.com/maps/dir/?api=1&origin=${enc(business.name)}&origin_place_id=${business.gbp.placeId}&destination=${enc(query)}&travelmode=driving`;
+const lm = page.landmarks;
+const embed = `https://maps.google.com/maps?saddr=${business.geo.lat},${business.geo.lng}&daddr=${enc(lm.mapDestination)}&output=embed`;
+
+const place = {
+  '@type': 'Place',
+  name: page.schema.place.name,
+  sameAs: page.schema.place.sameAs,
+  geo: { '@type': 'GeoCoordinates', latitude: page.schema.place.geo.lat, longitude: page.schema.place.geo.lng },
+  containedInPlace: { '@type': 'City', name: business.address.city },
+};
+const jsonLd = graphLd(
+  organizationLd(),
+  websiteLd(),
+  {
+    ...webPageLd({ pageUrl, name: page.metaTitle, dateModified: page.updated, aboutId: `${pageUrl}#service` }),
+    mentions: page.schema.mentions.map((m) => ({ '@type': m.type, name: m.name, sameAs: m.sameAs })),
+  },
+  serviceLd({ pageUrl, name: page.schema.name, serviceType: page.schema.serviceType, areaServed: [place, { '@type': 'City', name: business.address.city }] }),
+  {
+    '@type': 'ItemList',
+    '@id': `${pageUrl}#landmarks`,
+    name: `Landmarks in ${page.area}`,
+    itemListElement: lm.items.map((i, n) => ({ '@type': 'ListItem', position: n + 1, name: i.name })),
+  },
+  breadcrumbLd(
+    pageUrl,
+    crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),
+  ),
+  faqPageLd(faqs, pageUrl),
+);
+const placement = page.key;
+const sec = 'relative py-20 md:py-28';
+const wrap = 'mx-auto max-w-[1240px] px-4 md:px-6';
+---
+
+<SiteLayout
+  title={page.metaTitle}
+  description={page.metaDescription}
+  path={page.slug}
+  jsonLd={jsonLd}
+  crumbs={crumbs}
+  mainClass="svc"
+  reviews={{ eyebrow: 'Reviews', h2Lead: 'What families', h2Accent: 'say', tags: ['emergency'] }}
+  nap={page.napHeading}
+>
+  <ServiceHero hero={page.hero} crewVerified={false} placement={`${placement}-hero`} />
+
+  <section class={sec}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.glance.eyebrow}</p>
+        <h2 class="mt-4">{page.glance.h2}</h2>
+      </div>
+      <dl class="mt-10 grid gap-x-10 gap-y-2 md:grid-cols-2">
+        {
+          page.glance.items.map((i) => (
+            <div class="flex flex-col gap-1 border-b border-(--line) py-4">
+              <dt class="text-sm font-medium tracking-wide text-(--gray-ink) uppercase">{i.term}</dt>
+              <dd class="text-lg text-(--ink)">{i.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class={`${sec} bg-(--tint)`}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.problems.eyebrow}</p>
+        <h2 class="mt-4">{page.problems.h2Lead} <em>{page.problems.h2Accent}</em></h2>
+        <p class="mt-6 text-xl text-(--ink)">{page.problems.intro}</p>
+      </div>
+      <ol class="mt-12 grid gap-6 lg:grid-cols-2">
+        {
+          page.problems.items.map((p, n) => (
+            <li class="pebble rounded-[32px] bg-(--card) p-7">
+              <p class="serif text-sm text-(--blue-ink)">{String(n + 1).padStart(2, '0')}</p>
+              <h3 class="mt-1">{p.pain}</h3>
+              <p class="mt-3 text-lg">{p.happens}</p>
+              <p class="mt-4 rounded-2xl bg-(--blue-soft) p-4 text-lg text-(--ink)">
+                <strong class="font-semibold">What we do: </strong>{p.we}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class={sec}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.services.eyebrow}</p>
+        <h2 class="mt-4">{page.services.h2Lead} <em>{page.services.h2Accent}</em></h2>
+        <p class="mt-6 text-xl text-(--ink)">{page.services.intro}</p>
+      </div>
+      <ul class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          page.services.items.map((s) => (
+            <li class="pebble flex flex-col rounded-[32px] bg-(--card) p-7">
+              <h3>{s.title}</h3>
+              <p class="mt-3 text-lg">{s.text}</p>
+              <p class="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 font-medium">
+                {s.links.filter((l) => has(l.href)).map((l) => (
+                  <a href={l.href} class="inline-flex min-h-11 items-center gap-1.5 text-(--blue-ink) underline underline-offset-4">
+                    {l.anchor}<Icon name="arrow-right" class="size-4" />
+                  </a>
+                ))}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class={`${sec} bg-(--tint)`}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.address.eyebrow}</p>
+        <h2 class="mt-4">{page.address.h2}</h2>
+        <p class="mt-6 text-xl text-(--ink)">{page.address.intro}</p>
+      </div>
+      <ol class="mt-10 grid gap-4 md:grid-cols-2">
+        {
+          page.address.steps.map((s, n) => (
+            <li class="flex gap-4 rounded-[24px] bg-(--card) p-5 soft-shadow">
+              <span class="blob-a flex size-11 shrink-0 items-center justify-center bg-(--blue-soft) font-heading text-(--blue-ink)">{n + 1}</span>
+              <span>
+                <span class="serif block text-xl text-(--ink)">{s.title}</span>
+                <span class="mt-1 block text-lg">{s.text}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-8 max-w-3xl text-lg">{page.address.close}</p>
+    </div>
+  </section>
+
+  <section class={sec}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.hospitals.eyebrow}</p>
+        <h2 class="mt-4">{page.hospitals.h2}</h2>
+        <p class="mt-6 text-xl text-(--ink)">{page.hospitals.intro}</p>
+      </div>
+      <div class="mt-10 grid gap-10 md:grid-cols-2">
+        <div>
+          <h3>{page.hospitals.inAreaH3}</h3>
+          <ul class="mt-4 space-y-2">
+            {page.hospitals.inArea.map((h) => <li class="flex min-h-12 items-center rounded-[18px] bg-(--card) px-4 py-2.5 text-(--ink) soft-shadow">{h.name}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h3>{page.hospitals.cityH3}</h3>
+          <ul class="mt-4 space-y-2">
+            {
+              page.hospitals.city.map((h) => (
+                <li class="flex min-h-12 flex-wrap items-center justify-between gap-x-3 rounded-[18px] bg-(--card) px-4 py-2.5 text-(--ink) soft-shadow">
+                  {h.href && has(h.href) ? <a href={h.href} class="text-(--blue-ink) underline underline-offset-4">{h.name}</a> : <span>{h.name}</span>}
+                  <span class="text-sm text-(--gray-ink)">{h.area}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <p class="mt-8 max-w-3xl text-lg">
+        {page.hospitals.close}{' '}
+        {has('/private-hospitals-in-dhaka/') && <a href="/private-hospitals-in-dhaka/" class="font-medium text-(--blue-ink) underline underline-offset-4">Private hospitals in Dhaka</a>}
+      </p>
+    </div>
+  </section>
+
+  <section class={`${sec} bg-(--tint)`}>
+    <div class={wrap}>
+      <div class="max-w-3xl">
+        <p class="eyebrow-warm">{page.fare.eyebrow}</p>
+        <h2 class="mt-4">{page.fare.h2}</h2>
+        <p class="mt-6 text-xl text-(--ink)">{page.fare.answer}</p>
+      </div>
+      <h3 class="mt-10">{page.fare.factorsH3}</h3>
+      <ul class="mt-4 grid max-w-3xl gap-2">
+        {
+          page.fare.factors.map((f) => (
+            <li class="flex items-start gap-3 text-lg text-(--ink)">
+              <span class="mt-1.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-(--blue-soft) text-(--blue-ink)"><Icon name="check" class="size-3.5" /></span>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 max-w-3xl text-lg">{page.fare.close}</p>
+    </div>
+  </section>
+
+  <Fragment slot="after-reviews">
+    <Faq items={faqs} eyebrow={page.faq.eyebrow} h2Lead={page.faq.h2Lead} h2Accent={page.faq.h2Accent} updated={page.updated} byline={page.byline} />
+
+    <section class={sec} id="landmarks">
+      <div class={wrap}>
+        <div class="max-w-3xl">
+          <p class="eyebrow-warm">{lm.eyebrow}</p>
+          <h2 class="mt-4">{lm.h2}</h2>
+          <p class="mt-6 text-xl text-(--ink)">{lm.intro}</p>
+          <p class="mt-4 text-lg italic">{lm.disclaimer}</p>
+        </div>
+        <ul class="mt-12 grid gap-6 md:grid-cols-2">
+          {
+            lm.items.map((i) => (
+              <li class="pebble flex flex-col rounded-[32px] bg-(--card) p-7">
+                <p class="text-sm font-medium tracking-wide text-(--blue-ink) uppercase">{i.type}</p>
+                <h3 class="mt-1">{i.name}</h3>
+                <p class="mt-3 text-lg">{i.why}</p>
+                <dl class="mt-4 grid gap-1 text-lg">
+                  <div class="flex gap-2"><dt class="font-medium text-(--ink)">{lm.distanceLabel}:</dt><dd>about {i.km} km</dd></div>
+                  <div class="flex gap-2"><dt class="font-medium text-(--ink)">{lm.trafficLabel}:</dt><dd>{i.traffic}</dd></div>
+                </dl>
+                <p class="mt-auto flex flex-wrap gap-x-5 gap-y-1 pt-5 font-medium">
+                  <a href={routeUrl(i.mapQuery)} rel="noopener" target="_blank" class="inline-flex min-h-11 items-center gap-1.5 text-(--blue-ink) underline underline-offset-4">
+                    <Icon name="navigation" class="size-4" />{lm.routeLabel}
+                  </a>
+                  {i.sameAs && (
+                    <a href={i.sameAs} rel="noopener" target="_blank" class="inline-flex min-h-11 items-center gap-1.5 text-(--blue-ink) underline underline-offset-4">
+                      About {i.name}<Icon name="external" class="size-4" />
+                    </a>
+                  )}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+
+        <h3 class="mt-16">{lm.mapH3}</h3>
+        <figure class="mt-6">
+          <div class="blob-c relative min-h-[380px] overflow-hidden bg-(--gray-soft) soft-shadow lg:min-h-[480px]" data-click-map={embed}>
+            <svg class="absolute inset-0 h-full w-full text-(--gray-ink) opacity-20" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <path d="M-10 90C70 60 140 130 220 95s130-30 190 5M-10 210c80-40 160 40 240 5s120-45 180-15M90 -10c-15 80 35 150 15 220s15 70 0 100M290 -10c20 90-30 160 0 220s-5 60 5 100" fill="none" stroke="currentColor" stroke-width="3"></path>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center" data-map-placeholder>
+              <span class="serif text-xl text-(--ink)">{business.name} → {page.area}</span>
+              <button type="button" class="inline-flex min-h-12 items-center gap-2 rounded-full bg-(--card) px-5 font-medium text-(--ink) soft-shadow transition hover:text-(--blue-ink)" data-load-map>
+                <Icon name="map" class="size-5" />{lm.mapShow}
+              </button>
+              <a href={routeUrl(lm.mapDestination)} rel="noopener" target="_blank" class="inline-flex min-h-12 items-center gap-1.5 text-sm font-medium text-(--blue-ink) underline underline-offset-4">
+                {lm.routeLabel}<Icon name="external" class="size-4" />
+              </a>
+            </div>
+          </div>
+          <figcaption class="mt-3 text-sm italic">{lm.mapCaption}</figcaption>
+        </figure>
+      </div>
+    </section>
+  </Fragment>
+
+  <Final
+    slot="end"
+    h2Lead={page.final.h2Lead}
+    h2Accent={page.final.h2Accent}
+    text={page.final.text}
+    h3={page.final.h3}
+    placement={`${placement}-final`}
+    whatsapp
+    pickupHint={page.final.pickupHint}
+    formHelper={page.final.formHelper}
+  />
+</SiteLayout>

@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import { servicePages } from '../data/service-pages';
 import { districtPages } from '../data/district-pages';
+import { areaPages } from '../data/area-pages';
 
 /**
  * Paths of every published page, so components can link only to pages that
@@ -8,7 +9,7 @@ import { districtPages } from '../data/district-pages';
  * data-driven service and district pages come from src/data/service-pages and
  * src/data/district-pages.
  */
-const STATIC_PAGES = ['/', '/contact/', '/ambulance-service-areas-dhaka/', '/locations/', '/services/', '/privacy-policy/', '/terms/', '/disclaimer/', ...servicePages.map((p) => p.slug), ...districtPages.map((p) => p.slug)];
+const STATIC_PAGES = ['/', '/contact/', '/ambulance-service-areas-dhaka/', '/locations/', '/services/', '/privacy-policy/', '/terms/', '/disclaimer/', ...servicePages.map((p) => p.slug), ...districtPages.map((p) => p.slug), ...areaPages.map((p) => p.slug)];
 
 export async function publishedPaths(lang: 'en' | 'bn' = 'en') {
   const keep = (e: { data: { draft: boolean; lang: string } }) => !e.data.draft && e.data.lang === lang;
@@ -21,7 +22,7 @@ export async function publishedPaths(lang: 'en' | 'bn' = 'en') {
   return {
     all: new Set<string>([...STATIC_PAGES, ...[services, areas, districts, blog].flat().map((e) => e.data.slug)]),
     /** areaName -> slug */
-    areas: new Map(areas.map((e) => [e.data.areaName, e.data.slug])),
+    areas: new Map([...areas.map((e) => [e.data.areaName, e.data.slug] as const), ...(lang === 'en' ? areaPages.map((p) => [p.area, p.slug] as const) : [])]),
     /** district -> slug */
     districts: new Map([
       ...districts.map((e) => [e.data.district, e.data.slug] as const),

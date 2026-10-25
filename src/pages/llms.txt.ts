@@ -8,6 +8,7 @@ import { getCollection } from 'astro:content';
 import { business, copy, shown } from '../data/business';
 import { servicePages } from '../data/service-pages';
 import { districtPages } from '../data/district-pages';
+import { areaPages } from '../data/area-pages';
 
 const abs = (path: string) => `${business.url}${path}`;
 const line = (title: string, path: string, desc: string) => `- [${title}](${abs(path)}): ${desc}`;
@@ -50,6 +51,7 @@ export const GET: APIRoute = async () => {
     line('Ambulance service in Dhaka (home)', '/', 'Overview of all ambulance types, how booking works and the hotline.'),
     line('Ambulance in every area of Dhaka', '/ambulance-service-areas-dhaka/', 'Coverage inside Dhaka city, area by area.'),
     line('Our services', '/services/', 'Every ambulance service in one list, with a guide to choosing the right one.'),
+    ...areaPages.map((p) => line(p.metaTitle.replace(/\s*\|\s*Ambulance BD 24\s*$/, ''), p.slug, p.metaDescription)),
     line('Areas we serve', '/locations/', 'Dhaka areas and every district page in one list.'),
     line('Contact', '/contact/', 'Hotline, WhatsApp, call-back form, address and map.'),
     '',

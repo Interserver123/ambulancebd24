@@ -1,0 +1,16 @@
+---
+/**
+ * Dhaka area pages (/ambulance-service-{area}/). Copy: src/data/area-pages. Sections and schema:
+ * src/components/area/AreaPageView.astro.
+ */
+import type { GetStaticPaths } from 'astro';
+import AreaPageView from '../components/area/AreaPageView.astro';
+import { areaPages } from '../data/area-pages';
+import type { AreaPage } from '../data/area-pages/schema';
+
+export const getStaticPaths = (() => areaPages.map((page) => ({ params: { area: page.slug.slice(1, -1) }, props: { page } }))) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: AreaPage };
+---
+
+<AreaPageView page={page} />

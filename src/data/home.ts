@@ -12,7 +12,7 @@ export type ServiceCard = { key: ServiceKey; title: string; text: string; anchor
 export const homeEn = {
   meta: {
     title: 'Ambulance Service in Dhaka 24/7 | Ambulance BD 24',
-    description: `24/7 ambulance service in Dhaka: ICU, NICU, AC and freezer van. Nearest ambulance, fare told before we move. Call ${phone}.`,
+    description: `24/7 ambulance service in Dhaka: ICU, NICU, AC ambulance and freezer van. ${copy.timingLine.en} Call ${phone}.`,
   },
 
   header: {

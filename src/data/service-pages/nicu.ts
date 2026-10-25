@@ -22,7 +22,7 @@ export const nicuPage = servicePageSchema.parse({
   serviceKey: 'nicu',
   slug: '/nicu-ambulance-service-dhaka/',
   metaTitle: 'NICU Ambulance in Dhaka for Newborns 24/7 | Ambulance BD 24',
-  metaDescription: `NICU ambulance in Dhaka for newborn transfers, 24/7. Tell us the baby's needs; we match the vehicle and confirm the fare first. ${phone}`,
+  metaDescription: `NICU ambulance in Dhaka for newborn transfers, 24/7. Tell us the baby's needs; we match the vehicle and tell you the fare first. ${phone}`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when our fares or vehicles change.`,
   breadcrumb: 'NICU Ambulance Service',

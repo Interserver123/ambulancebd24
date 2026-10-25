@@ -32,7 +32,7 @@ export const locations = {
   slug: '/locations/',
   breadcrumb: 'Areas we serve',
   metaTitle: 'Areas We Serve: Dhaka and All Districts | Ambulance BD 24',
-  metaDescription: `Ambulance service in every area of Dhaka and from all 64 districts to Dhaka, 24/7. Find your district and call ${phone} for your fare.`,
+  metaDescription: `Ambulance service in every area of Dhaka and from all 64 districts to Dhaka, 24/7. Find your district, then call ${phone} for your fare.`,
   updated: '2026-10-22',
   hero,
   dhaka: {

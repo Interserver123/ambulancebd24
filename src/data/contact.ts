@@ -16,7 +16,7 @@ const meta = z
   .object({ title: z.string().min(10).max(60), description: z.string().min(50).max(155), updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) })
   .parse({
     title: `Contact Ambulance BD 24 | 24/7 Hotline ${phone}`,
-    description: `Contact Ambulance BD 24 in Mohakhali, Dhaka: 24/7 hotline ${phone}, WhatsApp and call back. Address, map and directions to our base.`,
+    description: `Call ${phone} any time, or WhatsApp or request a call back. Ambulance BD 24 is based in Mohakhali, Dhaka. Address, map and directions.`,
     updated: '2026-10-21',
   });
 

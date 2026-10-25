@@ -2,7 +2,7 @@
 lang: en
 translationKey: why-do-fire-trucks-always-come-with-ambulances
 slug: /why-do-fire-trucks-always-come-with-ambulances/
-metaTitle: "Why Do Fire Trucks Come With Ambulances?"
+metaTitle: "Why Do Fire Trucks Come With Ambulances? Explained"
 metaDescription: "Why fire trucks often arrive alongside ambulances at emergencies: shared training, extra hands, rescue equipment and how the crews work together."
 h1: "Why do fire trucks always come with ambulances?"
 author: "Ambulance BD 24 team"

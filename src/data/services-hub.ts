@@ -42,7 +42,7 @@ export const servicesHub = {
   slug: '/services/',
   breadcrumb: 'Services',
   metaTitle: 'Our Ambulance Services in Dhaka | Ambulance BD 24',
-  metaDescription: `ICU, NICU, AC, freezer van, inter-district and air ambulance services in Dhaka, 24/7. Pick the right one and call ${phone} for your fare.`,
+  metaDescription: `ICU, NICU, AC, freezer van, inter-district and air ambulance services in Dhaka, 24/7. Not sure which you need? Call ${phone} and we help you choose.`,
   updated: '2026-10-23',
   hero,
   cards: {

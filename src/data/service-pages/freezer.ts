@@ -23,7 +23,7 @@ export const freezerPage = servicePageSchema.parse({
   lang: 'en',
   slug: '/freezer-ambulance-service/',
   metaTitle: `Freezer Van Service in Dhaka 24/7 | ${business.name}`,
-  metaDescription: `Freezer van in Dhaka to take your loved one home with respect, to any district. Fare incl. waiting told before we leave. 24/7: ${phone}`,
+  metaDescription: `Freezer van in Dhaka to take your loved one home with respect, to any district. We tell you the full fare before we leave. 24/7: ${phone}`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when our fares or vans change.`,
   breadcrumb: 'Freezer Van',

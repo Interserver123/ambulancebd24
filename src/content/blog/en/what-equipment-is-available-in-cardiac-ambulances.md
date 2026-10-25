@@ -2,7 +2,7 @@
 lang: en
 translationKey: what-equipment-is-available-in-cardiac-ambulances
 slug: /what-equipment-is-available-in-cardiac-ambulances/
-metaTitle: "Cardiac Ambulance Equipment: What's on Board?"
+metaTitle: "Cardiac Ambulance Equipment: What's on Board and Why"
 metaDescription: "Heart monitoring, ECG and cardiac life-support kit: the equipment groups a cardiac ambulance usually carries and what each one is used for."
 h1: "What Equipment is Available in Cardiac Ambulances? Vital Lifesavers Unveiled"
 author: "Ambulance BD 24 team"

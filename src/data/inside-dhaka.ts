@@ -37,7 +37,7 @@ export const insideDhaka = {
   slug: '/ambulance-service-areas-dhaka/',
   breadcrumb: 'Inside Dhaka',
   metaTitle: 'Ambulance in Every Area of Dhaka City | Ambulance BD 24',
-  metaDescription: `Ambulance in Gulshan, Banani, Mirpur, Uttara, Dhanmondi, Old Dhaka and every area of Dhaka city, 24/7. Fare told first. Call ${phone}.`,
+  metaDescription: `Ambulance in Gulshan, Banani, Mirpur, Uttara, Dhanmondi, Old Dhaka and every area of Dhaka city, 24/7. We tell you the fare first. Call ${phone}.`,
   updated: '2026-10-21',
   hero,
 

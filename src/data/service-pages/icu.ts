@@ -17,7 +17,7 @@ export const icuPage = servicePageSchema.parse({
   serviceKey: 'icu',
   slug: '/icu-ambulance-service-dhaka/',
   metaTitle: 'ICU Ambulance Service in Dhaka 24/7 | Ambulance BD 24',
-  metaDescription: `ICU ambulance in Dhaka for hospital transfers, 24/7. Tell us the patient's needs; we match the vehicle and confirm the fare first. ${phone}`,
+  metaDescription: `ICU ambulance in Dhaka for hospital transfers, 24/7. Tell us the patient's needs; we match the vehicle and tell you the fare first. ${phone}`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when our fares or vehicles change.`,
   breadcrumb: 'ICU Ambulance Service',

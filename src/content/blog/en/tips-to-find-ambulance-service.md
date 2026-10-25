@@ -2,7 +2,7 @@
 lang: en
 translationKey: tips-to-find-ambulance-service
 slug: /tips-to-find-ambulance-service/
-metaTitle: "Tips for Finding a Reliable Ambulance Service"
+metaTitle: "Tips for Finding a Reliable Ambulance Service in Dhaka"
 metaDescription: "What to do when you need an ambulance, how to choose a service, what to expect on the day, and how ambulance fares are usually worked out."
 h1: "Tips to find Ambulance Service"
 author: "Ambulance BD 24 team"

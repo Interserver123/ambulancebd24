@@ -2,7 +2,7 @@
 lang: en
 translationKey: importance-of-icu-ambulance
 slug: /importance-of-icu-ambulance/
-metaTitle: "Why ICU Ambulances Matter in Dhaka"
+metaTitle: "Why ICU Ambulances Matter: When a Patient Needs One"
 metaDescription: "What an ICU ambulance is, when a patient needs one for a transfer in Dhaka, its benefits, and the challenges in keeping care consistent on the road."
 h1: "The Importance & Necessity Of ICU Ambulance"
 author: "Ambulance BD 24 team"

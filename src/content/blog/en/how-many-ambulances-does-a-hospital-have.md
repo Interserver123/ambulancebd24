@@ -2,7 +2,7 @@
 lang: en
 translationKey: how-many-ambulances-does-a-hospital-have
 slug: /how-many-ambulances-does-a-hospital-have/
-metaTitle: "How Many Ambulances Does a Hospital Have?"
+metaTitle: "How Many Ambulances Does a Hospital Have? What Decides It"
 metaDescription: "Why hospitals keep different numbers of ambulances: size, specialties, budget and demand, plus how hospitals work with outside ambulance services."
 h1: "How Many Ambulances Does A Hospital Have?"
 author: "Ambulance BD 24 team"

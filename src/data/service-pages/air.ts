@@ -16,7 +16,7 @@ export const airPage = servicePageSchema.parse({
   serviceKey: 'air',
   slug: '/air-ambulance-service-bangladesh/',
   metaTitle: 'Air Ambulance Service in Bangladesh | Ambulance BD 24',
-  metaDescription: `We arrange air ambulance transfers through an aviation operator, with our ground ambulance to and from the airport. Call ${phone}, 24/7.`,
+  metaDescription: `We arrange air ambulance transfers through an aviation operator, with our ground ambulance to and from the airport. Call ${phone} for details, 24/7.`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when the arrangements change.`,
   breadcrumb: 'Air Ambulance',

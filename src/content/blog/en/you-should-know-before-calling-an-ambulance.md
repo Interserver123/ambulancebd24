@@ -2,7 +2,7 @@
 lang: en
 translationKey: you-should-know-before-calling-an-ambulance
 slug: /you-should-know-before-calling-an-ambulance/
-metaTitle: "What to Know Before Calling an Ambulance"
+metaTitle: "What to Know Before Calling an Ambulance in Dhaka"
 metaDescription: "What counts as an emergency, what to tell the dispatcher, and how to stay safe while you wait. In Dhaka, call 999 or our 24/7 line 01919-339689."
 h1: "What You Should Know Before Calling An Ambulance"
 author: "Ambulance BD 24 team"

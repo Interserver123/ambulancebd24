@@ -16,12 +16,13 @@
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const DIST = join(ROOT, 'dist');
 const SITE = 'https://ambulancebd24.com';
 const REPORT = process.argv.includes('--report');
+const { business } = await import(pathToFileURL(join(ROOT, 'src', 'data', 'business.ts')).href);
 
 const errors = [];
 const warns = [];
@@ -127,6 +128,42 @@ for (const f of htmlFiles) {
     const ids = nodes.map((n) => n['@id']).filter(Boolean);
     if (new Set(ids).size !== ids.length) err(url, 'jsonld', 'duplicate @id in graph');
     if (/aggregateRating|"@type":\s*"Review"/i.test(b[1])) err(url, 'jsonld', 'aggregateRating/Review present');
+    // Every { "@id": ... } reference must point at a node in this graph (no dangling links).
+    const defined = new Set(ids);
+    const walk = (o) => {
+      if (Array.isArray(o)) return o.forEach(walk);
+      if (o && typeof o === 'object') {
+        if (Object.keys(o).length === 1 && o['@id'] && !defined.has(o['@id'])) err(url, 'jsonld', `dangling reference ${o['@id']}`);
+        Object.values(o).forEach(walk);
+      }
+    };
+    walk(nodes);
+    // One business node on every page, identical to business.ts and the Google Business Profile data.
+    const biz = nodes.filter((n) => [n['@type']].flat().includes('EmergencyService'));
+    if (biz.length !== 1) err(url, 'jsonld', `${biz.length} business nodes (need exactly 1)`);
+    else {
+      const bz = biz[0];
+      const want = {
+        name: business.name,
+        telephone: business.phone.e164,
+        hasMap: business.gbp.mapsUrl,
+        'geo.latitude': business.geo.lat,
+        'geo.longitude': business.geo.lng,
+        'address.addressLocality': business.address.city,
+        'address.postalCode': business.address.postalCode,
+        'address.addressCountry': business.address.countryCode,
+      };
+      for (const [k, v] of Object.entries(want)) {
+        const got = k.split('.').reduce((a, x) => a?.[x], bz);
+        if (got !== v) err(url, 'jsonld', `business ${k} is ${JSON.stringify(got)}, expected ${JSON.stringify(v)}`);
+      }
+      const pid = bz.identifier?.find((i) => i.propertyID === 'Google Place ID')?.value;
+      if (pid !== business.gbp.placeId) err(url, 'jsonld', 'business Google Place ID missing or different');
+      if (!bz.sameAs?.includes(business.gbp.mapsUrl)) err(url, 'jsonld', 'business sameAs lacks the Google Business Profile URL');
+      if (!bz.openingHoursSpecification?.length) err(url, 'jsonld', 'business has no opening hours');
+    }
+    const org = nodes.find((n) => n['@type'] === 'Organization');
+    if (!org || org.telephone !== business.phone.e164) err(url, 'jsonld', 'Organization missing or phone differs from business.ts');
     for (const n of nodes) {
       if (n['@type'] === 'WebPage' || n['@type'] === 'ContactPage' || n['@type'] === 'CollectionPage') {
         if (n.url && n.url !== p.canonical) err(url, 'jsonld', `${n['@type']}.url ${n.url} differs from canonical`);

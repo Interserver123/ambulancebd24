@@ -292,18 +292,20 @@ export const ids = {
   website: `${business.url}/#website`,
 };
 
-export function organizationLd() {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    '@id': ids.organization,
-    name: business.name,
-    url: `${business.url}/`,
-    logo: { '@type': 'ImageObject', ...schemaImages.logo },
-    telephone: business.phone.e164,
-    ...(shown(business.email) ? { email: shown(business.email) } : {}),
-    sameAs: [...business.sameAs],
-    contactPoint: {
+/** Google Business Profile identifiers, so the entity is tied to the real GBP listing and its map pin. */
+function gbpIdentifiers() {
+  return [
+    { '@type': 'PropertyValue', propertyID: 'Google Place ID', value: business.gbp.placeId },
+    { '@type': 'PropertyValue', propertyID: 'Google Maps CID', value: business.gbp.cid },
+    { '@type': 'PropertyValue', propertyID: 'Plus Code', value: business.geo.plusCode },
+  ];
+}
+
+/** Phone always; WhatsApp only once verified. Same numbers the page shows. */
+function contactPointsLd() {
+  const wa = shown(business.whatsapp);
+  return [
+    {
       '@type': 'ContactPoint',
       telephone: business.phone.e164,
       contactType: 'emergency',
@@ -311,36 +313,75 @@ export function organizationLd() {
       availableLanguage: ['en', 'bn'],
       hoursAvailable: openingHoursLd(),
     },
+    ...(wa ? [{ '@type': 'ContactPoint', url: wa.url, contactType: 'customer support', areaServed: business.address.countryCode, availableLanguage: ['en', 'bn'], hoursAvailable: openingHoursLd() }] : []),
+  ];
+}
+
+const ABOUT = '24/7 ambulance service in Dhaka: ICU, NICU, AC ambulance and freezer van, and trips from Dhaka to any district.';
+
+export function organizationLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': ids.organization,
+    name: business.name,
+    url: `${business.url}/`,
+    description: ABOUT,
+    slogan: copy.tagline.en,
+    logo: { '@type': 'ImageObject', ...schemaImages.logo },
+    image: schemaImages.photo.url,
+    telephone: business.phone.e164,
+    ...(shown(business.email) ? { email: shown(business.email) } : {}),
+    address: postalAddressLd(),
+    location: { '@id': ids.business },
+    // Real profiles only. The Google Business Profile listing is one of them.
+    sameAs: [...business.sameAs, business.gbp.mapsUrl],
+    contactPoint: contactPointsLd(),
   };
 }
 
 /**
- * For the home page and location pages (docs/homepage-spec.md §6).
+ * The single business node: the same name, address, phone, coordinates, hours and map as the
+ * Google Business Profile and the NAP block on every page. graphLd() adds it to every page's
+ * graph, so every @id reference to it resolves. Service pages point their provider at it.
  * No rating or review markup until real on-site reviews exist.
  */
-export function emergencyServiceLd(opts: { pageUrl?: string } = {}) {
+export function businessLd() {
   const email = shown(business.email);
+  const offers = services
+    .filter((s) => s.status === 'fact' && s.path !== '/')
+    .map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.en, url: `${business.url}${s.path}` } }));
   return {
     '@context': 'https://schema.org',
     '@type': 'EmergencyService',
     '@id': ids.business,
     name: business.name,
-    url: opts.pageUrl ?? `${business.url}/`,
-    image: schemaImages.photo.url,
+    url: `${business.url}/`,
+    description: ABOUT,
+    slogan: copy.tagline.en,
+    image: [schemaImages.photo.url, schemaImages.logo.url],
     logo: schemaImages.logo.url,
     telephone: business.phone.e164,
     ...(email ? { email } : {}),
     address: postalAddressLd(),
     geo: { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng },
     hasMap: business.gbp.mapsUrl,
+    identifier: gbpIdentifiers(),
     openingHoursSpecification: openingHoursLd(),
+    contactPoint: contactPointsLd(),
     areaServed: [
       { '@type': 'City', name: business.address.city },
       { '@type': 'Country', name: business.address.country },
     ],
-    sameAs: [...business.sameAs],
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Ambulance services', itemListElement: offers },
+    sameAs: [...business.sameAs, business.gbp.mapsUrl],
     parentOrganization: { '@id': ids.organization },
   };
+}
+
+/** Kept for the pages that name it explicitly. Same node everywhere. */
+export function emergencyServiceLd(_opts: { pageUrl?: string } = {}) {
+  return businessLd();
 }
 
 export function websiteLd() {
@@ -371,11 +412,23 @@ export function faqPageLd(faqs: readonly Faq[], pageUrl: string) {
   };
 }
 
-/** Combines nodes into one @graph, dropping each node's own @context. */
+/**
+ * Combines nodes into one @graph, dropping each node's own @context. The business node is always
+ * included (so every reference to it resolves) and nodes with the same @id appear once.
+ */
 export function graphLd(...nodes: Array<Record<string, unknown>>) {
+  const all = nodes.some((n) => n['@id'] === ids.business) ? nodes : [...nodes, businessLd()];
+  const seen = new Set<unknown>();
+  const unique = all.filter((n) => {
+    const id = n['@id'];
+    if (!id) return true;
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
   return {
     '@context': 'https://schema.org',
-    '@graph': nodes.map(({ '@context': _ctx, ...rest }) => rest),
+    '@graph': unique.map(({ '@context': _ctx, ...rest }) => rest),
   };
 }
 
@@ -436,18 +489,29 @@ export function serviceLd(opts: {
   };
 }
 
-export function webPageLd(opts: { pageUrl: string; name: string; dateModified: string; aboutId?: string; lang?: 'en' | 'bn' }) {
+export function webPageLd(opts: {
+  pageUrl: string;
+  name: string;
+  /** Omit where the page shows no "updated" date (the home page). */
+  dateModified?: string;
+  aboutId?: string;
+  /** false: no "about" (articles). Default: the business. */
+  about?: boolean;
+  type?: 'WebPage' | 'CollectionPage' | 'ContactPage';
+  lang?: 'en' | 'bn';
+}) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebPage',
+    '@type': opts.type ?? 'WebPage',
     '@id': opts.pageUrl,
     url: opts.pageUrl,
     name: opts.name,
     inLanguage: opts.lang === 'bn' ? 'bn-BD' : 'en-BD',
     isPartOf: { '@id': ids.website },
-    ...(opts.aboutId ? { about: { '@id': opts.aboutId } } : {}),
+    ...(opts.about === false ? {} : { about: { '@id': opts.aboutId ?? ids.business } }),
+    primaryImageOfPage: { '@type': 'ImageObject', ...schemaImages.photo },
     breadcrumb: { '@id': `${opts.pageUrl}#breadcrumb` },
     publisher: { '@id': ids.organization },
-    dateModified: opts.dateModified,
+    ...(opts.dateModified ? { dateModified: opts.dateModified } : {}),
   };
 }

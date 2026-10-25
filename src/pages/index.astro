@@ -21,13 +21,19 @@ import Final from '../components/warm/Final.astro';
 import { homeEn } from '../data/home';
 import { hp } from '../data/homepage';
 import { warm as w } from '../data/home-warm';
-import { business, organizationLd, emergencyServiceLd, websiteLd, faqPageLd, graphLd } from '../data/business';
+import { business, ids, organizationLd, emergencyServiceLd, websiteLd, webPageLd, faqPageLd, graphLd } from '../data/business';
 import { homeData } from '../lib/homeNav';
 
 const { pub, hasBn, faqs } = await homeData();
 
 const pageUrl = `${business.url}/`;
-const jsonLd = graphLd(organizationLd(), emergencyServiceLd({ pageUrl }), websiteLd(), faqPageLd(faqs, pageUrl));
+const jsonLd = graphLd(
+  organizationLd(),
+  emergencyServiceLd(),
+  websiteLd(),
+  (({ breadcrumb: _b, ...rest }) => ({ ...rest, mainEntity: { '@id': ids.business } }))(webPageLd({ pageUrl, name: homeEn.meta.title, aboutId: ids.business })),
+  faqPageLd(faqs, pageUrl),
+);
 ---
 
 <SiteLayout

@@ -15,7 +15,7 @@ import Icon from '../components/Icon.astro';
 import Faq from '../components/warm/Faq.astro';
 import Final from '../components/warm/Final.astro';
 import CallButton from '../components/warm/CallButton.astro';
-import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, services, shown, websiteLd } from '../data/business';
+import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, services, shown, webPageLd, websiteLd } from '../data/business';
 import { insideDhaka } from '../data/inside-dhaka';
 
 export const getStaticPaths = (async () => {
@@ -66,20 +66,13 @@ const jsonLd = graphLd(
     datePublished: iso(d.published),
     dateModified: iso(d.updated),
     wordCount: words,
-    ...(imageUrl ? { image: imageUrl } : {}),
+    ...(imageUrl ? { image: { '@type': 'ImageObject', url: imageUrl, ...(ogImage ? { width: ogImage.width, height: ogImage.height } : {}) } } : {}),
+    isAccessibleForFree: true,
     author: { '@id': ids.organization },
     publisher: { '@id': ids.organization },
     isPartOf: { '@id': ids.website },
   },
-  {
-    '@type': 'WebPage',
-    '@id': pageUrl,
-    url: pageUrl,
-    name: d.metaTitle,
-    inLanguage: 'en-BD',
-    isPartOf: { '@id': ids.website },
-    breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
-  },
+  { ...webPageLd({ pageUrl, name: d.metaTitle, dateModified: iso(d.updated), about: false }), mainEntity: { '@id': `${pageUrl}#article` } },
   breadcrumbLd(
     pageUrl,
     crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),

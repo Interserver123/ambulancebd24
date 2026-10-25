@@ -42,7 +42,7 @@ const icons: Record<string, 'heart-pulse' | 'baby' | 'fan' | 'snow' | 'route' | 
 const jsonLd = graphLd(
   organizationLd(),
   websiteLd(),
-  webPageLd({ pageUrl, name: d.metaTitle, dateModified: d.updated }),
+  webPageLd({ pageUrl, name: d.metaTitle, dateModified: d.updated, type: 'CollectionPage' }),
   breadcrumbLd(
     pageUrl,
     crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),

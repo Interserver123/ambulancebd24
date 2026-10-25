@@ -16,7 +16,7 @@ import Final from '../components/warm/Final.astro';
 import CallbackSection from '../components/global/CallbackSection.astro';
 import { contactPage as c } from '../data/contact';
 import { hp } from '../data/homepage';
-import { business, breadcrumbLd, emergencyServiceLd, faqPageLd, graphLd, ids, organizationLd, websiteLd } from '../data/business';
+import { business, breadcrumbLd, emergencyServiceLd, faqPageLd, graphLd, ids, organizationLd, webPageLd, websiteLd } from '../data/business';
 import { publishedPaths } from '../lib/routes';
 
 const pub = await publishedPaths('en');
@@ -31,18 +31,7 @@ const jsonLd = graphLd(
   organizationLd(),
   websiteLd(),
   emergencyServiceLd(),
-  {
-    '@type': 'ContactPage',
-    '@id': pageUrl,
-    url: pageUrl,
-    name: c.title,
-    inLanguage: 'en-BD',
-    isPartOf: { '@id': ids.website },
-    about: { '@id': ids.business },
-    publisher: { '@id': ids.organization },
-    breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
-    dateModified: c.updated,
-  },
+  { ...webPageLd({ pageUrl, name: c.title, dateModified: c.updated, type: 'ContactPage' }), mainEntity: { '@id': ids.business } },
   breadcrumbLd(
     pageUrl,
     crumbs.map((x) => ({ name: x.name, url: `${business.url}${x.path}` })),

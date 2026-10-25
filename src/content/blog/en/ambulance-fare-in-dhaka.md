@@ -6,8 +6,8 @@ metaTitle: "Ambulance Fare in Dhaka: What to Confirm Before Booking"
 metaDescription: "Ambulance fare Dhaka: what sets it, what to confirm before the ambulance moves, and what to tell the dispatcher. Call 01919-339689, 24/7."
 h1: "Ambulance fare in Dhaka: what sets the price and what to confirm before it moves"
 author: "Ambulance BD 24 team"
-published: 2026-11-01T10:00:00+06:00
-updated: 2026-11-01
+published: 2026-10-26T02:30:00+06:00
+updated: 2026-10-26
 moneyPages:
   - /icu-ambulance-service-dhaka/
   - /inter-district-ambulance-service/

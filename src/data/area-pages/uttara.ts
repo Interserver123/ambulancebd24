@@ -50,17 +50,12 @@ export const uttaraPage = areaPageSchema.parse({
     },
   },
 
-  glance: {
-    eyebrow: 'Quick answer',
-    h2: 'Ambulance service in Uttara at a glance',
-    items: [
-      { term: 'Service', value: 'ICU, NICU, AC ambulance and freezer van in every sector of Uttara, Dhaka.' },
-      { term: 'Hotline', value: `${phone}. ${business.hours.display}.` },
-      { term: 'Dispatch base', value: `${base}, Dhaka 1212. The usual route north to Uttara follows Airport Road past the airport.` },
-      { term: 'Arrival', value: `${copy.timingLine.en} Uttara is farther north, so ask the dispatcher for the live arrival time when you call.` },
-      { term: 'Fare', value: `${copy.fareLine.en} It depends on the vehicle, the distance and waiting time.` },
-      { term: 'Not sure of your sector?', value: wa ? 'Send a WhatsApp location pin and we find you.' : 'Tell the dispatcher what you can see around you.' },
-      { term: 'Life-threatening emergency', value: 'You can also call 999.' },
+  intro: {
+    h2: 'If you are in Uttara and need an ambulance now',
+    paragraphs: [
+      `Call ${phone}. A dispatcher answers day and night. Tell us your sector, road and house number first. In Uttara those three matter more than the area name, because road and house numbers repeat from one sector to the next.`,
+      `We dispatch from ${base} and drive north along Airport Road, so the trip is longer than inside central Dhaka. We will not promise a time we cannot keep. The dispatcher gives you the live arrival time on the call, and the fare before the ambulance leaves.`,
+      `Below: what slows an Uttara trip and what we do about it, which ambulance fits, the hospitals people ask for, and the landmarks around Uttara with the road from our base.`,
     ],
   },
 

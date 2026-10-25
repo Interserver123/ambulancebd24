@@ -1,7 +1,7 @@
 /**
  * Zod schema for Dhaka area pages (src/pages/[area].astro), e.g. /ambulance-service-uttara/.
  * An area page must solve that area's own problems: the build fails if the area name is missing
- * from the parts that have to be local (lede, glance facts, problems, landmarks, FAQ), so copy
+ * from the parts that have to be local (lede, intro, problems, landmarks, FAQ), so copy
  * cannot be city-name swapped. Hospitals are destinations only (CLAUDE.md rule 3).
  * No minute figures: only the approved timing claim is allowed (lint-content.mjs).
  */
@@ -31,7 +31,8 @@ export const areaPageSchema = z
     }),
     hero: servicePageSchema.shape.hero,
 
-    glance: z.object({ eyebrow: text, h2: text, items: z.array(z.object({ term: text, value: z.string().min(5) })).min(5) }),
+    /** Answer-first opening in plain sentences: what to do now, and what is different about this area. */
+    intro: z.object({ h2: text, paragraphs: z.array(z.string().min(60)).min(2) }),
 
     problems: heading.extend({
       intro: text,
@@ -103,7 +104,7 @@ export const areaPageSchema = z
       if (!names.some((n) => value.includes(n))) ctx.addIssue({ code: 'custom', path, message: `Must be about ${d.area} (name missing): no city-name swapping or generic copy` });
     };
     must(d.hero.lede, ['hero', 'lede']);
-    must(d.glance.items.map((i) => i.value).join(' '), ['glance']);
+    must(d.intro.paragraphs.join(' '), ['intro']);
     must(d.problems.items.map((i) => i.happens).join(' '), ['problems']);
     must(d.landmarks.items.map((i) => i.why).join(' '), ['landmarks']);
     must(d.faq.items.map((f) => f.q + f.a).join(' '), ['faq']);

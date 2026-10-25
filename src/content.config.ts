@@ -219,6 +219,8 @@ const blogCollection = defineCollection({
          * shows a note that the dispatcher confirms what our ambulance carries.
          */
         generalGuide: z.boolean().default(false),
+        /** Off-topic for Bangladesh readers: kept live but out of search, the sitemap, the blog list and llms.txt. */
+        noindex: z.boolean().default(false),
         /** Original WordPress post id (migration audit trail). */
         wpId: z.number().int().optional(),
       })

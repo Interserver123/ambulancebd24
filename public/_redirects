@@ -15,3 +15,14 @@
 /page-sitemap.xml /sitemap-index.xml 301
 # Old single child sitemap (before the split into pages/services/locations/blog)
 /sitemap-0.xml /sitemap-index.xml 301
+# Guides merged into one stronger page each (same topic, one URL to rank)
+/how-quickly-can-a-nicu-ambulance-reach/ /the-procedure-to-request-a-nicu-ambulance/ 301
+/nicu-ambulances-available-247-in-dhaka/ /the-procedure-to-request-a-nicu-ambulance/ 301
+/nicu-transport-for-premature-baby-in-dhaka/ /the-procedure-to-request-a-nicu-ambulance/ 301
+/are-there-specialized-ambulances-for-newborns/ /nicu-equipped-ambulances-in-dhaka/ 301
+/which-hospitals-in-dhaka-offer-neonatal-ambulance-facilities/ /nicu-equipped-ambulances-in-dhaka/ 301
+/are-there-any-emergency-medical-services/ /nicu-equipped-ambulances-in-dhaka/ 301
+/contact-information-for-nicu-ambulance/ /nicu-ambulance-service-dhaka/ 301
+/ambulance-services-in-dhaka/ /services/ 301
+/what-certifications-are-required-for-ambulance-crew-members/ /what-is-required-for-ambulance-crew-members/ 301
+/how-are-emergency-medical-services-organized/ /ambulance-service-khulna/ 301

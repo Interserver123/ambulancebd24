@@ -19,7 +19,7 @@ export const GET: APIRoute = async () => {
   const services = servicePages.filter((p) => p.lang === 'en');
   const servicesBn = servicePages.filter((p) => p.lang === 'bn');
   const districts = districtPages.filter((p) => p.lang === 'en').sort((a, b) => a.district.localeCompare(b.district));
-  const posts = (await getCollection('blog', (e) => !e.data.draft && e.data.lang === 'en')).sort((a, b) =>
+  const posts = (await getCollection('blog', (e) => !e.data.draft && !e.data.noindex && e.data.lang === 'en')).sort((a, b) =>
     a.data.metaTitle.localeCompare(b.data.metaTitle),
   );
 

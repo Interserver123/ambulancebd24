@@ -13,6 +13,7 @@ coverAlt: "Does Medicare Cover Ambulance Services"
 moneyPages:
   - /ambulance-service-areas-dhaka/
 generalGuide: true
+noindex: true
 wpId: 3188
 draft: false
 ---

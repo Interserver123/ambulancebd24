@@ -13,6 +13,7 @@ coverAlt: "Ambulance"
 moneyPages:
   - /ambulance-service-areas-dhaka/
 generalGuide: true
+noindex: true
 wpId: 2840
 draft: false
 ---

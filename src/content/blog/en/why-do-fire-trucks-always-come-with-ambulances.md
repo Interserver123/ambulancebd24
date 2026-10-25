@@ -3,23 +3,35 @@ lang: en
 translationKey: why-do-fire-trucks-always-come-with-ambulances
 slug: /why-do-fire-trucks-always-come-with-ambulances/
 metaTitle: "Why Do Fire Trucks Come With Ambulances? Explained"
-metaDescription: "Why fire trucks often arrive alongside ambulances at emergencies: shared training, extra hands, rescue equipment and how the crews work together."
-h1: "Why do fire trucks always come with ambulances?"
+metaDescription: "Fire crews carry rescue tools and often have first-aid training. Why both vehicles are sent to some emergencies, and what it means for you."
+h1: "Why fire trucks come with ambulances: the real reasons"
 author: "Ambulance BD 24 team"
 published: 2023-01-04
-updated: 2023-02-15
+updated: 2026-10-25
 moneyPages:
   - /
 generalGuide: true
 wpId: 3282
 draft: false
+coverAlt: "A fire truck and an ambulance parked together at an emergency scene"
 ---
-Fire trucks and ambulances are two of the most important vehicles used by emergency services. Fire trucks are used to extinguish fires, while ambulances are used to transport people who need medical attention. [Fire trucks](https://en.wikipedia.org/wiki/Fire_engine) and ambulances often travel together for a number of reasons, one of which is so that medical attention can be provided quickly in the event of a fire.
+**Fire trucks are sent to many emergencies because they carry tools an ambulance does not and because fire crews are often trained in first aid.** The two vehicles do different jobs.
 
-When a fire breaks out, a quick response is essential in order to minimize the damage caused by the fire. Fire trucks can help contain the fire and put it out, but if there are people injured or trapped in the building, medical attention must be provided as soon as possible. Having an ambulance close by allows medical personnel to be on the scene quickly and provide aid to those who need it.
+## Why both are sent
 
-Another reason that fire trucks and [ambulances](/) often travel together is to provide a greater level of safety to the firefighters. Fires can be extremely dangerous and the presence of an ambulance can provide a valuable level of protection to those responding to the scene. In the event of an injury or illness, an ambulance can be on hand to provide medical assistance and help protect firefighters from further harm.
+- **Rescue tools.** Cutting a car door, lifting a fallen beam or reaching someone upstairs needs equipment a fire crew carries.
+- **More hands.** Lifting a patient safely often takes four people or more.
+- **Medical training.** Many fire crews have first-aid training. In some places they reach a scene sooner than an ambulance.
+- **Hazards.** Fire, smoke, chemicals and unstable buildings need a fire crew to make the scene safe first.
 
-Finally, having an ambulance close by helps to ensure that the firefighters have access to the right kind of medical assistance. Ambulances are equipped with a variety of medical equipment and supplies that can be used to treat those affected by a fire, such as oxygen, bandages, and other medical supplies.
+## What the ambulance does
 
-In short, fire trucks and ambulances often travel together in order to provide quick response, safety, and medical assistance when needed. This combination helps ensure that those affected by a fire can receive the necessary medical attention as quickly as possible.
+The ambulance treats the patient and takes them to hospital. It cannot cut metal or fight a fire. See [what ambulance crews carry](/essential-equipment-is-carried-by-ambulance-crews/).
+
+## What this means if you call
+
+Tell the dispatcher what happened, for example a road accident with someone trapped, or a fire. They decide which services to send. If you also need a private ambulance for a transfer afterwards, call us: see our [ICU ambulance service](/icu-ambulance-service-dhaka/).
+
+In a life-threatening emergency in Bangladesh you can call 999.
+
+Call **01919-339689** any time. A dispatcher answers 24 hours a day, 7 days a week.

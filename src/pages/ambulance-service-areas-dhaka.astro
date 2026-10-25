@@ -70,7 +70,7 @@ const jsonLd = graphLd(
                   <Icon name={isBase ? 'ambulance' : 'pin'} class="size-5" />
                 </span>
                 <span class="grow">
-                  <span class="serif block text-xl text-(--ink)">{href ? d.areas.pageAnchor(a.name) : a.name}</span>
+                  <span class="serif block text-xl text-(--ink)">{a.name}</span>
                   {(isBase || a.hint) && <span class="block text-[15px]">{isBase ? d.areas.base : a.hint}</span>}
                 </span>
                 {href && <Icon name="arrow-right" class="size-5 shrink-0 text-(--blue-ink)" />}
@@ -79,7 +79,7 @@ const jsonLd = graphLd(
             return (
               <li>
                 {href ? (
-                  <a href={href} class="pebble flex h-full items-center gap-4 rounded-[24px] bg-(--card) p-5 no-underline">
+                  <a href={href} title={d.areas.pageAnchor(a.name)} class="pebble flex h-full items-center gap-4 rounded-[24px] bg-(--card) p-5 no-underline">
                     {body}
                   </a>
                 ) : (

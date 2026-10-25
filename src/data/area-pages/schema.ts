@@ -41,7 +41,7 @@ export const areaPageSchema = z
 
     services: heading.extend({
       intro: text,
-      items: z.array(z.object({ title: text, text: z.string().min(30), links: z.array(z.object({ anchor: text, href: z.string().regex(/^\/[a-z0-9/-]*\/$/) })).min(1) })).min(4),
+      items: z.array(z.object({ title: text, /** Photo slot key (src/lib/photos.ts) */ photo: z.string().regex(/^[a-z-]+$/), text: z.string().min(30), links: z.array(z.object({ anchor: text, href: z.string().regex(/^\/[a-z0-9/-]*\/$/) })).min(1) })).min(4),
     }),
 
     address: z.object({

@@ -101,11 +101,13 @@ export const uttaraPage = areaPageSchema.parse({
     items: [
       {
         title: 'From an Uttara hospital to an ICU bed elsewhere',
+        photo: 'icu',
         text: 'When the doctor advises ICU support on the way, for example a move to a bigger hospital in central Dhaka.',
         links: [{ anchor: 'ICU ambulance service in Dhaka', href: '/icu-ambulance-service-dhaka/' }],
       },
       {
         title: 'A newborn moving to another NICU',
+        photo: 'nicu',
         text: 'Calm and step by step. Ask the NICU doctor to confirm the receiving bed first, then call us with both hospital names.',
         links: [
           { anchor: 'NICU ambulance service', href: '/nicu-ambulance-service-dhaka/' },
@@ -114,16 +116,19 @@ export const uttaraPage = areaPageSchema.parse({
       },
       {
         title: 'Discharge, check-ups and trips home',
+        photo: 'ac',
         text: 'A cooled, comfortable ride from an Uttara hospital to your flat, or from home to a check-up in central Dhaka.',
         links: [{ anchor: 'AC ambulance service', href: '/ac-ambulance-service/' }],
       },
       {
         title: 'Taking a loved one home',
+        photo: 'freezer',
         text: 'We take your loved one home from an Uttara hospital or flat, in Dhaka or to any district. You can call at any hour.',
         links: [{ anchor: 'Freezer van service', href: '/freezer-ambulance-service/' }],
       },
       {
         title: 'From Uttara to another district',
+        photo: 'inter-district',
         text: 'Uttara is on the north side, so trips toward Gazipur and Mymensingh start with a short run to the highway at Abdullahpur.',
         links: [
           { anchor: 'Dhaka to any district', href: '/inter-district-ambulance-service/' },
@@ -132,6 +137,7 @@ export const uttaraPage = areaPageSchema.parse({
       },
       {
         title: 'From the airport next door',
+        photo: 'air',
         text: 'Air ambulance is arranged through an aviation operator. Our ground ambulance takes the patient to and from Hazrat Shahjalal International Airport.',
         links: [{ anchor: 'Air ambulance service', href: '/air-ambulance-service-bangladesh/' }],
       },

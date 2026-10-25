@@ -12,8 +12,9 @@ import Icon from '../../components/Icon.astro';
 import Final from '../../components/warm/Final.astro';
 import { business, breadcrumbLd, graphLd, organizationLd, services, webPageLd, websiteLd } from '../../data/business';
 import { publishedPaths } from '../../lib/routes';
+import { isLive } from '../../lib/blog';
 
-const posts = (await getCollection('blog', (e) => !e.data.draft && !e.data.noindex && e.data.lang === 'en')).sort(
+const posts = (await getCollection('blog', (e) => isLive(e) && !e.data.noindex && e.data.lang === 'en')).sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime(),
 );
 const pub = await publishedPaths('en');

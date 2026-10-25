@@ -2,6 +2,7 @@ import { getCollection } from 'astro:content';
 import { servicePages } from '../data/service-pages';
 import { districtPages } from '../data/district-pages';
 import { areaPages } from '../data/area-pages';
+import { isLive } from './blog';
 
 /**
  * Paths of every published page, so components can link only to pages that
@@ -17,7 +18,7 @@ export async function publishedPaths(lang: 'en' | 'bn' = 'en') {
     getCollection('services', keep),
     getCollection('areas', keep),
     getCollection('districts', keep),
-    getCollection('blog', keep),
+    getCollection('blog', (e) => isLive(e) && e.data.lang === lang),
   ]);
   return {
     all: new Set<string>([...STATIC_PAGES, ...[services, areas, districts, blog].flat().map((e) => e.data.slug)]),

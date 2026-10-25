@@ -1,0 +1,22 @@
+# Publishes scheduled blog posts on time.
+# The site is static, so a post dated in the future only appears after a build that runs after its
+# time (src/lib/blog.ts). This job asks Cloudflare Pages to rebuild every day at 04:00 UTC
+# (10:00 in Dhaka). GitHub can start scheduled jobs a few minutes late.
+#
+# One-time setup: Cloudflare Pages > the project > Settings > Builds > Deploy hooks > Add (branch: main),
+# then GitHub > Settings > Secrets and variables > Actions > New secret: CLOUDFLARE_DEPLOY_HOOK = the hook URL.
+name: Daily rebuild
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the Cloudflare Pages deploy hook
+        env:
+          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "CLOUDFLARE_DEPLOY_HOOK is not set: skipping."; exit 0; fi
+          curl -fsS -X POST "$HOOK"

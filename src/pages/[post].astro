@@ -15,11 +15,12 @@ import Icon from '../components/Icon.astro';
 import Faq from '../components/warm/Faq.astro';
 import Final from '../components/warm/Final.astro';
 import CallButton from '../components/warm/CallButton.astro';
-import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, services, shown, webPageLd, websiteLd } from '../data/business';
+import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, schemaImages, services, shown, webPageLd, websiteLd } from '../data/business';
 import { insideDhaka } from '../data/inside-dhaka';
+import { isLive } from '../lib/blog';
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog', (e) => !e.data.draft && e.data.lang === 'en');
+  const posts = await getCollection('blog', (e) => isLive(e) && e.data.lang === 'en');
   return posts.map((post) => ({ params: { post: post.data.slug.slice(1, -1) }, props: { post, all: posts } }));
 }) satisfies GetStaticPaths;
 
@@ -30,6 +31,8 @@ const toc = headings.filter((h) => h.depth === 2);
 const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
 const fmt = (dt: Date) => dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const iso = (dt: Date) => dt.toISOString().slice(0, 10);
+/** Scheduled posts carry a time: keep it, written in Dhaka time (+06:00). Older posts stay date-only. */
+const stamp = (dt: Date) => (dt.getUTCHours() || dt.getUTCMinutes() ? new Date(dt.getTime() + 6 * 3600e3).toISOString().replace(/\.\d{3}Z$/, '+06:00') : iso(dt));
 const wa = shown(business.whatsapp);
 
 /** Money pages this post points to, with a human label. */
@@ -63,10 +66,11 @@ const jsonLd = graphLd(
     description: d.metaDescription,
     url: pageUrl,
     inLanguage: 'en-BD',
-    datePublished: iso(d.published),
+    datePublished: stamp(d.published),
     dateModified: iso(d.updated),
     wordCount: words,
-    ...(imageUrl ? { image: { '@type': 'ImageObject', url: imageUrl, ...(ogImage ? { width: ogImage.width, height: ogImage.height } : {}) } } : {}),
+    image: imageUrl ? { '@type': 'ImageObject', url: imageUrl, ...(ogImage ? { width: ogImage.width, height: ogImage.height } : {}) } : { '@type': 'ImageObject', ...schemaImages.photo },
+    about: { '@id': ids.business },
     isAccessibleForFree: true,
     author: { '@id': ids.organization },
     publisher: { '@id': ids.organization },
@@ -90,7 +94,7 @@ const jsonLd = graphLd(
   crumbs={crumbs}
   ogImage={ogImage}
   ogType="article"
-  article={{ published: iso(d.published), modified: iso(d.updated) }}
+  article={{ published: stamp(d.published), modified: iso(d.updated) }}
 >
   <article>
     <header class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-10">
@@ -100,7 +104,7 @@ const jsonLd = graphLd(
         <p class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px] text-(--gray-ink)">
           <span>{d.author}</span>
           <span aria-hidden="true">·</span>
-          <span>Published <time datetime={iso(d.published)}>{fmt(d.published)}</time></span>
+          <span>Published <time datetime={stamp(d.published)}>{fmt(d.published)}</time></span>
           {
             iso(d.updated) !== iso(d.published) && (
               <>

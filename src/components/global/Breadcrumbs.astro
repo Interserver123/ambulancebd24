@@ -11,11 +11,12 @@ export interface Crumb {
 }
 interface Props {
   items: Crumb[];
+  label?: string;
 }
-const { items } = Astro.props;
+const { items, label = 'Breadcrumb' } = Astro.props;
 ---
 
-<nav aria-label="Breadcrumb" class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-8">
+<nav aria-label={label} class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-8">
   <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px]">
     {
       items.map((c, i) => (

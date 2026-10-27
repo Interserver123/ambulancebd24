@@ -84,6 +84,7 @@ function stripPhones(text) {
 const stripBrand = (text) => text.split(business.name).join(' ');
 
 const APPROVED_TIMING = copy.timingLine.en;
+const APPROVED_TIMING_BN = copy.timingLine.bn;
 
 /** Sentences that speak about us. In general guides only these must pass the equipment/crew rules. */
 const ABOUT_US = /\b(we|we're|we've|our|ours|us)\b|ambulance ?bd ?24/i;
@@ -117,9 +118,9 @@ const RULES = [
     // Catches "15 minutes", "60 to 90 minutes", "6–40 min", "12m avg", "within minutes",
     // "under an hour", "response time" and Bangla minute/hour claims.
     re: /\b\d+\s*(?:(?:-|–|to)\s*\d+\s*)?(?:mins?|minutes?)\b|\b\d+\s*m\b\s*(?:avg|average|eta|away|response)|\bavg\b|\baverage (?:response|arrival)\b|\bresponse time\b|\b(?:within|in) (?:a )?few minutes\b|\bwithin minutes\b|\bminutes away\b|\b(?:within|in under|under)\s+(?:an?|one|two|half an?|\d+)\s*(?:hours?|hrs?)\b|মিনিট|ঘণ্টার মধ্যে|ঘণ্টায় পৌঁছ/i,
-    msg: `Only the approved timing claim: "${APPROVED_TIMING}" ("around 10 minutes … depending on traffic" in one sentence). No Bangla timing line approved yet.`,
+    msg: `Only the approved timing claim: "${APPROVED_TIMING}" ("around 10 minutes … depending on traffic" in one sentence). Bangla: only "${APPROVED_TIMING_BN}".`,
     // The approved claim may be phrased inside a longer sentence, but must keep "around" and the traffic qualifier.
-    prep: (t) => t.split(APPROVED_TIMING).join(' ').replace(/\baround 10 minutes\b[^.!?]*?\bdepending on traffic\b/gi, ' '),
+    prep: (t) => t.split(APPROVED_TIMING).join(' ').split(APPROVED_TIMING_BN).join(' ').replace(/\baround 10 minutes\b[^.!?]*?\bdepending on traffic\b/gi, ' '),
   },
   {
     id: 'hours',
@@ -179,7 +180,7 @@ const RULES = [
     re: /[0-9]/,
     msg: 'Bangla copy uses Bangla digits (except the phone number).',
     when: (c) => c.lang === 'bn',
-    prep: (t) => stripBrand(stripPhones(t)).replace(/https?:\/\/\S+/g, ' ').replace(/\]\([^)]*\)/g, '] '),
+    prep: (t) => stripBrand(stripPhones(t.replace(/<[^>]*>/g, ' ').replace(/^\s*\d+\.\s/gm, ' '))).replace(/https?:\/\/\S+/g, ' ').replace(/\]\([^)]*\)/g, '] '),
   },
 
   /* Voice */

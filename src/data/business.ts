@@ -236,9 +236,11 @@ export const copy = {
     en: `${TIMING}.`,
     chip: TIMING,
     inline: `${TIMING.charAt(0).toLowerCase()}${TIMING.slice(1)}`,
+    /** Bangla line approved by the owner for the dispatcher-call guide (20 Oct 2026 brief). Bangla digits. */
+    bn: 'মধ্য ঢাকায় সাধারণত প্রায় ১০ মিনিট, যানজটের ওপর নির্ভর করে',
   },
   /** Approved fare line. "In writing" only once claims.fareInWritingSopLive is true. */
-  fareLine: { en: 'We tell you the fare before we dispatch.' },
+  fareLine: { en: 'We tell you the fare before we dispatch.', bn: 'যাওয়ার আগে ভাড়া জানিয়ে দিই।' },
   cta: {
     call: { en: `Call ${PHONE_DISPLAY} — 24/7`, bn: `এখনই কল করুন: ${PHONE_DISPLAY}` },
     whatsapp: { en: 'WhatsApp for your fare', bn: 'হোয়াটসঅ্যাপে ভাড়া জানুন' },

@@ -15,7 +15,7 @@ import MobileCallBar from '../components/home/MobileCallBar.astro';
 import Breadcrumbs, { type Crumb } from '../components/global/Breadcrumbs.astro';
 import ReviewsBlock from '../components/global/ReviewsBlock.astro';
 import NapMap from '../components/global/NapMap.astro';
-import type { Lang } from '../data/ui';
+import { ui, type Lang } from '../data/ui';
 import { homeData } from '../lib/homeNav';
 
 interface Heading {
@@ -54,7 +54,7 @@ const { nav } = await homeData();
   <script is:inline>document.documentElement.classList.add('js');</script>
   <div class="warm" id="top">
     <Header nav={nav} lang={lang} />
-    {crumbs && <Breadcrumbs items={crumbs} />}
+    {crumbs && <Breadcrumbs items={crumbs} label={lang === 'bn' ? ui.bn.post.breadcrumb : undefined} />}
     <main class={mainClass}>
       <slot />
       {reviews && <ReviewsBlock {...reviews} lang={lang} />}

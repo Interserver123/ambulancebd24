@@ -17,6 +17,9 @@ import { isLive } from '../../lib/blog';
 const posts = (await getCollection('blog', (e) => isLive(e) && !e.data.noindex && e.data.lang === 'en')).sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime(),
 );
+const postsBn = (await getCollection('blog', (e) => isLive(e) && !e.data.noindex && e.data.lang === 'bn')).sort(
+  (a, b) => b.data.published.getTime() - a.data.published.getTime(),
+);
 const pub = await publishedPaths('en');
 const serviceLinks = services.filter((s) => s.key !== 'emergency' && s.status === 'fact' && pub.all.has(s.path));
 
@@ -102,6 +105,23 @@ const jsonLd = graphLd(
                 </li>
               ))}
             </ul>
+            {postsBn.length > 0 && (
+              <>
+                <h2 class="mt-20" lang="bn">
+                  বাংলায় <em>গাইড</em>
+                </h2>
+                <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" lang="bn">
+                  {postsBn.map((p) => (
+                    <li>
+                      <a href={p.data.slug} class="pebble flex min-h-16 items-center justify-between gap-3 rounded-[24px] bg-(--card) px-6 py-4 font-medium text-(--ink) no-underline hover:text-(--blue-ink)">
+                        {p.data.h1}
+                        <Icon name="arrow-right" class="size-5 shrink-0" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </>
         ) : (
           <>

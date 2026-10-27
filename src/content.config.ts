@@ -225,7 +225,8 @@ const blogCollection = defineCollection({
         wpId: z.number().int().optional(),
       })
       .superRefine((d, ctx) => {
-        checkLangSlug(d, ctx);
+        // Bangla posts may sit at a root slug (e.g. /what-to-tell-ambulance-dispatcher-bangla/); English never under /bn/.
+        if (d.lang === 'en' && d.slug.startsWith('/bn/')) ctx.addIssue({ code: 'custom', path: ['slug'], message: 'English pages must not live under /bn/' });
         // No slug pattern forced: existing posts must keep their live URLs.
       }),
 });

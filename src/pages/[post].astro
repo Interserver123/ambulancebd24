@@ -15,21 +15,26 @@ import Icon from '../components/Icon.astro';
 import Faq from '../components/warm/Faq.astro';
 import Final from '../components/warm/Final.astro';
 import CallButton from '../components/warm/CallButton.astro';
+import { ui } from '../data/ui';
 import { business, breadcrumbLd, copy, faqPageLd, graphLd, ids, organizationLd, schemaImages, services, shown, webPageLd, websiteLd } from '../data/business';
 import { insideDhaka } from '../data/inside-dhaka';
 import { isLive } from '../lib/blog';
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog', (e) => isLive(e) && e.data.lang === 'en');
+  const posts = await getCollection('blog', (e) => isLive(e));
   return posts.map((post) => ({ params: { post: post.data.slug.slice(1, -1) }, props: { post, all: posts } }));
 }) satisfies GetStaticPaths;
 
 const { post, all } = Astro.props as { post: CollectionEntry<'blog'>; all: CollectionEntry<'blog'>[] };
 const d = post.data;
+const lang = d.lang;
+const bn = lang === 'bn';
+const t = ui[lang];
+const p = t.post;
 const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth === 2);
 const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
-const fmt = (dt: Date) => dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const fmt = (dt: Date) => dt.toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const iso = (dt: Date) => dt.toISOString().slice(0, 10);
 /** Scheduled posts carry a time: keep it, written in Dhaka time (+06:00). Older posts stay date-only. */
 const stamp = (dt: Date) => (dt.getUTCHours() || dt.getUTCMinutes() ? new Date(dt.getTime() + 6 * 3600e3).toISOString().replace(/\.\d{3}Z$/, '+06:00') : iso(dt));
@@ -37,20 +42,20 @@ const wa = shown(business.whatsapp);
 
 /** Money pages this post points to, with a human label. */
 const moneyLabel = (path: string) =>
-  path === '/' ? '24/7 ambulance service in Dhaka' : path === insideDhaka.slug ? 'Ambulance in every area of Dhaka' : (services.find((s) => s.path === path)?.en ?? 'Our ambulance service');
+  path === '/' ? p.emergencyLabel : path === insideDhaka.slug ? p.areasLabel : (services.find((s) => s.path === path)?.[lang] ?? p.fallbackLabel);
 const money = d.moneyPages.map((p) => ({ path: p, label: moneyLabel(p) }));
 const primary = money[0]!;
 
 /** Related: same money page first, then newest. */
 const related = all
-  .filter((p) => p.id !== post.id)
+  .filter((r) => r.id !== post.id && r.data.lang === lang)
   .sort((a, b) => Number(b.data.moneyPages[0] === primary.path) - Number(a.data.moneyPages[0] === primary.path) || b.data.published.getTime() - a.data.published.getTime())
   .slice(0, 3);
 
 const pageUrl = `${business.url}${d.slug}`;
 const crumbs = [
-  { name: 'Home', path: '/' },
-  { name: 'Blog', path: '/blog/' },
+  { name: t.home, path: '/' },
+  { name: p.blog, path: '/blog/' },
   { name: d.h1, path: d.slug },
 ];
 const ogImage = await ogImageFrom(d.cover, d.coverAlt ?? d.h1);
@@ -65,7 +70,7 @@ const jsonLd = graphLd(
     headline: d.h1,
     description: d.metaDescription,
     url: pageUrl,
-    inLanguage: 'en-BD',
+    inLanguage: bn ? 'bn-BD' : 'en-BD',
     datePublished: stamp(d.published),
     dateModified: iso(d.updated),
     wordCount: words,
@@ -76,7 +81,7 @@ const jsonLd = graphLd(
     publisher: { '@id': ids.organization },
     isPartOf: { '@id': ids.website },
   },
-  { ...webPageLd({ pageUrl, name: d.metaTitle, dateModified: iso(d.updated), about: false }), mainEntity: { '@id': `${pageUrl}#article` } },
+  { ...webPageLd({ pageUrl, name: d.metaTitle, dateModified: iso(d.updated), about: false, lang }), mainEntity: { '@id': `${pageUrl}#article` } },
   breadcrumbLd(
     pageUrl,
     crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),
@@ -90,6 +95,7 @@ const jsonLd = graphLd(
   description={d.metaDescription}
   path={d.slug}
   noindex={d.noindex}
+  lang={lang}
   jsonLd={d.noindex ? undefined : jsonLd}
   crumbs={crumbs}
   ogImage={ogImage}
@@ -99,18 +105,18 @@ const jsonLd = graphLd(
   <article>
     <header class="mx-auto max-w-[1240px] px-4 pt-6 md:px-6 md:pt-10">
       <div class="max-w-4xl">
-        <a href="/blog/" class="eyebrow-warm inline-flex min-h-11 items-center no-underline">Ambulance guide</a>
+        <a href="/blog/" class="eyebrow-warm inline-flex min-h-11 items-center no-underline">{p.eyebrow}</a>
         <h1 class="mt-4 text-[2.1rem]! leading-tight! md:text-5xl!">{d.h1}</h1>
         <p class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px] text-(--gray-ink)">
           <span>{d.author}</span>
           <span aria-hidden="true">·</span>
-          <span>Published <time datetime={stamp(d.published)}>{fmt(d.published)}</time></span>
+          <span>{p.published} <time datetime={stamp(d.published)}>{fmt(d.published)}</time></span>
           {
             iso(d.updated) !== iso(d.published) && (
               <>
                 <span aria-hidden="true">·</span>
                 <span>
-                  Updated <time datetime={iso(d.updated)}>{fmt(d.updated)}</time>
+                  {p.updated} <time datetime={iso(d.updated)}>{fmt(d.updated)}</time>
                 </span>
               </>
             )
@@ -146,7 +152,7 @@ const jsonLd = graphLd(
           {
             toc.length > 2 && (
               <nav aria-labelledby="toc-title" class="hidden rounded-[28px] bg-(--card) p-6 soft-shadow lg:block">
-                <p id="toc-title" class="serif text-xl text-(--ink)">In this guide</p>
+                <p id="toc-title" class="serif text-xl text-(--ink)">{p.toc}</p>
                 <ol class="mt-4 max-h-[40vh] space-y-2 overflow-y-auto pr-2 text-[15px]">
                   {toc.map((h) => (
                     <li>
@@ -160,23 +166,23 @@ const jsonLd = graphLd(
             )
           }
           <div class="rounded-[28px] bg-(--ink) p-6 text-white">
-            <p class="serif text-2xl text-white">Need an ambulance now?</p>
-            <p class="mt-2 text-white/80">{business.hours.display}. {copy.fareLine.en}</p>
+            <p class="serif text-2xl text-white">{p.asideTitle}</p>
+            <p class="mt-2 text-white/80">{bn ? t.hoursDisplay : business.hours.display}. {copy.fareLine[lang]}</p>
             <a href={business.phone.tel} class="phone serif mt-3 inline-block text-3xl text-white no-underline hover:underline" data-placement="post-aside">{business.phone.display}</a>
             {
               wa && (
                 <a href={wa.url} class="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-full bg-whatsapp px-5 font-heading text-[19px] font-bold text-white no-underline hover:brightness-95" data-placement="post-aside" rel="noopener">
                   <Icon name="whatsapp" />
-                  {copy.cta.whatsapp.en}
+                  {t.cta.whatsapp}
                 </a>
               )
             }
           </div>
           <a href={primary.path} class="pebble group block rounded-[28px] bg-(--card) p-6 no-underline">
-            <span class="text-sm text-(--gray-ink)">Our service</span>
+            <span class="text-sm text-(--gray-ink)">{p.ourService}</span>
             <span class="serif mt-1 block text-xl text-(--ink)">{primary.label}</span>
             <span class="mt-3 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
-              See the service
+              {p.seeService}
               <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
             </span>
           </a>
@@ -187,24 +193,24 @@ const jsonLd = graphLd(
     <section class="mx-auto max-w-[1240px] px-4 md:px-6" aria-labelledby="next-step">
       <div class="flex flex-col gap-6 rounded-[36px] bg-(--blue-soft) p-8 md:flex-row md:items-center md:justify-between md:p-12">
         <div class="max-w-2xl">
-          <h2 id="next-step" class="text-[1.75rem]! md:text-4xl!">Need this for your family?</h2>
+          <h2 id="next-step" class="text-[1.75rem]! md:text-4xl!">{p.bandTitle}</h2>
           <p class="mt-3 text-lg text-(--ink)/80">
-            Call and tell us where you are and how the patient is. {copy.fareLine.en} Or read about our <a href={primary.path} class="font-medium text-(--blue-ink) underline underline-offset-4">{primary.label.toLowerCase()}</a>.
+            {p.bandText} {copy.fareLine[lang]} {p.bandOr} <a href={primary.path} class="font-medium text-(--blue-ink) underline underline-offset-4">{bn ? primary.label : primary.label.toLowerCase()}</a>.
           </p>
         </div>
-        <CallButton placement="post-band" size="lg" class="shrink-0 justify-center" />
+        <CallButton placement="post-band" size="lg" class="shrink-0 justify-center" label={t.cta.call} lang={bn ? 'bn' : undefined} />
       </div>
     </section>
   </article>
 
-  {d.faqs.length > 0 && <Faq items={d.faqs} updated={iso(d.updated)} />}
+  {d.faqs.length > 0 && <Faq items={d.faqs} updated={iso(d.updated)} lang={lang} {...(bn ? { eyebrow: 'প্রশ্ন ও উত্তর', h2Lead: 'সাধারণ', h2Accent: 'প্রশ্ন' } : {})} />}
 
   {
     related.length > 0 && (
       <section class="relative py-20 md:py-24" aria-labelledby="related-title">
         <div class="mx-auto max-w-[1240px] px-4 md:px-6">
           <h2 id="related-title">
-            More <em>guides</em>
+            {p.moreTitleLead} <em>{p.moreTitleAccent}</em>
           </h2>
           <ul class="mt-10 grid gap-6 md:grid-cols-3">
             {related.map((r) => (
@@ -214,7 +220,7 @@ const jsonLd = graphLd(
                   <span class="flex grow flex-col p-6">
                     <span class="serif block text-xl text-(--ink)">{r.data.h1}</span>
                     <span class="mt-4 inline-flex items-center gap-2 font-medium text-(--blue-ink)">
-                      Read the guide
+                      {p.readGuide}
                       <Icon name="arrow-right" class="size-5 transition-transform group-hover:translate-x-1" />
                     </span>
                   </span>
@@ -223,14 +229,14 @@ const jsonLd = graphLd(
             ))}
           </ul>
           <p class="mt-8">
-            <a href="/blog/" class="font-medium text-(--blue-ink) underline underline-offset-4">All guides</a>
+            <a href="/blog/" class="font-medium text-(--blue-ink) underline underline-offset-4">{p.allGuides}</a>
           </p>
         </div>
       </section>
     )
   }
 
-  <Final slot="end" h2Lead="Need an" h2Accent="ambulance now?" text="Call and tell us where you are and how the patient is. We tell you the fare before we dispatch." placement="post-final" showForm={false} />
+  <Final slot="end" h2Lead={p.finalLead} h2Accent={p.finalAccent} text={p.finalText} placement="post-final" showForm={false} whatsapp={bn} lang={lang} />
 </SiteLayout>
 
 <style>
@@ -278,6 +284,9 @@ const jsonLd = graphLd(
   }
   .post-body :global(ol) {
     list-style: decimal;
+  }
+  .post-body:lang(bn) :global(ol) {
+    list-style-type: bengali;
   }
   .post-body :global(li + li) {
     margin-top: 0.5em;

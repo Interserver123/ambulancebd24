@@ -14,6 +14,8 @@ moneyPages:
   - /ambulance-service-areas-dhaka/
 generalGuide: false
 draft: false
+cover: "../../../assets/blog/ambulance-fare-dhaka-phone-call-at-night.webp"
+coverAlt: "Hand holding a smartphone showing an incoming call beside a glass of water"
 faqs:
   - q: "How much is an ambulance fare in Dhaka?"
     a: "There is no single fare. It depends on the distance, the vehicle type, waiting time, extra stops, tolls, any return trip and sometimes the time of day. Call the dispatcher with the pickup, destination and patient condition. We tell you the fare before we dispatch."
@@ -74,6 +76,8 @@ The vehicle is one of the biggest parts of the fare. In general terms, and witho
 
 Inside Dhaka, the fare is mostly a short run and the wait at the hospital. Out of Dhaka, the run itself becomes the fare.
 
+![Evening traffic in Dhaka with buses, rickshaws, cars and a flyover in the background](../../../assets/blog/dhaka-road-evening-traffic-flyover-buses-rickshaws.webp)
+
 - **Distance dominates.** A trip to a far district is hours of driving, not minutes, and the fare grows with it.
 - **Tolls and crossings.** Bridges and highways on the route can add to the total. Ask if they are inside the quote.
 - **The return trip.** The vehicle has to come back to Dhaka. Ask whether the quote is one way or round trip.
@@ -101,6 +105,8 @@ A provider that answers these plainly is easier to trust. One that avoids them i
 
 ## What to tell our dispatcher so the fare is right
 
+![Quiet hospital corridor with a wooden waiting bench and one person walking away](../../../assets/blog/hospital-corridor-waiting-bench-bangladesh.webp)
+
 We send the nearest available ambulance. Around 10 minutes in central Dhaka, depending on traffic. The more the dispatcher knows at the start, the more exact the fare, and the fewer changes later. Please tell us:
 
 - **Where the patient is now.** Area, road, a landmark, the floor, and whether there is a lift.
@@ -113,3 +119,5 @@ We send the nearest available ambulance. Around 10 minutes in central Dhaka, dep
 - **A phone number** that stays on.
 
 If you are not sure of something, say what you can see. We ask the rest. For a planned trip such as a discharge, a check-up or a district journey, call as early as you can: a fare is easier to settle when nothing is rushed. More on the call itself in [what to know before calling an ambulance](/you-should-know-before-calling-an-ambulance/).
+
+*Pictures in this guide are illustrative AI-generated images, not photos of our vehicles or crew.*

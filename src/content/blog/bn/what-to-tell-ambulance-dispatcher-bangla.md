@@ -1,7 +1,7 @@
 ---
 lang: bn
 translationKey: what-to-tell-ambulance-dispatcher-bangla
-slug: /what-to-tell-ambulance-dispatcher-bangla/
+slug: /bn/what-to-tell-ambulance-dispatcher-bangla/
 metaTitle: "অ্যাম্বুলেন্স কল করলে কী বলবেন | Ambulance BD 24"
 metaDescription: "অ্যাম্বুলেন্স কল করলে কী বলবেন? ৩০ সেকেন্ডে পাঁচটি কথা: নাম, রোগীর অবস্থা, লোকেশন, হাসপাতাল, কী লাগবে। কল করুন 01919-339689।"
 h1: "অ্যাম্বুলেন্স কল করলে কী বলবেন: ৩০ সেকেন্ডের গাইড"

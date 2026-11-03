@@ -499,7 +499,7 @@ export function webPageLd(opts: {
   aboutId?: string;
   /** false: no "about" (articles). Default: the business. */
   about?: boolean;
-  type?: 'WebPage' | 'CollectionPage' | 'ContactPage';
+  type?: 'WebPage' | 'CollectionPage' | 'ContactPage' | 'AboutPage';
   lang?: 'en' | 'bn';
 }) {
   return {

@@ -26,3 +26,11 @@
 /ambulance-services-in-dhaka/ /services/ 301
 /what-certifications-are-required-for-ambulance-crew-members/ /what-is-required-for-ambulance-crew-members/ 301
 /how-are-emergency-medical-services-organized/ /ambulance-service-khulna/ 301
+# Off-topic US guides (Medicare, US insurance, US fire service) pruned: no Bangladesh search intent,
+# they diluted the site's focus. Each goes to the closest Bangladesh page.
+/does-medicare-cover-ambulance-services/ /ambulance-fare-in-dhaka/ 301
+/does-medicare-cover-ambulance-services /ambulance-fare-in-dhaka/ 301
+/how-much-does-an-ambulance-ride-cost-without-insurance/ /ambulance-fare-in-dhaka/ 301
+/how-much-does-an-ambulance-ride-cost-without-insurance /ambulance-fare-in-dhaka/ 301
+/why-do-fire-trucks-always-come-with-ambulances/ /you-should-know-before-calling-an-ambulance/ 301
+/why-do-fire-trucks-always-come-with-ambulances /you-should-know-before-calling-an-ambulance/ 301

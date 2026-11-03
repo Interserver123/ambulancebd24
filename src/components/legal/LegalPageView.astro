@@ -1,6 +1,6 @@
 ---
 /**
- * Shared template for the legal pages (privacy policy, terms, disclaimer) and /about-us/. Copy: src/data/legal.ts.
+ * Shared template for the legal pages (privacy policy, terms, disclaimer). Copy: src/data/legal.ts.
  * Plain readable page: H1, last-updated date, contents list, one H2 per section.
  * Schema: WebPage + BreadcrumbList (no FAQ, no rating).
  */
@@ -22,7 +22,7 @@ const updatedText = new Date(`${page.updated}T00:00:00Z`).toLocaleDateString('en
 const jsonLd = graphLd(
   organizationLd(),
   websiteLd(),
-  webPageLd({ pageUrl, name: page.metaTitle, dateModified: page.updated, type: page.schemaType }),
+  webPageLd({ pageUrl, name: page.metaTitle, dateModified: page.updated }),
   breadcrumbLd(
     pageUrl,
     crumbs.map((c) => ({ name: c.name, url: `${business.url}${c.path}` })),

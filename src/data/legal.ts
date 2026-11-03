@@ -23,8 +23,6 @@ export type LegalPage = {
   h1: string;
   intro: string;
   sections: LegalSection[];
-  /** schema.org page type. Legal pages are plain WebPage; /about-us/ is an AboutPage. */
-  schemaType?: 'WebPage' | 'AboutPage';
 };
 
 const UPDATED = '2026-10-23';
@@ -304,79 +302,5 @@ export const disclaimer: LegalPage = {
       ],
     },
     contactSection('Questions about this page?'),
-  ],
-};
-
-/**
- * /about-us/: restores the old WordPress URL (indexed) as a real About page for trust (E-E-A-T).
- * Only facts the site already states. No founding year, fleet size, crew credentials or equipment
- * lists until the client confirms them (brand deck: "Client must confirm").
- */
-export const aboutUs: LegalPage = {
-  slug: '/about-us/',
-  breadcrumb: 'About us',
-  metaTitle: `About ${business.name}: 24/7 Ambulance in Dhaka`,
-  metaDescription: `${business.name} runs a 24/7 ambulance dispatch desk in ${business.address.locality}, Dhaka: ICU, NICU, AC and freezer van, fare told before dispatch.`,
-  updated: '2026-11-03',
-  eyebrow: 'About us',
-  h1: `About ${business.name}`,
-  intro: `${business.name} is an ambulance service with a 24/7 dispatch desk in ${where}. Families call one number, ${phone}, and we send the nearest available ambulance for the patient, across Dhaka and from Dhaka to any district. We tell you the fare before we dispatch.`,
-  schemaType: 'AboutPage',
-  sections: [
-    {
-      id: 'what',
-      h2: 'What we do',
-      paras: ['We run ambulances for emergencies, hospital transfers, discharges and journeys home, at any hour.'],
-      items: [
-        'ICU ambulance for patients a doctor says need ICU support on the way',
-        'NICU ambulance for newborns moving between hospitals',
-        'AC ambulance for stable patients, discharges and check-ups',
-        'Freezer van to take a loved one home with respect, in Dhaka or to any district',
-        'Trips from Dhaka to any district, and back',
-        'Air ambulance, arranged through an aviation operator, with our ground ambulance to and from the airport',
-      ],
-    },
-    {
-      id: 'how',
-      h2: 'How a call works',
-      items: [
-        `You call ${phone}. A dispatcher answers, day or night.`,
-        'You tell us the pickup point and how the patient is. An address or a landmark is enough.',
-        'We match the vehicle and tell you the arrival time and the fare, including waiting time and extra stops.',
-        'The nearest available ambulance sets off. The fare does not change after the trip.',
-      ],
-    },
-    {
-      id: 'promise',
-      h2: 'What we promise, and what we never do',
-      paras: [
-        `${copy.fareLine.en} Many families in Dhaka have been quoted one fare and charged another. We do not work that way.`,
-        `${copy.timingLine.en} We give a real arrival time on the call. We never promise a time we cannot control.`,
-        'We never argue with a family in public, and we never use accident or grief images to sell.',
-      ],
-    },
-    {
-      id: 'base',
-      h2: 'Where we are',
-      paras: [
-        `Our dispatch base is in ${business.address.locality}, near the middle of Dhaka. You never need to come to the base: the ambulance comes to you. Hours: ${business.hours.display}.`,
-      ],
-    },
-    {
-      id: 'hospitals',
-      h2: 'Hospitals',
-      paras: ['We take patients to any hospital the doctor names. When our pages name a hospital, it is a destination only. We have no ties to these hospitals.'],
-    },
-    {
-      id: 'reviews',
-      h2: 'What families say',
-      paras: [`Families leave reviews of ${business.name} on Google. You can read them all through the "See our Google reviews" link at the bottom of every page. We do not edit them.`],
-    },
-    {
-      id: 'emergency',
-      h2: 'Is this the same as 999?',
-      paras: [`No. 999 is Bangladesh's national emergency number for police, fire and ambulance. ${business.name} is a separate ambulance service with its own 24/7 hotline, ${phone}.`],
-    },
-    contactSection('Want to talk to us?'),
   ],
 };

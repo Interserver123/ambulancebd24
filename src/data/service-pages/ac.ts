@@ -27,6 +27,7 @@ export const acPage = servicePageSchema.parse({
     eyebrow: 'AC ambulance · Dhaka · 24/7',
     h1: 'AC ambulance service in Dhaka, 24/7',
     lede: 'A cooled, comfortable ambulance for emergencies, hospital transfers and trips home. We tell you the fare, including waiting time, before we move.',
+    langNote: { lead: 'বাংলায় পড়ুন:', anchor: 'এসি অ্যাম্বুলেন্স ঢাকা' },
     trust: ['Open 24 hours, 7 days', copy.timingLine.en.replace(/\.$/, ''), 'Waiting time included in the quote'],
     card: {
       title: 'Tell us 3 things',

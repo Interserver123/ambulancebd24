@@ -28,6 +28,7 @@ export const icuPage = servicePageSchema.parse({
     eyebrow: 'ICU ambulance · Dhaka · 24/7',
     h1: 'ICU ambulance service in Dhaka, 24/7',
     lede: "Doctor advised an ICU transfer? Tell us the patient's condition. We match the right ICU ambulance and confirm the fare before we move.",
+    langNote: { lead: 'বাংলায় পড়ুন:', anchor: 'আইসিইউ অ্যাম্বুলেন্স ঢাকা' },
     trust: ['Open 24 hours, 7 days', 'Fare told before dispatch', 'Hospital-to-hospital and hospital-to-home transfers'],
     card: {
       title: 'For an ICU transfer, tell us',

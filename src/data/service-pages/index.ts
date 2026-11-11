@@ -4,12 +4,14 @@
  * Bangla pages (lang: 'bn') are built at /bn/ and paired with the English page by serviceKey.
  */
 import { acPage } from './ac';
+import { acPageBn } from './ac-bn';
 import { airPage } from './air';
 import { freezerPage } from './freezer';
 import { freezerPageBn } from './freezer-bn';
 import { icuPage } from './icu';
+import { icuPageBn } from './icu-bn';
 import { interDistrictPage } from './inter-district';
 import { nicuPage } from './nicu';
 import type { ServicePage } from './schema';
 
-export const servicePages: ServicePage[] = [icuPage, nicuPage, acPage, freezerPage, interDistrictPage, airPage, freezerPageBn];
+export const servicePages: ServicePage[] = [icuPage, nicuPage, acPage, freezerPage, interDistrictPage, airPage, freezerPageBn, icuPageBn, acPageBn];

@@ -10,6 +10,10 @@ published: 2021-10-18
 updated: 2026-10-25
 cover: "../../../assets/blog/square-hospital-dhaka-cover.png"
 coverAlt: "The entrance area of a large private hospital in Panthapath, Dhaka"
+destinationCta:
+  h2: "Need an ambulance to Square Hospital?"
+  text: "Call and say the pickup address and \"Square Hospital, Panthapath\" as the destination. We take patients there from anywhere in Dhaka, or from any district. We tell you the fare before we dispatch."
+  note: "Square Hospital is the destination only. We are not part of the hospital and do not book its beds or doctors."
 moneyPages:
   - /ambulance-service-areas-dhaka/
 generalGuide: true

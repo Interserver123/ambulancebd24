@@ -123,14 +123,14 @@ export const business = {
      */
     reviewsWidget: {
       value: {
-        provider: 'Shapo',
-        scriptSrc: 'https://cdn.shapo.io/js/embed.js',
-        /** The id the provider's embed.js expects on its <script> tag. */
-        scriptId: 'shapo-embed-js',
-        mountHtml: '<div id="shapo-widget-06bf1e19986a66a98a19"></div>',
+        provider: 'Featurable',
+        scriptSrc: 'https://featurable.com/assets/bundle.js',
+        /** Set only if the provider's embed.js expects an id on its <script> tag. */
+        scriptId: undefined,
+        mountHtml: '<div id="featurable-13b40d13-7f00-4df1-98a2-d09f6d32336a" data-featurable-async></div>',
       },
       verified: true,
-      note: 'Shapo widget from the owner, 11 Nov 2026 (replaced Trustindex). Keep Shapo rich snippets / schema OFF.',
+      note: 'Featurable widget from the owner, 11 Nov 2026 (replaced Shapo, Trustindex). Keep rich snippets / schema OFF.',
     } as Verifiable<{ provider: string; scriptSrc: string; scriptId?: string; mountHtml: string }>,
   },
 

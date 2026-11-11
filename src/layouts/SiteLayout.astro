@@ -167,7 +167,18 @@ const { nav } = await homeData();
       box.innerHTML = box.dataset.widgetMount ?? '';
       const s = document.createElement('script');
       s.src = box.dataset.lazyWidget ?? '';
+      // Same attributes as the provider's embed code: <script defer async src="…">.
+      s.defer = true;
       s.async = true;
+      // Blocked, offline or slow: swap the empty box for the plain "reviews on Google" link.
+      const fallback = () => {
+        const link = box.parentElement?.querySelector<HTMLElement>('[data-widget-fallback]');
+        if (box.children.length > 1 || !link) return;
+        box.hidden = true;
+        link.hidden = false;
+      };
+      s.addEventListener('error', fallback);
+      window.setTimeout(fallback, 10000);
       box.appendChild(s);
     }),
   );

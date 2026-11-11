@@ -293,7 +293,8 @@ if (existsSync(redirFile)) {
     if (exists.has(from)) err(from, 'redirect', 'source is also a live page');
     if (map.has(to)) err(from, 'redirect', `chain: ${from} -> ${to} -> ${map.get(to)}`);
     const target = to.split(/[?#]/)[0];
-    if (to.startsWith('/') && !exists.has(target) && !assetPaths.has(target)) err(from, 'redirect', `target ${to} does not exist`);
+    // Placeholder rules (/:slug/feed/ -> /:slug/) can't be resolved to one file: only plain targets are checked.
+    if (to.startsWith('/') && !to.includes(':') && !exists.has(target) && !assetPaths.has(target)) err(from, 'redirect', `target ${to} does not exist`);
     if (from === to) err(from, 'redirect', 'loop');
   }
 }

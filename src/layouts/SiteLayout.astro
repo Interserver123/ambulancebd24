@@ -169,6 +169,7 @@ const { nav } = await homeData();
       s.src = box.dataset.lazyWidget ?? '';
       if (box.dataset.scriptId) s.id = box.dataset.scriptId;
       s.defer = true;
+      s.charset = 'UTF-8';
       // Blocked, offline or slow: swap the empty box for the plain "reviews on Google" link.
       const fallback = () => {
         const link = box.parentElement?.querySelector<HTMLElement>('[data-widget-fallback]');

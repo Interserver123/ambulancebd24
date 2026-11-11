@@ -87,7 +87,7 @@ const faqs = page.faq.items.filter((f) => f.verified).map(({ q, a }) => ({ q, a 
 
 const pageUrl = `${business.url}${page.slug}`;
 const crumbs = [
-  { name: t.home, path: '/' },
+  { name: t.home, path: lang === 'bn' ? '/bn/' : '/' },
   { name: page.breadcrumb, path: page.slug },
 ];
 const priced = src.fare.verified ? [src.fare.withinDhaka, ...src.fare.routes.map((r) => r.fare)].filter((r) => r !== undefined) : [];

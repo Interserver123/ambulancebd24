@@ -57,7 +57,7 @@ export const homeEn = {
     h2: 'Ambulance service across Dhaka',
     body: `Our base is in ${business.address.locality}. ${copy.timingLine.en} We cover every area of the city and run trips from Dhaka to any district.`,
     dhakaH3: 'Dhaka areas',
-    dhaka: ['Mohakhali', 'Gulshan', 'Banani', 'Mirpur', 'Uttara', 'Dhanmondi', 'Mohammadpur', 'Badda', 'Bashundhara R/A', 'Tejgaon', 'Rampura', 'Old Dhaka'],
+    dhaka: ['Mohakhali', 'Gulshan', 'Banani', 'Mirpur', 'Uttara', 'Dhanmondi', 'Mohammadpur', 'Badda', 'Bashundhara R/A', 'Tejgaon', 'Rampura', 'Old Dhaka', 'Keraniganj'],
     areaAnchor: (area: string) => `Ambulance in ${area}`,
     districtsH3: 'From Dhaka to districts',
     districts: ['Chittagong', 'Khulna', 'Barisal', 'Rajshahi', 'Jessore', 'Kushtia', 'Noakhali', 'Benapole', 'Gopalganj'],

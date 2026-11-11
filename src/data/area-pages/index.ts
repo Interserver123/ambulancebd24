@@ -6,6 +6,7 @@ import { mohakhaliPage } from './mohakhali';
 import { gulshanPage } from './gulshan';
 import { mirpurPage } from './mirpur';
 import { uttaraPage } from './uttara';
+import { keraniganjPage } from './keraniganj';
 import type { AreaPage } from './schema';
 
-export const areaPages: AreaPage[] = [mohakhaliPage, gulshanPage, mirpurPage, uttaraPage];
+export const areaPages: AreaPage[] = [mohakhaliPage, gulshanPage, mirpurPage, uttaraPage, keraniganjPage];

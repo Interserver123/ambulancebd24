@@ -122,10 +122,16 @@ export const business = {
      * Turn OFF any "rich snippet"/schema option in the widget: no review schema on this site.
      */
     reviewsWidget: {
-      value: { provider: 'Trustindex', scriptSrc: 'https://cdn.trustindex.io/loader.js?a7daa3c84dee03001116c8a7826', mountHtml: '' },
+      value: {
+        provider: 'Shapo',
+        scriptSrc: 'https://cdn.shapo.io/js/embed.js',
+        /** The id the provider's embed.js expects on its <script> tag. */
+        scriptId: 'shapo-embed-js',
+        mountHtml: '<div id="shapo-widget-06bf1e19986a66a98a19"></div>',
+      },
       verified: true,
-      note: 'Trustindex widget from the owner, 20 Oct 2026.',
-    } as Verifiable<{ provider: string; scriptSrc: string; mountHtml: string }>,
+      note: 'Shapo widget from the owner, 11 Nov 2026 (replaced Trustindex). Keep Shapo rich snippets / schema OFF.',
+    } as Verifiable<{ provider: string; scriptSrc: string; scriptId?: string; mountHtml: string }>,
   },
 
   /** Real profiles only. Nothing else goes in sameAs. */

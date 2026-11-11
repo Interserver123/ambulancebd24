@@ -83,7 +83,17 @@ const tilt = ['-rotate-1', 'rotate-1 lg:mt-10', '-rotate-[0.5deg]'];
       )
     }
 
-    {widget && <div class="mt-12 min-h-[320px]" data-lazy-widget={widget.scriptSrc} data-widget-mount={widget.mountHtml} role="region" aria-label={t.reviews.widgetLabel} />}
+    {
+      widget && (
+        <div data-widget-fallback hidden>
+          <a href={business.gbp.reviewsListUrl} class="pebble mt-12 flex items-center gap-4 rounded-[28px] bg-(--card) p-6 no-underline" rel="noopener">
+            <span class="blob-a flex size-12 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="star" /></span>
+            <span class="serif text-xl text-(--ink)">{t.reviews.allOurs}</span>
+          </a>
+        </div>
+      )
+    }
+    {widget && <div class="mt-12 min-h-[320px]" data-lazy-widget={widget.scriptSrc} data-widget-mount={widget.mountHtml} data-script-id={widget.scriptId} role="region" aria-label={t.reviews.widgetLabel} />}
 
     {
       !items.length && !widget && (

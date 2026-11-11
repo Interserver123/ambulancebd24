@@ -15,8 +15,8 @@ const phone = business.phone.display;
 export const acPage = servicePageSchema.parse({
   serviceKey: 'ac',
   slug: '/ac-ambulance-service/',
-  metaTitle: 'AC Ambulance Service in Dhaka 24/7 | Ambulance BD 24',
-  metaDescription: `AC ambulance in Dhaka for emergencies, discharge and check-up trips, 24/7. We tell you the fare, waiting included, before we move. ${phone}`,
+  metaTitle: `AC Ambulance in Dhaka 24/7: ${phone} | ${business.name}`,
+  metaDescription: `AC ambulance in Dhaka for emergencies, discharge and check-ups, 24/7. ${copy.fareLine.en} Call ${phone}.`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when our fares or vehicles change.`,
   breadcrumb: 'AC Ambulance Service',

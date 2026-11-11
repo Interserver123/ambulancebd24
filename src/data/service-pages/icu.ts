@@ -8,7 +8,7 @@
  * vehicles.ts (equipment, crew), fares.ts (ranges, factors), destinations.ts
  * (hospital list) and the verified flag on each FAQ.
  */
-import { business, shown } from '../business';
+import { business, copy, shown } from '../business';
 import { servicePageSchema } from './schema';
 
 const phone = business.phone.display;
@@ -16,8 +16,8 @@ const phone = business.phone.display;
 export const icuPage = servicePageSchema.parse({
   serviceKey: 'icu',
   slug: '/icu-ambulance-service-dhaka/',
-  metaTitle: 'ICU Ambulance Service in Dhaka 24/7 | Ambulance BD 24',
-  metaDescription: `ICU ambulance in Dhaka for hospital transfers, 24/7. Tell us the patient's needs; we match the vehicle and tell you the fare first. ${phone}`,
+  metaTitle: `ICU Ambulance in Dhaka 24/7: ${phone} | ${business.name}`,
+  metaDescription: `ICU ambulance in Dhaka, 24/7. ${copy.timingLine.en} ${copy.fareLine.en} ${phone}`,
   updated: '2026-10-21',
   byline: `Written by the ${business.name} dispatch team in ${business.address.locality}, Dhaka. We update this page when our fares or vehicles change.`,
   breadcrumb: 'ICU Ambulance Service',

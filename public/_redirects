@@ -34,3 +34,13 @@
 /how-much-does-an-ambulance-ride-cost-without-insurance /ambulance-fare-in-dhaka/ 301
 /why-do-fire-trucks-always-come-with-ambulances/ /you-should-know-before-calling-an-ambulance/ 301
 /why-do-fire-trucks-always-come-with-ambulances /you-should-know-before-calling-an-ambulance/ 301
+# Old WordPress URLs still ranking in Search Console (7k-8k impressions each) that returned 404
+/air-ambulance-services/ /air-ambulance-service-bangladesh/ 301
+/air-ambulance-services /air-ambulance-service-bangladesh/ 301
+/icu-ambulance-service/ /icu-ambulance-service-dhaka/ 301
+/icu-ambulance-service /icu-ambulance-service-dhaka/ 301
+/ac-ambulance-service-v1/ /ac-ambulance-service/ 301
+/ac-ambulance-service-v1 /ac-ambulance-service/ 301
+# Keraniganj: no page yet. Stopgap to the Dhaka areas hub; replace with a real page, then drop this line.
+/ambulance-service-keraniganj/ /ambulance-service-areas-dhaka/ 301
+/ambulance-service-keraniganj /ambulance-service-areas-dhaka/ 301

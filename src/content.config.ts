@@ -219,6 +219,11 @@ const blogCollection = defineCollection({
          * shows a note that the dispatcher confirms what our ambulance carries.
          */
         generalGuide: z.boolean().default(false),
+        /**
+         * Hospital destination call-to-action shown above the article ("Ambulance to <hospital>").
+         * The hospital is a destination only: `note` must say we are not part of it (rule 3).
+         */
+        destinationCta: z.object({ h2: z.string().min(10), text: z.string().min(40), note: z.string().min(20) }).optional(),
         /** Off-topic for Bangladesh readers: kept live but out of search, the sitemap, the blog list and llms.txt. */
         noindex: z.boolean().default(false),
         /** Original WordPress post id (migration audit trail). */

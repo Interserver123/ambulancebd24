@@ -141,6 +141,16 @@ const jsonLd = graphLd(
             </p>
           )
         }
+        {
+          d.destinationCta && (
+            <section class="not-prose rounded-[28px] bg-(--blue-soft) p-6 md:p-8" aria-labelledby="destination-cta">
+              <h2 id="destination-cta" class="mt-0! text-[1.6rem]! md:text-3xl!">{d.destinationCta.h2}</h2>
+              <p class="mt-3 text-lg text-(--ink)">{d.destinationCta.text}</p>
+              <CallButton placement="post-destination" size="lg" class="mt-5 justify-center" label={t.cta.call} lang={bn ? 'bn' : undefined} />
+              <p class="mt-4 text-base text-(--ink)/80">{d.destinationCta.note}</p>
+            </section>
+          )
+        }
         {/* Markers let the content linter check general-guide text only where it speaks about us. */}
         {d.generalGuide && <Fragment set:html="<!--guide-start-->" />}
         <Content />

@@ -161,14 +161,42 @@ const { nav } = await homeData();
     });
   });
 
-  // Google reviews widget (third-party): script loads only when the section is near.
-  document.querySelectorAll<HTMLElement>('[data-lazy-widget]').forEach((box) =>
-    whenNear(box, '600px 0px', () => {
-      box.innerHTML = box.dataset.widgetMount ?? '';
-      const s = document.createElement('script');
-      s.src = box.dataset.lazyWidget ?? '';
-      s.async = true;
-      box.appendChild(s);
+  // Live Google reviews from our own /api/reviews (no third-party script). Any failure leaves the plain link.
+  document.querySelectorAll<HTMLElement>('[data-live-reviews]').forEach((box) =>
+    whenNear(box, '600px 0px', async () => {
+      try {
+        const res = await fetch('/api/reviews');
+        if (!res.ok) return;
+        const { reviews } = (await res.json()) as { reviews: { author: string; rating: number; text: string; lang: string; time: string }[] };
+        const list = box.querySelector('ul');
+        if (!list || !reviews.length) return;
+        const when = new Intl.DateTimeFormat(box.dataset.locale, { month: 'short', year: 'numeric', timeZone: 'UTC' });
+        const el = (tag: string, cls: string, text?: string) => {
+          const e = document.createElement(tag);
+          e.className = cls;
+          if (text) e.textContent = text;
+          return e;
+        };
+        for (const r of reviews) {
+          const li = el('li', 'pebble flex flex-col rounded-[32px] bg-(--card) p-7');
+          const quote = el('blockquote', 'serif grow text-xl leading-snug text-(--ink)');
+          quote.lang = r.lang;
+          quote.append(el('p', '', r.text));
+          const meta = el('p', 'mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm');
+          meta.append(el('span', 'font-semibold text-(--ink)', r.author));
+          const stars = el('span', 'text-(--blue-ink)', '★'.repeat(r.rating));
+          stars.setAttribute('aria-label', `${r.rating} ${box.dataset.starsLabel ?? 'stars'}`);
+          meta.append(stars);
+          const date = r.time ? new Date(r.time) : undefined;
+          if (date && !Number.isNaN(date.getTime())) meta.append(el('span', '', `· ${when.format(date)}`));
+          meta.append(el('span', '', `· ${box.dataset.source ?? 'Google review'}`));
+          li.append(quote, meta);
+          list.append(li);
+        }
+        list.classList.add('mt-12');
+      } catch {
+        /* keep the plain link */
+      }
     }),
   );
 

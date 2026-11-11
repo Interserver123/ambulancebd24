@@ -107,7 +107,7 @@ const en = {
     otherLang: 'বাংলা',
     legal: { privacy: 'Privacy policy', terms: 'Terms', disclaimer: 'Disclaimer' },
   },
-  reviews: { sub: hp.reviews.sub, source: hp.reviews.source, allOurs: hp.reviews.allOurs, widgetLabel: 'Google reviews' },
+  reviews: { sub: hp.reviews.sub, source: hp.reviews.source, allOurs: hp.reviews.allOurs, widgetLabel: 'Google reviews', stars: 'stars' },
   findUs: {
     labels: hp.findUs.labels,
     plusCode: hp.findUs.plusCode as string | undefined,
@@ -244,7 +244,7 @@ const bn: Ui = {
     otherLang: 'English',
     legal: { privacy: 'গোপনীয়তা নীতি', terms: 'শর্তাবলি', disclaimer: 'দায়মুক্তি' },
   },
-  reviews: { sub: 'যেমন লেখা হয়েছে, তেমনই তুলে দেওয়া।', source: 'গুগল রিভিউ', allOurs: 'গুগলে আমাদের সব রিভিউ পড়ুন', widgetLabel: 'গুগল রিভিউ' },
+  reviews: { sub: 'যেমন লেখা হয়েছে, তেমনই তুলে দেওয়া।', source: 'গুগল রিভিউ', allOurs: 'গুগলে আমাদের সব রিভিউ পড়ুন', widgetLabel: 'গুগল রিভিউ', stars: 'স্টার' },
   findUs: {
     labels: { business: 'প্রতিষ্ঠান', address: 'ঠিকানা', hotline: '২৪ ঘণ্টার হটলাইন', hours: 'সময়', email: 'ইমেইল' },
     // The Plus Code has Latin digits; Bangla pages leave it out.

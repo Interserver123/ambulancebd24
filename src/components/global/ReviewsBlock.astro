@@ -2,13 +2,14 @@
 /**
  * Reviews block, on every page (via SiteLayout). Always renders, with the GBP link.
  * 1. Approved reviews from src/content/reviews (tag matches first, then any), verbatim.
- * 2. Otherwise the third-party Google reviews widget (business.gbp.reviewsWidget),
- *    loaded only when the section is near (script in SiteLayout).
+ * 2. Otherwise live Google reviews from our own /api/reviews (functions/api/reviews.js),
+ *    fetched when the section is near (script in SiteLayout). No third-party script.
+ *    Any failure leaves the plain "reviews on Google" card below.
  * Never review or star-rating schema.
  */
 import { getCollection } from 'astro:content';
 import Icon from '../Icon.astro';
-import { business, shown } from '../../data/business';
+import { business } from '../../data/business';
 import { ui, type Lang } from '../../data/ui';
 
 interface Props {
@@ -32,7 +33,7 @@ const rank = (r: (typeof approved)[number]) => {
 // Same tag rank: a review written in the page language comes first (Bangla quote first on Bangla pages).
 const sameLang = (r: (typeof approved)[number]) => (r.lang === lang ? 0 : 1);
 const items = [...approved].sort((a, b) => rank(a) - rank(b) || sameLang(a) - sameLang(b)).slice(0, max);
-const widget = items.length ? undefined : shown(business.gbp.reviewsWidget);
+const live = items.length === 0;
 
 /** "Md. Ali Hossain" -> "Md. Ali", "Sumon Babu" -> "Sumon". */
 const firstName = (name: string) => {
@@ -83,10 +84,16 @@ const tilt = ['-rotate-1', 'rotate-1 lg:mt-10', '-rotate-[0.5deg]'];
       )
     }
 
-    {widget && <div class="mt-12 min-h-[320px]" data-lazy-widget={widget.scriptSrc} data-widget-mount={widget.mountHtml} role="region" aria-label={t.reviews.widgetLabel} />}
+    {
+      live && (
+        <div data-live-reviews data-source={t.reviews.source} data-locale={t.dateLocale} data-stars-label={t.reviews.stars} role="region" aria-label={t.reviews.widgetLabel}>
+          <ul class="grid gap-6 md:grid-cols-3" />
+        </div>
+      )
+    }
 
     {
-      !items.length && !widget && (
+      live && (
         <a href={business.gbp.reviewsListUrl} class="pebble mt-12 flex items-center gap-4 rounded-[28px] bg-(--card) p-6 no-underline" rel="noopener">
           <span class="blob-a flex size-12 shrink-0 items-center justify-center bg-(--blue-soft) text-(--blue-ink)"><Icon name="star" /></span>
           <span class="serif text-xl text-(--ink)">{t.reviews.allOurs}</span>

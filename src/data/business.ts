@@ -115,17 +115,6 @@ export const business = {
       verified: false,
       note: 'From the 29 Sep 2026 audit. Confirm current numbers before showing.',
     } as Verifiable<{ rating: number; count: number; checkedOn: string }>,
-    /**
-     * Third-party Google reviews widget (Elfsight, Trustindex, etc.), loaded only
-     * when the reviews section nears the screen. Paste from the provider's embed code:
-     * scriptSrc = the <script src="…">, mountHtml = the <div …></div> (empty if none).
-     * Turn OFF any "rich snippet"/schema option in the widget: no review schema on this site.
-     */
-    reviewsWidget: {
-      value: { provider: 'Trustindex', scriptSrc: 'https://cdn.trustindex.io/loader.js?a7daa3c84dee03001116c8a7826', mountHtml: '' },
-      verified: true,
-      note: 'Trustindex widget from the owner, 20 Oct 2026.',
-    } as Verifiable<{ provider: string; scriptSrc: string; mountHtml: string }>,
   },
 
   /** Real profiles only. Nothing else goes in sameAs. */

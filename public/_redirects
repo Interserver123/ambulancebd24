@@ -41,9 +41,6 @@
 /icu-ambulance-service /icu-ambulance-service-dhaka/ 301
 /ac-ambulance-service-v1/ /ac-ambulance-service/ 301
 /ac-ambulance-service-v1 /ac-ambulance-service/ 301
-# Keraniganj: no page yet. Stopgap to the Dhaka areas hub; replace with a real page, then drop this line.
-/ambulance-service-keraniganj/ /ambulance-service-areas-dhaka/ 301
-/ambulance-service-keraniganj /ambulance-service-areas-dhaka/ 301
 # Crawl-stats 404s (Search Console): old WordPress paths that map to a live page
 /favicon.ico /favicon.svg 301
 /ac-ambulance-in-bangladesh/ /ac-ambulance-service/ 301
